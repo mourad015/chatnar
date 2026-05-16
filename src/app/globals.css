@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Anton&display=swap');
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  background-color: #000000;
+  color: #FFFFFF;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #FF3D00;
+  border-radius: 2px;
+}
+
+/* Selection */
+::selection {
+  background: #FF3D00;
+  color: #FFFFFF;
+}
+
+/* Live pulse animation */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.live-dot {
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+/* Orange glow utility */
+.glow-orange {
+  box-shadow: 0 0 24px rgba(255, 61, 0, 0.45);
+}
+
+.glow-green {
+  box-shadow: 0 0 24px rgba(83, 252, 24, 0.45);
+}
+
+.glow-gold {
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.45);
+}
+
+/* Card base */
+.chatnar-card {
+  background-color: #111111;
+  border: 1px solid #1E1E1E;
+  border-radius: 8px;
+}
+
+.chatnar-card:hover {
+  border-color: #FF3D00;
+  box-shadow: 0 0 16px rgba(255, 61, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+/* Prediction YES */
+.yes-btn {
+  background-color: #1A4D1A;
+  color: #53FC18;
+  border: 1px solid #53FC18;
+  transition: all 0.2s ease;
+}
+
+.yes-btn:hover {
+  background-color: #53FC18;
+  color: #000000;
+  box-shadow: 0 0 20px rgba(83, 252, 24, 0.5);
+}
+
+/* Prediction NO */
+.no-btn {
+  background-color: #4D1A1A;
+  color: #FF1744;
+  border: 1px solid #FF1744;
+  transition: all 0.2s ease;
+}
+
+.no-btn:hover {
+  background-color: #FF1744;
+  color: #FFFFFF;
+  box-shadow: 0 0 20px rgba(255, 23, 68, 0.5);
+}
+
+/* Orange CTA button */
+.btn-orange {
+  background-color: #FF3D00;
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-orange:hover {
+  background-color: #FF6B35;
+  box-shadow: 0 0 24px rgba(255, 61, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+/* LIVE badge */
+.live-badge {
+  background-color: #53FC18;
+  color: #000000;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* Coin display */
+.coin-display {
+  background-color: #1A1400;
+  border: 1px solid #FFD700;
+  color: #FFD700;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Sidebar active item */
+.sidebar-active {
+  color: #FF3D00;
+  border-left: 3px solid #FF3D00;
+  background-color: rgba(255, 61, 0, 0.08);
+}
+
+/* Stream card activity bar */
+.activity-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #FF3D00, #FF6B35);
+  border-radius: 0 0 8px 8px;
+}
+
+/* Tunisian tag pills */
+.tn-tag {
+  background-color: #1A1A1A;
+  border: 1px solid #2A2A2A;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tn-tag:hover {
+  border-color: #FF3D00;
+  color: #FF3D00;
+}
