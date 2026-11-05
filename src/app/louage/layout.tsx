@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Figtree, JetBrains_Mono, Readex_Pro } from 'next/font/google'
 import { BlassaProvider } from './_lib/store'
-import { TabBar } from './_components/ui'
+import { AuthGate } from './_components/auth'
 import s from './louage.module.css'
 
 // One family for UI and headings (ride-app style), Readex Pro for Arabic.
@@ -29,8 +29,7 @@ export default function LouageLayout({ children }: { children: React.ReactNode }
   return (
     <div className={`${s.app} ${display.variable} ${body.variable} ${arabic.variable} ${mono.variable}`}>
       <BlassaProvider>
-        <div className={s.shell}>{children}</div>
-        <TabBar />
+        <AuthGate>{children}</AuthGate>
       </BlassaProvider>
     </div>
   )

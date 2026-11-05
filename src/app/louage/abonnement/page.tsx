@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ArrowRight, Bell, Check, Gift, LoaderCircle, RotateCcw, ShieldCheck, TrendingUp, Users, Wallet } from '../_components/icons'
+import { AccountButton } from '../_components/auth'
 import { Logo, cx } from '../_components/ui'
 import { PAY_METHODS, PLANS, formatPrice, type PayMethod, type PlanId } from '../_lib/data'
 import { TRIAL_DAYS, useBlassa } from '../_lib/store'
@@ -36,7 +37,10 @@ export default function SubscriptionPage() {
     <>
       <header className={s.topbar}>
         <Logo />
-        <span className={cx(s.pill, s.pillRed)}>Lel chifourat</span>
+        <span className={s.topRight}>
+          <span className={cx(s.pill, s.pillRed)}>Lel chifourat</span>
+          <AccountButton />
+        </span>
       </header>
 
       <div className={s.pageHead}>

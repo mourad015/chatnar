@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useCallback, useState } from 'react'
 import { ArrowRight, Bell, Check, Minus, Plus, ShieldCheck, TrendingUp, Users, Van, Zap } from '../_components/icons'
+import { AccountButton } from '../_components/auth'
 import { Logo, Plate, Seats, StatusPill, Toast, cx } from '../_components/ui'
 import { CITIES, PLANS, formatPrice, kindFor, stationFor, suggestedPrice, type DriverProfile, type LouageKind } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
@@ -15,8 +16,11 @@ export default function DriverPage() {
     <>
       <header className={s.topbar}>
         <Logo />
-        <span className={cx(s.pill, isSubscribed ? s.pillGreen : s.pillAmber)}>
-          {isSubscribed ? 'Abonné' : 'Mode chifour'}
+        <span className={s.topRight}>
+          <span className={cx(s.pill, isSubscribed ? s.pillGreen : s.pillAmber)}>
+            {isSubscribed ? 'Abonné' : 'Mode chifour'}
+          </span>
+          <AccountButton />
         </span>
       </header>
 
@@ -31,8 +35,8 @@ export default function DriverPage() {
 /* ---------- 1. Driver profile ---------- */
 
 function Onboarding() {
-  const { saveDriver } = useBlassa()
-  const [form, setForm] = useState<DriverProfile>({ name: '', phone: '', plate: '', kind: 'interurbain' })
+  const { saveDriver, user } = useBlassa()
+  const [form, setForm] = useState<DriverProfile>({ name: user?.name ?? '', phone: user?.phone ?? '', plate: '', kind: 'interurbain' })
   const [series, setSeries] = useState('')
   const [num, setNum] = useState('')
   const valid = form.name.trim().length > 1 && form.phone.replace(/\D/g, '').length >= 8 && series && num.length >= 3

@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { ArrowUpDown, Bus, CarTaxiFront, Check, Copy, Phone, Search, Star, TramFront, Users, Van } from './_components/icons'
+import { AccountButton } from './_components/auth'
 import { Avatar, Logo, OptionRow, Plate, Seats, Sheet, StatusPill, Toast, cx, seatsLeftLabel } from './_components/ui'
 import { CITIES, POPULAR, formatClock, formatPrice, type Departure } from './_lib/data'
 import { HOLD_MINUTES, useBlassa } from './_lib/store'
@@ -17,7 +18,7 @@ const MODES = [
 ]
 
 export default function RiderHome() {
-  const { departures, ready, now } = useBlassa()
+  const { departures, ready, now, user } = useBlassa()
   const [from, setFrom] = useState('Tunis')
   const [to, setTo] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
@@ -53,13 +54,18 @@ export default function RiderHome() {
     <>
       <header className={s.topbar}>
         <Logo />
-        <span className={s.livePill}>
-          <span className={s.pulse} />
-          {ready ? `${totalOpen} louage live` : 'Live'}
+        <span className={s.topRight}>
+          <span className={s.livePill}>
+            <span className={s.pulse} />
+            {ready ? `${totalOpen} louage live` : 'Live'}
+          </span>
+          <AccountButton />
         </span>
       </header>
 
-      <h1 className={cx(s.display, s.greet)}>Win mechi lyoum?</h1>
+      <h1 className={cx(s.display, s.greet)}>
+        {user ? `Win mechi lyoum, ${user.name.split(' ')[0]}?` : 'Win mechi lyoum?'}
+      </h1>
 
       <div className={s.where}>
         <span className={s.whereLine} aria-hidden />

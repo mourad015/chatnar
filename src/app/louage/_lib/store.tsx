@@ -21,12 +21,16 @@ const HOLD_MINUTES = 15
 
 type Reservation = { departureId: string; at: number }
 
+export type Role = 'rider' | 'driver'
+export type User = { phone: string; name: string; role: Role; joinedAt: number }
+
 type State = {
   departures: Departure[]
   driver: DriverProfile | null
   subscription: Subscription | null
   usedTrial: boolean
   reservations: Reservation[]
+  user?: User | null
 }
 
 type Store = State & {
@@ -43,6 +47,8 @@ type Store = State & {
   setFilled: (id: string, filled: number) => void
   markGone: (id: string) => void
   resetDemo: () => void
+  login: (u: Omit<User, 'joinedAt'>) => void
+  logout: () => void
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -128,7 +134,7 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const store = useMemo<Store>(() => {
-    const s = state ?? { departures: [], driver: null, subscription: null, usedTrial: false, reservations: [] }
+    const s: State = state ?? { departures: [], driver: null, subscription: null, usedTrial: false, reservations: [], user: null }
     const isSubscribed = !!s.subscription && s.subscription.until > now
     return {
       ...s,
@@ -196,6 +202,9 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
         })),
       markGone: (id) => update((st) => ({ ...st, departures: st.departures.filter((x) => x.id !== id) })),
       resetDemo: () => setState(freshState()),
+      login: (u) =>
+        update((st) => ({ ...st, user: { ...u, joinedAt: Date.now() } })),
+      logout: () => update((st) => ({ ...st, user: null })),
     }
   }, [state, now, update])
 

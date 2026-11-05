@@ -5,7 +5,10 @@ export {
   Bell,
   Bus,
   CarTaxiFront,
+  ChevronLeft,
   ChevronRight,
+  LogOut,
+  User,
   Copy,
   TramFront,
   Check,
@@ -54,9 +57,9 @@ export function SteeringWheel({ size = 24, className }: { size?: number; classNa
 }
 
 /** Side view of a Tunisian louage: white van, side stripe (red = interurbain, blue = régional). */
-export function Van({ width = 60, stripe = 'red' }: { width?: number; stripe?: 'red' | 'blue' }) {
+export function Van({ width = 60, stripe = 'red', x, y }: { width?: number; stripe?: 'red' | 'blue'; x?: number; y?: number }) {
   return (
-    <svg width={width} height={(width * 34) / 64} viewBox="0 0 64 34" aria-hidden>
+    <svg x={x} y={y} width={width} height={(width * 34) / 64} viewBox="0 0 64 34" aria-hidden>
       <path
         d="M6 5.5h37.5c3 0 5 .9 7 2.9l7.4 7.4c1.2 1.2 2.1 2.6 2.1 4.4v5.3c0 1.5-1.1 2.5-2.6 2.5H5.4C3.9 28 2.5 27 2.5 25.5V9c0-2 1.5-3.5 3.5-3.5z"
         fill="var(--van)"
