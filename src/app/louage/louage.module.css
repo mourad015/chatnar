@@ -3559,3 +3559,194 @@ select.input {
   gap: 8px;
   margin-top: 10px;
 }
+
+/* =========================================================
+   Splash v4: black stage, white + red, logo drives in
+   ========================================================= */
+
+.splash {
+  background: #000;
+  gap: 0;
+  overflow: hidden;
+}
+
+.spStage {
+  position: relative;
+  width: 124px;
+  height: 124px;
+}
+
+/* Speed lines, like the ones behind the van in the logo */
+.spLines {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+  margin-right: 14px;
+  transform: translateY(-40%);
+}
+
+.spLines span {
+  display: block;
+  height: 7px;
+  border-radius: 4px;
+  background: #e31b23;
+  transform-origin: right center;
+  animation: spLine 900ms 120ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.spLines span:nth-child(1) {
+  width: 46px;
+}
+
+.spLines span:nth-child(2) {
+  width: 72px;
+  animation-delay: 170ms;
+}
+
+.spLines span:nth-child(3) {
+  width: 58px;
+  animation-delay: 220ms;
+}
+
+@keyframes spLine {
+  0% {
+    opacity: 0;
+    transform: translateX(-60vw) scaleX(3);
+  }
+  45% {
+    opacity: 1;
+    transform: translateX(0) scaleX(1.4);
+  }
+  75% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0.2);
+  }
+}
+
+/* The tile drives in, brakes, settles */
+.spTile {
+  position: relative;
+  width: 124px;
+  height: 124px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(227, 27, 35, 0.35);
+  animation: spDrive 980ms 80ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes spDrive {
+  0% {
+    opacity: 0;
+    transform: translateX(-70vw) skewX(-14deg) scale(0.9);
+  }
+  55% {
+    opacity: 1;
+    transform: translateX(14px) skewX(7deg) scale(1.02);
+  }
+  75% {
+    transform: translateX(-5px) skewX(-2deg) scale(1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* A light sweep across the logo once it stops */
+.spShine {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.85) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: spShine 800ms 1000ms ease-out both;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes spShine {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+/* Soft red glow on the "road" under the logo */
+.spShadow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -18px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(227, 27, 35, 0.55), transparent);
+  animation: fade 600ms 600ms ease both;
+}
+
+.spWordClip {
+  margin-top: 30px;
+  padding: 0 6px 14px;
+  overflow: hidden;
+}
+
+.spWord {
+  position: relative;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 52px;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  color: #fff;
+  animation: spWordUp 700ms 760ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+@keyframes spWordUp {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+.spSwoosh {
+  position: absolute;
+  left: 36%;
+  width: 66%;
+  bottom: -12px;
+  height: 11px;
+  transform-origin: left center;
+  animation: spSwoosh 600ms 1050ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes spSwoosh {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.spTag {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--font-ar), sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.spTag span {
+  animation: rise 560ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.splashMade {
+  color: rgba(255, 255, 255, 0.45);
+  animation-delay: 1600ms;
+}
+
+.splashOut {
+  opacity: 0;
+  transform: scale(1.06);
+}

@@ -20,45 +20,72 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!ready) return
-    const a = setTimeout(() => setPhase('leaving'), 1250)
-    const b = setTimeout(() => setPhase('done'), 1750)
+    const a = setTimeout(() => setPhase('leaving'), 2300)
+    const b = setTimeout(() => setPhase('done'), 2850)
     return () => {
       clearTimeout(a)
       clearTimeout(b)
     }
   }, [ready])
 
-  if (!ready || phase === 'splash') return <Splash />
+  // Same tree positions in every phase, so the splash is never remounted
+  // (a remount would replay its animation while it fades out).
+  const content =
+    phase === 'splash' ? null : !user ? (
+      <AuthFlow />
+    ) : (
+      <>
+        {/* Keyed by route so each screen springs in. */}
+        <div className={s.shell}>
+          <div key={path} className={s.page}>
+            {children}
+          </div>
+        </div>
+        <TabBar />
+      </>
+    )
   return (
     <>
-      {!user ? (
-        <AuthFlow />
-      ) : (
-        <>
-          {/* Keyed by route so each screen springs in. */}
-          <div className={s.shell}>
-            <div key={path} className={s.page}>
-              {children}
-            </div>
-          </div>
-          <TabBar />
-        </>
-      )}
-      {phase === 'leaving' && <Splash leaving />}
+      {content}
+      {phase !== 'done' && <Splash leaving={phase === 'leaving'} />}
     </>
   )
 }
 
 function Splash({ leaving }: { leaving?: boolean }) {
+  const words = TAGLINE_AR.split('، ')
   return (
     <div className={cx(s.splash, leaving && s.splashOut)} role="status" aria-label="Blassa">
-      <div className={s.splashMarkBox}>
-        <BlassaMark size={128} />
+      <div className={s.spStage}>
+        <div className={s.spLines} aria-hidden>
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className={s.spTile}>
+          <BlassaMark size={124} />
+          <span className={s.spShine} aria-hidden />
+        </div>
+        <span className={s.spShadow} aria-hidden />
       </div>
-      <div className={s.splashLogo} style={{ marginTop: 26 }}>
-        <Wordmark size={48} light />
+
+      <div className={s.spWordClip}>
+        <div className={s.spWord}>
+          Blassa
+          <svg className={s.spSwoosh} viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden>
+            <path d="M0 9 C30 1 70 0 100 3 C70 3 35 5 0 9 Z" fill="#E31B23" />
+          </svg>
+        </div>
       </div>
-      <div className={s.splashTag} lang="ar" dir="rtl">{TAGLINE_AR}</div>
+
+      <div className={s.spTag} lang="ar" dir="rtl">
+        {words.map((w, i) => (
+          <span key={w} style={{ animationDelay: `${1250 + i * 160}ms`, color: i === words.length - 1 ? '#E31B23' : undefined }}>
+            {w}
+            {i < words.length - 1 ? '،' : ''}
+          </span>
+        ))}
+      </div>
       <div className={s.splashMade}>Sna3a tounsia</div>
     </div>
   )
