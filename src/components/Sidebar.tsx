@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Home, Tv2, Zap, Film, Trophy, Coins, Activity, Users } from 'lucide-react'
+import { Home, Tv2, Zap, Film, Trophy, Coins, Crown, Activity, Users } from 'lucide-react'
 
 const navItems = [
   { href: '/',              icon: Home,     label: 'Home' },
@@ -10,13 +10,14 @@ const navItems = [
   { href: '/clips',         icon: Film,     label: 'Clips' },
   { href: '/leaderboard',   icon: Trophy,   label: 'Leaderboards' },
   { href: '/coins',         icon: Coins,    label: 'Coins Shop' },
+  { href: '/vip',           icon: Crown,    label: 'VIP' },
   { href: '/activity',      icon: Activity, label: 'My Activity' },
   { href: '/following',     icon: Users,    label: 'Following' },
 ]
 
 export default function Sidebar() {
   return (
-    <aside className="fixed left-0 top-14 bottom-0 w-40 bg-brand-sidebar border-r border-brand-border flex flex-col overflow-y-auto z-40">
+    <aside className="fixed left-0 top-14 bottom-0 w-40 bg-brand-sidebar border-r border-brand-border hidden md:flex flex-col overflow-y-auto z-40">
 
       {/* Nav links */}
       <nav className="flex flex-col py-4 gap-1">

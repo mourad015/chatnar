@@ -19,7 +19,7 @@ export default function Navbar() {
       </Link>
 
       {/* Search */}
-      <div className="flex-1 max-w-xl mx-auto relative">
+      <div className="hidden sm:block flex-1 max-w-xl mx-auto relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted w-4 h-4" />
         <input
           type="text"
@@ -29,7 +29,7 @@ export default function Navbar() {
       </div>
 
       {/* Right side */}
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-3 shrink-0 ml-auto sm:ml-0">
         <button className="text-brand-muted hover:text-white transition-colors">
           <Bell className="w-5 h-5" />
         </button>
@@ -45,7 +45,7 @@ export default function Navbar() {
           <div className="w-8 h-8 rounded-full bg-brand-orange flex items-center justify-center text-xs font-bold text-white">
             S
           </div>
-          <span className="text-sm text-white font-medium">Skander07</span>
+          <span className="hidden sm:inline text-sm text-white font-medium">Skander07</span>
         </div>
       </div>
     </nav>
