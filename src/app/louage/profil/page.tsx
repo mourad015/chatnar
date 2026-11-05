@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
-import { BadgeCheck, BellIcon, Car, Check, ChevronRight, FileText, Globe, Heart, Info, LifeBuoy, LogOut, Settings, Shield, SteeringWheel, User } from '../_components/icons'
+import { BadgeCheck, BellIcon, Car, Package, Check, ChevronRight, FileText, Globe, Heart, Info, LifeBuoy, LogOut, Settings, Shield, SteeringWheel, User } from '../_components/icons'
 import { Toast, cx, tap } from '../_components/ui'
 import { useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
@@ -38,6 +38,7 @@ export default function ProfilePage() {
       <div className={s.menu}>
         <Link href="/louage/trajets" className={s.menuRow}><Car size={20} /><span>Mes trajets</span><ChevronRight size={18} className={s.sChevron} /></Link>
         <Link href="/louage/favoris" className={s.menuRow}><Heart size={20} /><span>Mes favoris</span><ChevronRight size={18} className={s.sChevron} /></Link>
+        <Link href="/louage/colis" className={s.menuRow}><Package size={20} /><span>Mes colis</span><ChevronRight size={18} className={s.sChevron} /></Link>
         <button type="button" className={s.menuRow} onClick={soon('Notifications')}>
           <BellIcon size={20} /><span>Notifications</span>
           {reservations.length > 0 && <span className={s.countBadge}>{reservations.length}</span>}

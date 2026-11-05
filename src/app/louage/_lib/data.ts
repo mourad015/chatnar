@@ -17,6 +17,74 @@ export type Departure = {
   mine?: boolean // posted by the driver using this device
   status: 'open' | 'full' | 'gone'
   updatedAt: number
+  /** Who sits where: 'f' woman, 'm' man, 'me' this rider, null free. Index = seat number - 1. */
+  seatMap?: SeatOcc[]
+}
+
+export type SeatOcc = 'f' | 'm' | 'me' | null
+
+/**
+ * Louage seen from above (8 passengers). Row 1: driver + 2 front seats,
+ * rows 2 and 3: three seats each. Indexes match seatMap.
+ */
+export const SEAT_ROWS: (number | 'driver')[][] = [
+  ['driver', 0, 1],
+  [2, 3, 4],
+  [5, 6, 7],
+]
+
+export function seatLabel(i: number) {
+  if (i <= 1) return i === 0 ? 'Gouddem, wost' : 'Gouddem, chobbek'
+  const inRow = (i - 2) % 3
+  return inRow === 1 ? 'Wost' : 'Chobbek'
+}
+
+export function makeSeatMap(filled: number, seats = 8): SeatOcc[] {
+  const map: SeatOcc[] = Array(seats).fill(null)
+  const order = Array.from({ length: seats }, (_, i) => i).sort(() => Math.random() - 0.5)
+  for (let k = 0; k < Math.min(filled, seats); k++) map[order[k]] = Math.random() < 0.45 ? 'f' : 'm'
+  return map
+}
+
+/** Seats where every taken neighbour in the same row is a woman (and at least one is). */
+export function seatsNextToWomen(map: SeatOcc[]): Set<number> {
+  const out = new Set<number>()
+  for (const row of SEAT_ROWS) {
+    const idx = row.filter((x): x is number => x !== 'driver')
+    for (const i of idx) {
+      if (map[i]) continue
+      const pos = idx.indexOf(i)
+      const nb = [idx[pos - 1], idx[pos + 1]].filter((x) => x !== undefined).map((x) => map[x])
+      const taken = nb.filter(Boolean)
+      if (taken.length && taken.every((o) => o === 'f')) out.add(i)
+    }
+  }
+  return out
+}
+
+// ---------- parcels ----------
+
+export type ParcelSize = 'S' | 'M' | 'L'
+export const PARCEL_SIZES: { id: ParcelSize; name: string; hint: string; price: number }[] = [
+  { id: 'S', name: 'Sghir', hint: 'Enveloppe, papiers, clés', price: 5 },
+  { id: 'M', name: 'Wost', hint: 'Sac, boîte à chaussures', price: 8 },
+  { id: 'L', name: 'Kbir', hint: 'Valise, carton', price: 12 },
+]
+
+export type Parcel = {
+  id: string
+  code: string // tracking code shown to the sender
+  pin: string // 4 digits the recipient gives the driver
+  from: string
+  to: string
+  size: ParcelSize
+  price: number
+  recipient: { name: string; phone: string }
+  departureId: string
+  driverName: string
+  plate: string
+  createdAt: number
+  deliveredAt?: number
 }
 
 export type DriverProfile = {
@@ -147,6 +215,7 @@ export function makeRandomDeparture(route?: [string, string]): Departure {
     kind: kindFor(from, to),
     status: 'open',
     updatedAt: Date.now(),
+    seatMap: makeSeatMap(filled),
   }
 }
 

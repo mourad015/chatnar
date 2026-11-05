@@ -1,4 +1,5 @@
 export {
+  Package,
   Armchair,
   Bell as BellIcon,
   CalendarDays,

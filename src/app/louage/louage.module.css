@@ -3220,3 +3220,342 @@ select.input {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
   animation: spSeat 820ms 100ms var(--bounce) both;
 }
+
+/* =========================================================
+   Blassa specials: seat plan, fill-the-louage, parcels
+   ========================================================= */
+
+.app {
+  --women: #b0306a;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app {
+    --women: #e05a9a;
+  }
+}
+
+/* Seat plan: the louage seen from above */
+.seatPick {
+  margin: 4px 0 16px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.seatPickHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.vanTop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(250px, 100%);
+  margin: 0 auto;
+  padding: 34px 18px 20px;
+  border-radius: 46px 46px 22px 22px;
+  background: var(--surface);
+  border: 2px solid var(--line-strong);
+  box-shadow: inset 0 0 0 6px var(--surface), inset 0 0 0 7px var(--line);
+}
+
+.vanWindshield {
+  position: absolute;
+  top: 10px;
+  left: 22%;
+  right: 22%;
+  height: 12px;
+  border-radius: 10px 10px 3px 3px;
+  background: var(--van-glass, #2b3440);
+  opacity: 0.8;
+}
+
+.vanRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.vSeat {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1.08;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 14px 14px 10px 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: transform var(--t-spring) var(--spring), background-color 0.2s, box-shadow 0.2s;
+}
+
+.vSeat:not(:disabled):active {
+  transform: scale(0.9);
+  transition-duration: 0.1s;
+}
+
+.vDriver {
+  border-style: dashed;
+  color: var(--muted);
+  cursor: default;
+}
+
+.vTaken,
+.vWoman {
+  border-color: transparent;
+  color: transparent;
+  cursor: not-allowed;
+}
+
+.vTaken {
+  background: var(--ink);
+}
+
+.vWoman {
+  background: var(--women);
+}
+
+.vMe {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 6px 16px -6px var(--red);
+  animation: seatPop var(--t-bounce) var(--bounce) both;
+}
+
+.vHint {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 25%, transparent);
+}
+
+/* Kammel el louage */
+.fill {
+  margin: 0 0 14px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1.5px dashed color-mix(in srgb, var(--red) 45%, transparent);
+  background: var(--red-soft);
+}
+
+.fillCompact {
+  padding: 12px;
+}
+
+.fillTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.fillCount {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--red);
+}
+
+.fillBar {
+  height: 8px;
+  margin: 10px 0 12px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--red) 15%, var(--surface));
+  overflow: hidden;
+}
+
+.fillBar span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--red);
+  transition: width 0.6s var(--spring);
+}
+
+.fillBtn {
+  width: 100%;
+  background: #25d366; /* WhatsApp green */
+  color: #fff;
+}
+
+/* Colis */
+.colisBanner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.colisBanner b {
+  display: block;
+  font-size: 15px;
+}
+
+.colisBanner span span,
+.colisBanner > span:nth-child(2) > span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.colisIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--red);
+  color: #fff;
+}
+
+.colisHero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.colisHero b {
+  display: block;
+  font-size: 16px;
+}
+
+.colisHero span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.sizes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.sizeBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 6px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface-2);
+  text-align: center;
+  cursor: pointer;
+}
+
+.sizeBtn b {
+  font-size: 14px;
+}
+
+.sizeBtn span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.sizeBtn em {
+  margin-top: 2px;
+  font-style: normal;
+  font-weight: 800;
+  color: var(--red);
+}
+
+.parcel {
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--card-shadow);
+}
+
+.parcelHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.codeChip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.track {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: 16px 0 12px;
+}
+
+.track li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.track li i {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-3);
+}
+
+.trackDone {
+  color: var(--ink) !important;
+}
+
+.trackDone i {
+  background: var(--red) !important;
+}
+
+.trackNow i {
+  animation: pulseBar 1.4s ease-in-out infinite;
+}
+
+@keyframes pulseBar {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.parcelFoot {
+  margin-bottom: 12px;
+}
+
+.pinRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}

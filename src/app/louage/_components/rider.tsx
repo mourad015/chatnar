@@ -20,8 +20,9 @@ import {
   Users,
   Van,
 } from './icons'
-import { Avatar, Plate, Seats, Sheet, Toast, cx, tap } from './ui'
-import { type Departure, formatClock, formatIn, formatPrice } from '../_lib/data'
+import { Avatar, Plate, Sheet, Toast, cx, tap } from './ui'
+import { FillBar, SeatPicker } from './seats'
+import { type Departure, formatClock, formatIn, formatPrice, seatLabel } from '../_lib/data'
 import { HOLD_MINUTES, useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
 
@@ -190,9 +191,13 @@ export function ResCard({ d, index = 0, onOpen }: { d: Departure; index?: number
 }
 
 export function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
-  const { now, reserve, cancelReservation, isReserved } = useBlassa()
+  const { now, reserve, cancelReservation, isReserved, mySeat } = useBlassa()
   const [toast, setToast] = useState<string | null>(null)
+  const [picked, setPicked] = useState<number | null>(null)
   const reserved = isReserved(d.id)
+  const seatNow = reserved ? (mySeat(d.id) ?? null) : picked
+  // A picked seat taken by someone else in the meantime is dropped.
+  const pickedFree = picked !== null && !d.seatMap?.[picked]
   const left = d.seats - d.filled
   const st = statusOf(d)
   const hideToast = useCallback(() => setToast(null), [])
@@ -242,8 +247,8 @@ export function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => vo
         <div className={s.infoRow}>
           <Armchair size={20} />
           <div>
-            <b>{d.seats} places</b>
-            <Seats total={d.seats} filled={d.filled} mine={reserved ? 1 : 0} />
+            <b>{d.seats} places · {left} libres</b>
+            <span>{seatNow !== null ? `Place ${seatNow + 1} · ${seatLabel(seatNow)}` : 'Choisissez votre place ci-dessous'}</span>
           </div>
         </div>
         <div className={s.infoRow}>
@@ -254,6 +259,10 @@ export function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => vo
           </div>
         </div>
       </div>
+
+      <FillBar d={d} />
+
+      <SeatPicker d={d} value={seatNow} onChange={setPicked} locked={reserved} />
 
       <div className={s.driverBox}>
         <div className={s.driver}>
@@ -284,7 +293,7 @@ export function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => vo
         <div className={s.confirm}>
           <Check size={22} />
           <div>
-            <strong>Place réservée</strong>
+            <strong>Place {seatNow !== null ? seatNow + 1 : ''} réservée</strong>
             Le chauffeur vous attend {HOLD_MINUTES} min. En retard ? Appelez-le.
           </div>
         </div>
@@ -308,11 +317,11 @@ export function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => vo
           disabled={left <= 0}
           onClick={() => {
             tap(14)
-            reserve(d.id)
+            reserve(d.id, pickedFree ? picked! : undefined)
             setToast('Place réservée')
           }}
         >
-          {left <= 0 ? 'Complet' : 'Réserver ma place'}
+          {left <= 0 ? 'Complet' : pickedFree ? `Réserver la place ${picked! + 1}` : 'Réserver ma place'}
         </button>
       )}
       <p className={s.demoNote}>Vous payez le chauffeur dans le louage, comme d’habitude.</p>

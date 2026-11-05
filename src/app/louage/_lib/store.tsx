@@ -9,9 +9,12 @@ import {
   type DriverProfile,
   type PayMethod,
   type PlanId,
+  type Parcel,
+  type SeatOcc,
   type Subscription,
   PLANS,
   makeRandomDeparture,
+  makeSeatMap,
   seedDepartures,
 } from './data'
 
@@ -19,7 +22,7 @@ const KEY = 'blassa.v1'
 const TRIAL_DAYS = 30
 const HOLD_MINUTES = 15
 
-type Reservation = { departureId: string; at: number }
+type Reservation = { departureId: string; at: number; seat?: number }
 
 export type Role = 'rider' | 'driver'
 export type User = { phone: string; name: string; role: Role; joinedAt: number }
@@ -32,12 +35,17 @@ type State = {
   reservations: Reservation[]
   user?: User | null
   favorites?: string[] // "From|To"
+  parcels?: Parcel[]
 }
 
 type Store = State & {
   ready: boolean
   now: number
-  reserve: (id: string) => void
+  /** Reserve a seat; pass the seat index to pick it on the louage plan. */
+  reserve: (id: string, seat?: number) => void
+  mySeat: (id: string) => number | undefined
+  sendParcel: (p: Omit<Parcel, 'id' | 'code' | 'pin' | 'createdAt'>) => Parcel
+  confirmParcel: (id: string, pin: string) => boolean
   cancelReservation: (id: string) => void
   isReserved: (id: string) => boolean
   saveDriver: (p: DriverProfile) => void
@@ -73,9 +81,22 @@ function load(): State {
   }
 }
 
+/** Keep filled, status and the seat plan consistent. */
+function withMap(d: Departure, map: SeatOcc[], ts = Date.now()): Departure {
+  const filled = map.filter(Boolean).length
+  return { ...d, seatMap: map, filled, status: filled >= d.seats ? 'full' : 'open', updatedAt: ts }
+}
+
+function freeSeats(map: SeatOcc[]) {
+  return map.map((o, i) => (o ? -1 : i)).filter((i) => i >= 0)
+}
+
 /** Drop finished trips and keep the board looking alive. */
 function tidy(s: State, now: number): State {
-  let departures = s.departures.filter((d) => {
+  let departures = s.departures.map((d) =>
+    d.seatMap && d.seatMap.length === d.seats ? d : { ...d, seatMap: makeSeatMap(d.filled, d.seats) },
+  )
+  departures = departures.filter((d) => {
     if (d.status === 'gone') return false
     if (d.departAt && d.departAt < now - 5 * 60_000) return false
     if (d.status === 'full' && now - d.updatedAt > 3 * 60_000 && !d.mine) return false
@@ -121,9 +142,12 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
           s = {
             ...s,
             departures: s.departures.map((d) => {
-              if (d.id !== target.id) return d
-              const filled = Math.min(d.seats, d.filled + 1)
-              return { ...d, filled, status: filled >= d.seats ? 'full' : 'open', updatedAt: ts }
+              if (d.id !== target.id || !d.seatMap) return d
+              const free = freeSeats(d.seatMap)
+              if (!free.length) return d
+              const map = [...d.seatMap]
+              map[free[Math.floor(Math.random() * free.length)]] = Math.random() < 0.45 ? 'f' : 'm'
+              return withMap(d, map, ts)
             }),
           }
         }
@@ -146,19 +170,21 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
       now,
       isSubscribed,
       isReserved: (id) => s.reservations.some((r) => r.departureId === id),
-      reserve: (id) =>
+      mySeat: (id) => s.reservations.find((r) => r.departureId === id)?.seat,
+      reserve: (id, seat) =>
         update((st) => {
           if (st.reservations.some((r) => r.departureId === id)) return st
           const d = st.departures.find((x) => x.id === id)
-          if (!d || d.filled >= d.seats) return st
+          if (!d?.seatMap) return st
+          const free = freeSeats(d.seatMap)
+          const chosen = seat !== undefined && free.includes(seat) ? seat : free[0]
+          if (chosen === undefined) return st
+          const map = [...d.seatMap]
+          map[chosen] = 'me'
           return {
             ...st,
-            reservations: [...st.reservations, { departureId: id, at: Date.now() }],
-            departures: st.departures.map((x) =>
-              x.id === id
-                ? { ...x, filled: x.filled + 1, status: x.filled + 1 >= x.seats ? 'full' : 'open', updatedAt: Date.now() }
-                : x,
-            ),
+            reservations: [...st.reservations, { departureId: id, at: Date.now(), seat: chosen }],
+            departures: st.departures.map((x) => (x.id === id ? withMap(x, map) : x)),
           }
         }),
       cancelReservation: (id) =>
@@ -166,9 +192,29 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
           ...st,
           reservations: st.reservations.filter((r) => r.departureId !== id),
           departures: st.departures.map((x) =>
-            x.id === id ? { ...x, filled: Math.max(0, x.filled - 1), status: 'open', updatedAt: Date.now() } : x,
+            x.id === id && x.seatMap ? withMap(x, x.seatMap.map((o) => (o === 'me' ? null : o))) : x,
           ),
         })),
+      sendParcel: (p) => {
+        const parcel: Parcel = {
+          ...p,
+          id: `p_${Date.now().toString(36)}`,
+          code: `BL-${String(Math.floor(1000 + Math.random() * 9000))}`,
+          pin: String(Math.floor(1000 + Math.random() * 9000)),
+          createdAt: Date.now(),
+        }
+        update((st) => ({ ...st, parcels: [parcel, ...(st.parcels ?? [])] }))
+        return parcel
+      },
+      confirmParcel: (id, pin) => {
+        const parcel = (s.parcels ?? []).find((x) => x.id === id)
+        if (!parcel || parcel.pin !== pin) return false
+        update((st) => ({
+          ...st,
+          parcels: (st.parcels ?? []).map((x) => (x.id === id ? { ...x, deliveredAt: Date.now() } : x)),
+        }))
+        return true
+      },
       saveDriver: (p) => update((st) => ({ ...st, driver: p })),
       subscribe: (planId, method) => {
         const plan = PLANS.find((p) => p.id === planId)!
@@ -191,6 +237,7 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
             kind: st.driver.kind,
             status: d.filled >= d.seats ? 'full' : 'open',
             updatedAt: Date.now(),
+            seatMap: makeSeatMap(d.filled, d.seats),
             driver: { name: st.driver.name, phone: st.driver.phone, plate: st.driver.plate, rating: 5, trips: 0 },
           }
           return { ...st, departures: [dep, ...st.departures] }
@@ -198,11 +245,24 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
       setFilled: (id, filled) =>
         update((st) => ({
           ...st,
-          departures: st.departures.map((x) =>
-            x.id === id
-              ? { ...x, filled: Math.max(0, Math.min(x.seats, filled)), status: filled >= x.seats ? 'full' : 'open', updatedAt: Date.now() }
-              : x,
-          ),
+          departures: st.departures.map((x) => {
+            if (x.id !== id) return x
+            const map = [...(x.seatMap ?? makeSeatMap(x.filled, x.seats))]
+            let count = map.filter(Boolean).length
+            const target = Math.max(0, Math.min(x.seats, filled))
+            // Boarding fills the next free seat; getting off frees the last taken one (never a rider's booking).
+            while (count < target) {
+              map[freeSeats(map)[0]] = 'm'
+              count++
+            }
+            for (let i = map.length - 1; i >= 0 && count > target; i--) {
+              if (map[i] && map[i] !== 'me') {
+                map[i] = null
+                count--
+              }
+            }
+            return withMap(x, map)
+          }),
         })),
       markGone: (id) => update((st) => ({ ...st, departures: st.departures.filter((x) => x.id !== id) })),
       resetDemo: () => setState(freshState()),

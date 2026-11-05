@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { BellIcon, CalendarDays, Check, ChevronRight, Flag, MapPin, Users } from './_components/icons'
+import Link from 'next/link'
+import { BellIcon, CalendarDays, Check, ChevronRight, Flag, MapPin, Package, Users } from './_components/icons'
 import { DestArt, HeroArt } from './_components/art'
 import { Logo, Toast, cx, tap } from './_components/ui'
 import { Results } from './_components/rider'
@@ -104,6 +105,15 @@ export default function RiderHome() {
           Chercher un louage
         </button>
       </section>
+
+      <Link href="/louage/colis" className={s.colisBanner}>
+        <span className={s.colisIcon}><Package size={22} /></span>
+        <span style={{ flex: 1 }}>
+          <b>Ab3ath colis b louage</b>
+          <span>Mel 5 DT, yousel nafs el nhar</span>
+        </span>
+        <ChevronRight size={18} className={s.sChevron} />
+      </Link>
 
       <div className={s.sectionRow}>
         <h2>Destinations populaires</h2>

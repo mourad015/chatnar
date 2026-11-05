@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import { Car } from '../_components/icons'
 import { DepartureSheet, ResCard } from '../_components/rider'
+import { FillBar } from '../_components/seats'
 import { cx } from '../_components/ui'
 import { HOLD_MINUTES, useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
@@ -37,6 +38,9 @@ export default function TripsPage() {
               Réservée · expire dans {Math.max(0, HOLD_MINUTES - Math.floor((now - r.at) / 60_000))} min
             </p>
             <ResCard d={d} index={i} onOpen={() => setOpenId(d.id)} />
+            <div style={{ marginTop: 10 }}>
+              <FillBar d={d} compact />
+            </div>
           </div>
         ))}
       </div>
