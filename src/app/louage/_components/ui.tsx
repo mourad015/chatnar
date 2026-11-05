@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { BadgeCheck, Search, Star, SteeringWheel, Users, Van, X } from './icons'
+import { Car, House, Star, User, Users, Van, X } from './icons'
 import { type Departure, formatClock, formatIn, formatPrice } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
-import { BlassaMark } from './brand'
+import { BlassaMark, Wordmark } from './brand'
 import s from '../louage.module.css'
 
 /** Light haptic tick where the phone supports it (Android). */
@@ -26,8 +26,8 @@ export function cx(...c: (string | false | null | undefined)[]) {
 export function Logo() {
   return (
     <Link href="/louage" className={s.logo} aria-label="Blassa, accueil">
-      <BlassaMark size={30} />
-      <span className={s.logoWord}>blassa</span>
+      <BlassaMark size={34} />
+      <Wordmark size={22} />
     </Link>
   )
 }
@@ -283,9 +283,10 @@ export function Toast({ children, onDone }: { children: React.ReactNode; onDone:
 }
 
 const TABS = [
-  { href: '/louage', label: 'Rkoub', icon: Search },
-  { href: '/louage/chauffeur', label: 'Chifour', icon: SteeringWheel },
-  { href: '/louage/abonnement', label: 'Abonnement', icon: BadgeCheck },
+  { href: '/louage', label: 'Accueil', icon: House },
+  { href: '/louage/trajets', label: 'Trajets', icon: Car },
+  { href: '/louage/favoris', label: 'Favoris', icon: Star },
+  { href: '/louage/profil', label: 'Profil', icon: User },
 ]
 
 export function TabBar() {

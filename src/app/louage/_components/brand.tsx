@@ -1,43 +1,54 @@
-// Blassa mark: a lowercase "b" drawn as a reclined seat (backrest + cushion),
-// crossed by the red side stripe of a Tunisian louage.
+// Blassa brand: the B + pin + louage mark (from the brand board) and the
+// italic wordmark with its red swoosh.
 
-export const SEAT_PATH =
-  'M29 19.5 C28.6 16.5 30.9 14 33.9 14 L36.6 14 C39 14 41 15.8 41.3 18.2 L45 47 L61 47 C70.4 47 78 54.6 78 64 C78 73.4 70.4 81 61 81 L40 81 C37 81 34.5 78.8 34.1 75.8 Z'
+import mark128 from '../_assets/mark-128.png'
+import mark256 from '../_assets/mark-256.png'
 
-const STRIPE_RED = '#E70013'
+type Img = string | { src: string }
+const srcOf = (m: Img) => (typeof m === 'string' ? m : m.src)
 
-type Props = {
-  size?: number
-  /** app: black rounded square (app icon). seat: the seat only, no square or stripe. */
-  variant?: 'app' | 'seat'
-  className?: string
-  /** Color of the seat when variant is "seat". */
-  color?: string
+export const TAGLINE_AR = 'تعرف وين، وقتاش، وقدّاش.'
+
+export function BlassaMark({ size = 36, className }: { size?: number; className?: string }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- tiny static logo, also used in the standalone build
+    <img
+      src={srcOf(size > 96 ? mark256 : mark128)}
+      width={size}
+      height={size}
+      alt=""
+      className={className}
+      style={{ borderRadius: size * 0.22, background: '#fff', display: 'block', flex: 'none' }}
+    />
+  )
 }
 
-export function BlassaMark({ size = 32, variant = 'app', className, color = '#fff' }: Props) {
-  if (variant === 'seat') {
-    return (
-      <svg width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden>
-        <path d={SEAT_PATH} fill={color} />
-      </svg>
-    )
-  }
+/** "Blassa" in heavy italic with the red swoosh underneath. */
+export function Wordmark({ size = 24, light }: { size?: number; light?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden>
-      <defs>
-        <clipPath id="blassa-sq">
-          <rect width="100" height="100" rx="24" />
-        </clipPath>
-      </defs>
-      <g clipPath="url(#blassa-sq)">
-        <rect width="100" height="100" fill="#000" />
-        <rect y="58" width="100" height="8" fill={STRIPE_RED} />
-        {/* black outline keeps a gap between the stripe and the seat */}
-        <path d={SEAT_PATH} fill="none" stroke="#000" strokeWidth="6" strokeLinejoin="round" />
-        <path d={SEAT_PATH} fill="#fff" />
-      </g>
-      <rect x=".5" y=".5" width="99" height="99" rx="23.5" fill="none" stroke="rgba(255,255,255,.14)" />
-    </svg>
+    <span
+      style={{
+        position: 'relative',
+        display: 'inline-block',
+        fontFamily: 'var(--font-display), sans-serif',
+        fontWeight: 900,
+        fontStyle: 'italic',
+        fontSize: size,
+        letterSpacing: '-0.045em',
+        lineHeight: 1,
+        paddingBottom: size * 0.22,
+        color: light ? '#fff' : 'var(--ink)',
+      }}
+    >
+      Blassa
+      <svg
+        viewBox="0 0 100 10"
+        preserveAspectRatio="none"
+        aria-hidden
+        style={{ position: 'absolute', left: '38%', right: '-2%', bottom: 0, width: '64%', height: size * 0.2 }}
+      >
+        <path d="M0 9 C30 1 70 0 100 3 C70 3 35 5 0 9 Z" fill="var(--red)" />
+      </svg>
+    </span>
   )
 }

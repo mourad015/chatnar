@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowRight, Check, ChevronLeft, LogOut, SteeringWheel, User, Van } from './icons'
 import { Avatar, Sheet, TabBar, cx, tap } from './ui'
-import { BlassaMark } from './brand'
+import { BlassaMark, TAGLINE_AR, Wordmark } from './brand'
 import { type Role, useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
 
@@ -52,12 +52,13 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
 function Splash({ leaving }: { leaving?: boolean }) {
   return (
     <div className={cx(s.splash, leaving && s.splashOut)} role="status" aria-label="Blassa">
-      <div className={s.spMark}>
-        <span className={s.spStripe} aria-hidden />
-        <BlassaMark size={140} variant="seat" className={s.spSeat} />
+      <div className={s.splashMarkBox}>
+        <BlassaMark size={128} />
       </div>
-      <div className={s.splashLogo}>blassa</div>
-      <div className={s.splashAr} lang="ar">بلاصة</div>
+      <div className={s.splashLogo} style={{ marginTop: 26 }}>
+        <Wordmark size={48} light />
+      </div>
+      <div className={s.splashTag} lang="ar" dir="rtl">{TAGLINE_AR}</div>
       <div className={s.splashMade}>Sna3a tounsia</div>
     </div>
   )
@@ -273,10 +274,10 @@ function Welcome({ onStart }: { onStart: () => void }) {
       </div>
       <div className={s.welcomeBody}>
         <div className={s.logo} style={{ marginBottom: 14 }}>
-          <BlassaMark size={40} />
-          <span className={s.logoWord} style={{ fontSize: 28 }}>blassa</span>
-          <span className={s.logoAr} lang="ar">بلاصة</span>
+          <BlassaMark size={48} />
+          <Wordmark size={30} />
         </div>
+        <p className={s.splashTag} lang="ar" dir="rtl" style={{ color: 'var(--red)', textAlign: 'left', marginBottom: 8, animation: 'none' }}>{TAGLINE_AR}</p>
         <h1 className={cx(s.display, s.welcomeTitle)}>El louage, men téléphonek.</h1>
         <p className={s.authSub}>Chouf el blayes el fergha, el soum w wa9t el départ 9bal ma to5rej mel dar.</p>
         <ul className={s.welcomePoints}>

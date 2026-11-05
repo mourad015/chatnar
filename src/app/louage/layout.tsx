@@ -1,17 +1,17 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree, JetBrains_Mono, Readex_Pro } from 'next/font/google'
+import { IBM_Plex_Sans_Arabic, Inter, JetBrains_Mono } from 'next/font/google'
 import { BlassaProvider } from './_lib/store'
 import { AuthGate } from './_components/auth'
 import s from './louage.module.css'
 
-// One family for UI and headings (ride-app style), Readex Pro for Arabic.
-const display = Figtree({ subsets: ['latin'], variable: '--font-display', display: 'swap' })
-const body = Figtree({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
-const arabic = Readex_Pro({ subsets: ['arabic'], variable: '--font-ar', display: 'swap' })
+// Brand board type: Inter for UI, IBM Plex Sans Arabic for Arabic.
+const display = Inter({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-display', display: 'swap' })
+const body = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
+const arabic = IBM_Plex_Sans_Arabic({ subsets: ['arabic'], weight: ['400', '600', '700'], variable: '--font-ar', display: 'swap' })
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['600'], variable: '--font-mono', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'Blassa — Chouf el louage 9bal ma temchi',
+  title: 'Blassa — تعرف وين، وقتاش، وقدّاش',
   description: 'Blayes fergha, prix w départs mta3 el louage fi Tounes, live.',
 }
 

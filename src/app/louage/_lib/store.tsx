@@ -31,6 +31,7 @@ type State = {
   usedTrial: boolean
   reservations: Reservation[]
   user?: User | null
+  favorites?: string[] // "From|To"
 }
 
 type Store = State & {
@@ -50,6 +51,8 @@ type Store = State & {
   login: (u: Omit<User, 'joinedAt'>) => void
   logout: () => void
   setRole: (r: Role) => void
+  isFavorite: (from: string, to: string) => boolean
+  toggleFavorite: (from: string, to: string) => void
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -206,6 +209,13 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
       login: (u) =>
         update((st) => ({ ...st, user: { ...u, joinedAt: Date.now() } })),
       logout: () => update((st) => ({ ...st, user: null })),
+      isFavorite: (from, to) => (s.favorites ?? []).includes(`${from}|${to}`),
+      toggleFavorite: (from, to) =>
+        update((st) => {
+          const key = `${from}|${to}`
+          const fav = st.favorites ?? []
+          return { ...st, favorites: fav.includes(key) ? fav.filter((f) => f !== key) : [...fav, key] }
+        }),
       setRole: (role) => update((st) => (st.user ? { ...st, user: { ...st.user, role } } : st)),
     }
   }, [state, now, update])
