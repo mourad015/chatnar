@@ -396,14 +396,31 @@ function RoleCard({ on, onClick, icon, title, sub }: { on: boolean; onClick: () 
 /* ---------- account ---------- */
 
 export function AccountButton() {
-  const { user, logout } = useBlassa()
+  const router = useRouter()
+  const { user, logout, setRole } = useBlassa()
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [])
   if (!user) return null
+
+  const other: Role = user.role === 'driver' ? 'rider' : 'driver'
+  const signOut = () => {
+    close()
+    logout()
+    router.push('/louage')
+  }
+  const switchRole = () => {
+    setRole(other)
+    close()
+    router.push(other === 'driver' ? '/louage/chauffeur' : '/louage')
+  }
+
   return (
     <>
       <button type="button" className={s.accountBtn} onClick={() => setOpen(true)} aria-label="El compte mte3ek">
         <Avatar name={user.name} />
+      </button>
+      <button type="button" className={s.logoutBtn} onClick={signOut} aria-label="Okhrej" title="Okhrej">
+        <LogOut size={17} />
       </button>
       {open && (
         <Sheet onClose={close} label="El compte">
@@ -424,16 +441,14 @@ export function AccountButton() {
               <b>{new Date(user.joinedAt).toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })}</b>
             </div>
           </div>
-          <button
-            type="button"
-            className={cx(s.btn, s.btnGhost, s.btnBlock)}
-            onClick={() => {
-              close()
-              logout()
-            }}
-          >
+          <button type="button" className={cx(s.btn, s.btnPrimary, s.btnBlock)} onClick={switchRole} style={{ marginBottom: 10 }}>
+            {other === 'driver' ? <SteeringWheel size={18} /> : <User size={18} />}
+            {other === 'driver' ? 'Wali chifour' : 'Wali rakeb'}
+          </button>
+          <button type="button" className={cx(s.btn, s.btnGhost, s.btnBlock)} onClick={signOut}>
             <LogOut size={18} /> Okhrej
           </button>
+          <p className={s.demoNote}>Ki to5rej, tnajem tod5ol men jdid w tekhtar rakeb wala chifour.</p>
         </Sheet>
       )}
     </>

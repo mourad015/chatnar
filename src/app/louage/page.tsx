@@ -131,7 +131,7 @@ export default function RiderHome() {
       <div className={s.segment} role="tablist" aria-label="Filtre" style={{ margin: '6px 0 10px' }}>
         {([
           ['all', 'Ay wa9t'],
-          ['full-leave', 'Ki yo3mer'],
+          ['full-leave', 'Ki y3abi'],
           ['timed', 'B wa9t'],
         ] as [Filter, string][]).map(([k, label]) => (
           <button
@@ -247,7 +247,7 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
         <div className={s.fact}>
           <div className={s.eyebrow}>Départ</div>
           <div className={s.factValue} style={{ fontSize: d.departAt ? 18 : 15 }}>
-            {d.departAt ? formatClock(d.departAt) : 'Ki yo3mer'}
+            {d.departAt ? formatClock(d.departAt) : 'Ki y3abi'}
           </div>
         </div>
       </div>
@@ -260,7 +260,7 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
         <Seats total={d.seats} filled={d.filled} mine={reserved ? 1 : 0} large />
         <div className={s.legend}>
           <span><i className={s.legendSwatch} /> Fergha</span>
-          <span><i className={s.legendSwatch} style={{ background: 'var(--ink)' }} /> Ma3mra</span>
+          <span><i className={s.legendSwatch} style={{ background: 'var(--ink)' }} /> M3abya</span>
           <span><i className={s.legendSwatch} style={{ background: 'var(--red)' }} /> Blastek</span>
         </div>
       </div>

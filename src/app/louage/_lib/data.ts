@@ -10,7 +10,7 @@ export type Departure = {
   price: number // in TND
   seats: number // a louage carries 8 passengers
   filled: number
-  /** null = leaves when full ("ki yo3mer"), otherwise a timestamp */
+  /** null = leaves when full ("ki y3abi"), otherwise a timestamp */
   departAt: number | null
   driver: { name: string; phone: string; plate: string; rating: number; trips: number }
   kind: LouageKind

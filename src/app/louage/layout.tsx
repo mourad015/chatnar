@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 
 export default function LouageLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`${s.app} ${display.variable} ${body.variable} ${arabic.variable} ${mono.variable}`}>
+    <div data-blassa-root className={`${s.app} ${display.variable} ${body.variable} ${arabic.variable} ${mono.variable}`}>
       <BlassaProvider>
         <AuthGate>{children}</AuthGate>
       </BlassaProvider>

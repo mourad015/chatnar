@@ -49,6 +49,7 @@ type Store = State & {
   resetDemo: () => void
   login: (u: Omit<User, 'joinedAt'>) => void
   logout: () => void
+  setRole: (r: Role) => void
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -205,6 +206,7 @@ export function BlassaProvider({ children }: { children: React.ReactNode }) {
       login: (u) =>
         update((st) => ({ ...st, user: { ...u, joinedAt: Date.now() } })),
       logout: () => update((st) => ({ ...st, user: null })),
+      setRole: (role) => update((st) => (st.user ? { ...st, user: { ...st.user, role } } : st)),
     }
   }, [state, now, update])
 

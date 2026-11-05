@@ -2243,3 +2243,20 @@ select.input {
   font-size: 13.5px;
   color: var(--muted);
 }
+
+.logoutBtn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background: var(--red-soft);
+  color: var(--red);
+}

@@ -46,7 +46,7 @@ function Onboarding() {
   return (
     <>
       <div className={s.pageHead}>
-        <p className={s.eyebrow}>Ta3mir el profil · 1/2</p>
+        <p className={s.eyebrow}>T3abi el profil · 1/2</p>
         <h1 className={cx(s.display, s.pageTitle)}>Ahla bik, chifour.</h1>
         <p className={s.muted}>Zouz d9aye9 w el rokkab yetchoufouk fel appli.</p>
       </div>
@@ -117,7 +117,7 @@ function Paywall({ name }: { name: string }) {
   return (
     <>
       <div className={s.pageHead}>
-        <p className={s.eyebrow}>Ta3mir el profil · 2/2</p>
+        <p className={s.eyebrow}>T3abi el profil · 2/2</p>
       </div>
       <section className={s.pitch}>
         <div className={s.pitchArt}>
@@ -268,7 +268,7 @@ function Dashboard() {
               Départ
               <div className={s.choice} style={{ gap: 6 }}>
                 <button type="button" className={cx(s.choiceBtn, mode === 'full' && s.choiceOn)} style={{ justifyContent: 'center', padding: 8, fontSize: 13, whiteSpace: 'nowrap' }} onClick={() => setMode('full')} aria-pressed={mode === 'full'}>
-                  Ki yo3mer
+                  Ki y3abi
                 </button>
                 <button type="button" className={cx(s.choiceBtn, mode === 'time' && s.choiceOn)} style={{ justifyContent: 'center', padding: 8, fontSize: 13, whiteSpace: 'nowrap' }} onClick={() => setMode('time')} aria-pressed={mode === 'time'}>
                   B wa9t
@@ -343,7 +343,7 @@ function MyTrip({ id }: { id: string }) {
       </div>
       <Seats total={d.seats} filled={d.filled} large />
       <div style={{ marginTop: 14 }}>
-        <Stepper value={d.filled} max={d.seats} onChange={(v) => setFilled(d.id, v)} unit="ma3mrin" big />
+        <Stepper value={d.filled} max={d.seats} onChange={(v) => setFilled(d.id, v)} unit="m3abyin" big />
       </div>
       <button type="button" className={cx(s.btn, s.btnGhost, s.btnBlock, s.btnSm)} style={{ marginTop: 12 }} onClick={() => markGone(d.id)}>
         <Check size={16} /> Mcheet — na77i el départ

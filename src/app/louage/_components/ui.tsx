@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { BadgeCheck, Search, Star, SteeringWheel, Users, Van, X } from './icons'
 import { type Departure, formatClock, formatIn, formatPrice } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
@@ -37,7 +38,7 @@ export function Plate({ value, large }: { value: string; large?: boolean }) {
 
 export function Seats({ total, filled, mine = 0, large }: { total: number; filled: number; mine?: number; large?: boolean }) {
   return (
-    <div className={cx(s.seats, large && s.seatsLg)} role="img" aria-label={`${filled} men ${total} blayes ma3mrin`}>
+    <div className={cx(s.seats, large && s.seatsLg)} role="img" aria-label={`${filled} men ${total} blayes m3abyin`}>
       {Array.from({ length: total }, (_, i) => {
         const taken = i < filled
         const isMine = taken && i >= filled - mine
@@ -59,7 +60,7 @@ export function Avatar({ name }: { name: string }) {
 export function StatusPill({ d, now }: { d: Departure; now: number }) {
   if (d.status === 'full') return <span className={cx(s.pill, s.pillInk)}>Complet</span>
   if (d.departAt) return <span className={cx(s.pill, s.pillAmber)}>{formatClock(d.departAt)} · {formatIn(d.departAt, now)}</span>
-  return <span className={cx(s.pill, s.pillGreen)}>Yemchi ki yo3mer</span>
+  return <span className={cx(s.pill, s.pillGreen)}>Yemchi ki y3abi</span>
 }
 
 export function seatsLeftLabel(d: Departure) {
@@ -109,7 +110,12 @@ export function OptionRow({ d, selected, onSelect, index = 0 }: { d: Departure; 
 }
 
 export function Sheet({ onClose, children, label }: { onClose: () => void; children: React.ReactNode; label: string }) {
+  // Render at the app root so a sheet opened from the sticky top bar still
+  // sits above the tab bar (the top bar has its own stacking context).
+  const [root, setRoot] = useState<HTMLElement | null>(null)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the portal target only exists after mount
+    setRoot(document.querySelector<HTMLElement>('[data-blassa-root]'))
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
@@ -119,7 +125,7 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
       document.body.style.overflow = prev
     }
   }, [onClose])
-  return (
+  const sheet = (
     <>
       <div className={s.backdrop} onClick={onClose} />
       <div className={s.sheet} role="dialog" aria-modal="true" aria-label={label}>
@@ -130,6 +136,7 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
       </div>
     </>
   )
+  return root ? createPortal(sheet, root) : null
 }
 
 export function Toast({ children, onDone }: { children: React.ReactNode; onDone: () => void }) {
