@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowRight, Check, ChevronLeft, LogOut, SteeringWheel, User, Van } from './icons'
 import { Avatar, Sheet, TabBar, cx, tap } from './ui'
+import { BlassaMark } from './brand'
 import { type Role, useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
 
@@ -51,15 +52,13 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
 function Splash({ leaving }: { leaving?: boolean }) {
   return (
     <div className={cx(s.splash, leaving && s.splashOut)} role="status" aria-label="Blassa">
-      <div className={s.splashLogo}>
-        Blassa<span className={s.logoDot} />
+      <div className={s.spMark}>
+        <span className={s.spStripe} aria-hidden />
+        <BlassaMark size={140} variant="seat" className={s.spSeat} />
       </div>
+      <div className={s.splashLogo}>blassa</div>
       <div className={s.splashAr} lang="ar">بلاصة</div>
-      <div className={s.splashRoad} aria-hidden>
-        <span className={s.splashVan}>
-          <Van width={64} />
-        </span>
-      </div>
+      <div className={s.splashMade}>Sna3a tounsia</div>
     </div>
   )
 }
@@ -274,9 +273,8 @@ function Welcome({ onStart }: { onStart: () => void }) {
       </div>
       <div className={s.welcomeBody}>
         <div className={s.logo} style={{ marginBottom: 14 }}>
-          <span className={s.logoWord}>
-            Blassa<span className={s.logoDot} />
-          </span>
+          <BlassaMark size={40} />
+          <span className={s.logoWord} style={{ fontSize: 28 }}>blassa</span>
           <span className={s.logoAr} lang="ar">بلاصة</span>
         </div>
         <h1 className={cx(s.display, s.welcomeTitle)}>El louage, men téléphonek.</h1>
@@ -298,7 +296,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
 function WelcomeScene() {
   return (
     <svg viewBox="0 0 360 230" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" aria-hidden>
-      <circle cx="226" cy="58" r="26" fill="var(--red)" />
+      <circle cx="226" cy="58" r="24" fill="#f5b400" />
       {/* palm */}
       <path d="M70 178c2-34 4-58 14-84" stroke="var(--ink)" strokeWidth="5" fill="none" strokeLinecap="round" />
       <g fill="none" stroke="var(--ink)" strokeWidth="4" strokeLinecap="round">

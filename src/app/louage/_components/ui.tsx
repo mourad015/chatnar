@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom'
 import { BadgeCheck, Search, Star, SteeringWheel, Users, Van, X } from './icons'
 import { type Departure, formatClock, formatIn, formatPrice } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
+import { BlassaMark } from './brand'
 import s from '../louage.module.css'
 
 /** Light haptic tick where the phone supports it (Android). */
@@ -25,10 +26,8 @@ export function cx(...c: (string | false | null | undefined)[]) {
 export function Logo() {
   return (
     <Link href="/louage" className={s.logo} aria-label="Blassa, accueil">
-      <span className={s.logoWord}>
-        Blassa<span className={s.logoDot} />
-      </span>
-      <span className={s.logoAr} lang="ar">بلاصة</span>
+      <BlassaMark size={30} />
+      <span className={s.logoWord}>blassa</span>
     </Link>
   )
 }
