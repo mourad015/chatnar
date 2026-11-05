@@ -2371,7 +2371,6 @@ select.input {
 .sheet {
   animation: sheetIn var(--t-spring) var(--spring) backwards;
   overscroll-behavior: contain;
-  touch-action: pan-y;
 }
 
 @keyframes sheetIn {
@@ -2380,20 +2379,9 @@ select.input {
   }
 }
 
-.sheetDragging {
-  animation: none;
-  transition: none !important;
-}
-
-.sheetSettle {
-  animation: none;
-  transition: transform var(--t-spring) var(--spring);
-}
-
 .sheetClosing {
-  animation: none;
-  transition: transform 0.32s var(--ease-out);
-  transform: translateY(105%) !important;
+  transition: transform 0.3s var(--ease-out);
+  transform: translateY(105%);
 }
 
 .grabber {

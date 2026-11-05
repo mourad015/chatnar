@@ -126,11 +126,13 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
   // sits above the tab bar (the top bar has its own stacking context).
   const [root, setRoot] = useState<HTMLElement | null>(null)
   const [closing, setClosing] = useState(false)
-  const [drag, setDrag] = useState<{ y: number; active: boolean } | null>(null)
   const sheetRef = useRef<HTMLDivElement>(null)
-  const start = useRef<{ y: number; t: number; lastY: number; lastT: number } | null>(null)
+  const backdropRef = useRef<HTMLDivElement>(null)
+  const closingRef = useRef(false)
 
   const close = useCallback(() => {
+    if (closingRef.current) return
+    closingRef.current = true
     setClosing(true)
     setTimeout(onClose, 300)
   }, [onClose])
@@ -148,58 +150,110 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
     }
   }, [close])
 
-  // Drag down to dismiss, from the grabber or anywhere while scrolled to top.
-  const onPointerDown = (e: React.PointerEvent) => {
+  // Drag down to dismiss. The sheet follows the finger through inline styles
+  // only (no re-renders), so nothing restarts mid-gesture.
+  useEffect(() => {
     const el = sheetRef.current
-    if (!el || el.scrollTop > 0 || closing) return
-    if ((e.target as HTMLElement).closest('button, a, input, select, label')) return
-    start.current = { y: e.clientY, t: e.timeStamp, lastY: e.clientY, lastT: e.timeStamp }
-    el.setPointerCapture(e.pointerId)
-  }
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!start.current) return
-    const dy = e.clientY - start.current.y
-    // Rubber band when pulling up.
-    const y = dy > 0 ? dy : -Math.sqrt(-dy) * 2
-    start.current.lastY = e.clientY
-    start.current.lastT = e.timeStamp
-    setDrag({ y, active: true })
-  }
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (!start.current) return
-    const dy = e.clientY - start.current.y
-    const dt = Math.max(1, e.timeStamp - start.current.t)
-    const velocity = dy / dt // px per ms
-    start.current = null
-    const h = sheetRef.current?.offsetHeight ?? 600
-    if (dy > h * 0.3 || (velocity > 0.5 && dy > 30)) {
-      setDrag(null)
-      close()
-    } else {
-      // Spring back, then drop the inline transform so fixed children
-      // (toasts) are positioned against the screen again.
-      setDrag({ y: 0, active: false })
-      setTimeout(() => setDrag(null), 650)
-    }
-  }
+    if (!el) return
+    let startY = 0
+    let lastY = 0
+    let lastT = 0
+    let velocity = 0
+    let dragging = false
 
-  const progress = drag && drag.y > 0 ? Math.min(1, drag.y / 400) : 0
+    const move = (dy: number) => {
+      const y = dy > 0 ? dy : -Math.sqrt(-dy) * 2 // rubber band upwards
+      el.style.transition = 'none'
+      el.style.transform = `translateY(${y}px)`
+      if (backdropRef.current) backdropRef.current.style.opacity = String(1 - Math.min(1, Math.max(0, dy) / 500))
+    }
+    const release = (dy: number) => {
+      const h = el.offsetHeight || 600
+      if (dy > h * 0.25 || (velocity > 0.45 && dy > 20)) {
+        el.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)'
+        el.style.transform = 'translateY(105%)'
+        if (backdropRef.current) backdropRef.current.style.opacity = '0'
+        close()
+      } else {
+        el.style.transition = 'transform 0.6s var(--spring)'
+        el.style.transform = ''
+        if (backdropRef.current) backdropRef.current.style.opacity = ''
+      }
+    }
+    const begin = (y: number, ts: number) => {
+      startY = lastY = y
+      lastT = ts
+      velocity = 0
+      dragging = false
+    }
+    const track = (y: number, ts: number) => {
+      velocity = (y - lastY) / Math.max(1, ts - lastT)
+      lastY = y
+      lastT = ts
+    }
+
+    // Touch: start dragging only when the sheet is scrolled to the top and
+    // the finger moves down; otherwise the content scrolls normally.
+    const onTouchStart = (e: TouchEvent) => {
+      if (closingRef.current) return
+      begin(e.touches[0].clientY, e.timeStamp)
+    }
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0].clientY
+      if (!dragging) {
+        if (el.scrollTop > 0 || y - startY < 8) return
+        dragging = true
+        startY = y
+      }
+      e.preventDefault()
+      track(y, e.timeStamp)
+      move(y - startY)
+    }
+    const onTouchEnd = () => {
+      if (!dragging) return
+      dragging = false
+      release(lastY - startY)
+    }
+
+    // Mouse: drag from the grabber.
+    const grabber = el.querySelector<HTMLElement>('[data-grabber]')
+    const onMouseDown = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse' || closingRef.current) return
+      begin(e.clientY, e.timeStamp)
+      dragging = true
+      const onMoveM = (ev: PointerEvent) => {
+        track(ev.clientY, ev.timeStamp)
+        move(ev.clientY - startY)
+      }
+      const onUpM = () => {
+        window.removeEventListener('pointermove', onMoveM)
+        window.removeEventListener('pointerup', onUpM)
+        dragging = false
+        release(lastY - startY)
+      }
+      window.addEventListener('pointermove', onMoveM)
+      window.addEventListener('pointerup', onUpM)
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    el.addEventListener('touchend', onTouchEnd)
+    el.addEventListener('touchcancel', onTouchEnd)
+    grabber?.addEventListener('pointerdown', onMouseDown)
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+      el.removeEventListener('touchcancel', onTouchEnd)
+      grabber?.removeEventListener('pointerdown', onMouseDown)
+    }
+  }, [close, root])
+
   const sheet = (
     <>
-      <div className={cx(s.backdrop, closing && s.backdropClosing)} style={progress ? { opacity: 1 - progress } : undefined} onClick={close} />
-      <div
-        ref={sheetRef}
-        className={cx(s.sheet, drag?.active && s.sheetDragging, drag && !drag.active && s.sheetSettle, closing && s.sheetClosing)}
-        style={drag ? { transform: `translateY(${drag.y}px)` } : undefined}
-        role="dialog"
-        aria-modal="true"
-        aria-label={label}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-      >
-        <div className={s.grabber} aria-hidden>
+      <div ref={backdropRef} className={cx(s.backdrop, closing && s.backdropClosing)} onClick={close} />
+      <div ref={sheetRef} className={cx(s.sheet, closing && s.sheetClosing)} role="dialog" aria-modal="true" aria-label={label}>
+        <div className={s.grabber} data-grabber aria-hidden>
           <span />
         </div>
         <button type="button" className={s.sheetClose} onClick={close} aria-label="Sakker">
