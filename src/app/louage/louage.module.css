@@ -996,7 +996,7 @@
   display: grid;
   place-items: center;
   height: 128px;
-  margin: -10px -16px 14px;
+  margin: -23px -16px 14px;
   border-radius: 16px 16px 0 0;
   background: var(--surface-2);
 }
@@ -2259,4 +2259,261 @@ select.input {
 .logoutBtn:hover {
   background: var(--red-soft);
   color: var(--red);
+}
+
+/* =========================================================
+   Motion — iOS-style springs, materials, press feedback.
+   Springs are sampled from a damped spring (k 260, c 22) and
+   a bouncier one (k 300, c 16) for small pops.
+   ========================================================= */
+
+.app {
+  --spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-spring: 620ms;
+  --t-bounce: 760ms;
+  --material: color-mix(in srgb, var(--bg) 78%, transparent);
+}
+
+@supports (transition-timing-function: linear(0, 1)) {
+  .app {
+    --spring: linear(0, 0.0294, 0.0992, 0.1831, 0.2907, 0.3909, 0.5019, 0.6064, 0.6909, 0.7748, 0.8388, 0.8989, 0.9469, 0.9803, 1.0085, 1.0265, 1.0399, 1.0468, 1.0503, 1.0502, 1.0481, 1.044, 1.0394, 1.0338, 1.0281, 1.0232, 1.0181, 1.014, 1.01, 1.007, 1.0042, 1.0019, 1.0004, 0.9992, 0.9984, 0.9978, 0.9975, 0.9974, 0.9975, 0.9976, 0.9979, 0.9981, 0.9984, 0.9987, 0.9989, 0.9992, 0.9994, 0.9996, 1);
+    --bounce: linear(0, 0.0584, 0.1975, 0.3806, 0.5604, 0.7473, 0.9084, 1.0253, 1.116, 1.1696, 1.1903, 1.1879, 1.1669, 1.1375, 1.1004, 1.0633, 1.0325, 1.0048, 0.9842, 0.9718, 0.9647, 0.9632, 0.9655, 0.9708, 0.9776, 0.9843, 0.9911, 0.997, 1.0012, 1.0045, 1.0063, 1.007, 1.0069, 1.0061, 1.005, 1.0036, 1.0022, 1.0011, 1.0001, 0.9994, 0.9989, 0.9987, 0.9986, 0.9987, 0.9989, 0.9992, 0.9994, 0.9997, 1);
+  }
+}
+
+:where(.app) {
+  scroll-behavior: smooth;
+}
+
+/* Press feedback: quick squeeze down, springy release. */
+:where(.app) :where(.btn, .opt, .tile, .chip, .segBtn, .plan, .method, .roleCard, .choiceBtn, .stepBtn, .tab, .swap, .accountBtn, .logoutBtn, .backBtn, .sheetClose) {
+  transition-property: transform, background-color, box-shadow, color, opacity;
+  transition-duration: var(--t-spring), 0.2s, 0.25s, 0.2s, 0.2s;
+  transition-timing-function: var(--spring), ease, ease, ease, ease;
+  touch-action: manipulation;
+}
+
+:where(.app) :where(.btn, .tile, .chip, .segBtn, .plan, .roleCard, .choiceBtn, .tab, .accountBtn, .logoutBtn, .backBtn, .sheetClose):active:not(:disabled) {
+  transform: scale(0.96);
+  transition-duration: 0.12s;
+}
+
+:where(.app) :where(.opt, .method):active {
+  transform: scale(0.985);
+  transition-duration: 0.12s;
+}
+
+:where(.app) .stepBtn:active:not(:disabled) {
+  transform: scale(0.88);
+  transition-duration: 0.1s;
+}
+
+/* Materials: translucent, blurred bars like iOS. */
+.topbar,
+.tabbar,
+.ctaBar {
+  background: var(--material);
+  backdrop-filter: blur(22px) saturate(1.8);
+  -webkit-backdrop-filter: blur(22px) saturate(1.8);
+}
+
+/* Page enter */
+.page {
+  /* backwards, not both: a leftover transform would trap position:fixed children */
+  animation: pageIn var(--t-spring) var(--spring) backwards;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Auth steps slide like a navigation stack */
+.stepFwd {
+  animation: stepFwd 560ms var(--spring) backwards;
+}
+
+.stepBack {
+  animation: stepBack 560ms var(--spring) backwards;
+}
+
+@keyframes stepFwd {
+  from {
+    opacity: 0;
+    transform: translateX(36px);
+  }
+}
+
+@keyframes stepBack {
+  from {
+    opacity: 0;
+    transform: translateX(-36px);
+  }
+}
+
+/* Rows */
+.opt {
+  animation: rise 560ms var(--spring) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+}
+
+/* Sheet: spring in, follows the finger, eases out */
+.sheet {
+  animation: sheetIn var(--t-spring) var(--spring) backwards;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+@keyframes sheetIn {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.sheetDragging {
+  animation: none;
+  transition: none !important;
+}
+
+.sheetSettle {
+  animation: none;
+  transition: transform var(--t-spring) var(--spring);
+}
+
+.sheetClosing {
+  animation: none;
+  transition: transform 0.32s var(--ease-out);
+  transform: translateY(105%) !important;
+}
+
+.grabber {
+  position: sticky;
+  top: -10px;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  margin: -10px -16px 0;
+  padding: 8px 0 10px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.grabber span {
+  width: 36px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--line-strong);
+}
+
+.backdrop {
+  animation: fade 0.3s ease both;
+  transition: opacity 0.3s ease;
+}
+
+.backdropClosing {
+  opacity: 0 !important;
+}
+
+/* CTA + toast */
+.ctaBar {
+  animation: ctaIn var(--t-spring) var(--spring) both;
+}
+
+.toast {
+  animation: toastIn var(--t-spring) var(--spring) both;
+}
+
+.toastOut {
+  transition: opacity 0.25s ease, transform 0.3s var(--ease-out);
+  opacity: 0;
+  transform: translate(-50%, -16px);
+}
+
+.sms {
+  animation: smsIn var(--t-bounce) 0.5s var(--spring) both;
+}
+
+/* Small pops */
+.seatTaken,
+.seatMine {
+  animation: seatPop var(--t-bounce) var(--bounce) both;
+}
+
+@keyframes seatPop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+.tabOn svg {
+  animation: tabPop var(--t-bounce) var(--bounce) both;
+}
+
+@keyframes tabPop {
+  from {
+    transform: scale(0.8) translateY(2px);
+  }
+}
+
+.numIn {
+  display: inline-block;
+  animation: numIn 420ms var(--spring) both;
+}
+
+@keyframes numIn {
+  from {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+}
+
+.otpBox {
+  transition: border-color 0.2s, background-color 0.2s, transform var(--t-bounce) var(--bounce);
+}
+
+.otpActive {
+  transform: scale(1.04);
+}
+
+.otpOk {
+  animation: seatPop var(--t-bounce) var(--bounce) both;
+}
+
+.optOn,
+.planOn,
+.roleOn,
+.choiceOn,
+.tileOn {
+  transition: box-shadow 0.25s ease, background-color 0.2s ease, transform var(--t-spring) var(--spring);
+}
+
+/* Splash hands over with a fade + slight zoom */
+.splash {
+  transition: opacity 0.45s ease, transform 0.6s var(--ease-out);
+}
+
+.splashOut {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app *,
+  .app *::before,
+  .app *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -3,10 +3,10 @@
 // First run: splash, welcome, phone login with SMS code, role, name.
 // The SMS is simulated: the code shows up as a phone notification banner.
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowRight, Check, ChevronLeft, LogOut, SteeringWheel, User, Van } from './icons'
-import { Avatar, Sheet, TabBar, cx } from './ui'
+import { Avatar, Sheet, TabBar, cx, tap } from './ui'
 import { type Role, useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
 
@@ -14,26 +14,43 @@ import s from '../louage.module.css'
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const { ready, user } = useBlassa()
-  const [splashDone, setSplashDone] = useState(false)
+  const path = usePathname()
+  const [phase, setPhase] = useState<'splash' | 'leaving' | 'done'>('splash')
 
   useEffect(() => {
-    const t = setTimeout(() => setSplashDone(true), 1300)
-    return () => clearTimeout(t)
-  }, [])
+    if (!ready) return
+    const a = setTimeout(() => setPhase('leaving'), 1250)
+    const b = setTimeout(() => setPhase('done'), 1750)
+    return () => {
+      clearTimeout(a)
+      clearTimeout(b)
+    }
+  }, [ready])
 
-  if (!ready || !splashDone) return <Splash />
-  if (!user) return <AuthFlow />
+  if (!ready || phase === 'splash') return <Splash />
   return (
     <>
-      <div className={s.shell}>{children}</div>
-      <TabBar />
+      {!user ? (
+        <AuthFlow />
+      ) : (
+        <>
+          {/* Keyed by route so each screen springs in. */}
+          <div className={s.shell}>
+            <div key={path} className={s.page}>
+              {children}
+            </div>
+          </div>
+          <TabBar />
+        </>
+      )}
+      {phase === 'leaving' && <Splash leaving />}
     </>
   )
 }
 
-function Splash() {
+function Splash({ leaving }: { leaving?: boolean }) {
   return (
-    <div className={s.splash} role="status" aria-label="Blassa">
+    <div className={cx(s.splash, leaving && s.splashOut)} role="status" aria-label="Blassa">
       <div className={s.splashLogo}>
         Blassa<span className={s.logoDot} />
       </div>
@@ -59,7 +76,15 @@ function formatPhone(digits: string) {
 function AuthFlow() {
   const router = useRouter()
   const { login } = useBlassa()
-  const [step, setStep] = useState<Step>('welcome')
+  const [step, setStepRaw] = useState<Step>('welcome')
+  const [dir, setDir] = useState<'fwd' | 'back'>('fwd')
+  const ORDER: Step[] = ['welcome', 'phone', 'otp', 'role', 'name']
+  const setStep = (next: Step | ((st: Step) => Step)) =>
+    setStepRaw((cur) => {
+      const n = typeof next === 'function' ? next(cur) : next
+      setDir(ORDER.indexOf(n) < ORDER.indexOf(cur) ? 'back' : 'fwd')
+      return n
+    })
   const [digits, setDigits] = useState('')
   const [code, setCode] = useState('')
   const [sent, setSent] = useState<string | null>(null)
@@ -84,7 +109,12 @@ function AuthFlow() {
     router.push(r === 'driver' ? '/louage/chauffeur' : '/louage')
   }
 
-  if (step === 'welcome') return <Welcome onStart={() => setStep('phone')} />
+  if (step === 'welcome')
+    return (
+      <div key="welcome" className={dir === 'back' ? s.stepBack : s.page}>
+        <Welcome onStart={() => setStep('phone')} />
+      </div>
+    )
 
   return (
     <div className={s.auth}>
@@ -97,7 +127,8 @@ function AuthFlow() {
 
       {step === 'phone' && (
         <form
-          className={s.authBody}
+          key="phone"
+          className={cx(s.authBody, dir === 'fwd' ? s.stepFwd : s.stepBack)}
           onSubmit={(e) => {
             e.preventDefault()
             if (!phoneOk) return
@@ -143,25 +174,35 @@ function AuthFlow() {
           sentAt={sentAt}
           onResend={sendCode}
           onChangeNumber={() => setStep('phone')}
-          onOk={() => setStep('role')}
+          onOk={() => {
+            tap(14)
+            setStep('role')
+          }}
+          dir={dir}
         />
       )}
 
       {step === 'role' && (
-        <div className={s.authBody}>
+        <div key="role" className={cx(s.authBody, dir === 'fwd' ? s.stepFwd : s.stepBack)}>
           <h1 className={cx(s.display, s.authTitle)}>Chkoun enti?</h1>
           <p className={s.authSub}>Tnajem tbaddel ba3d men el compte mte3ek.</p>
           <div className={s.roles} role="radiogroup" aria-label="Chkoun enti">
             <RoleCard
               on={role === 'rider'}
-              onClick={() => setRole('rider')}
+              onClick={() => {
+                tap()
+                setRole('rider')
+              }}
               icon={<User size={26} />}
               title="Rakeb"
               sub="Nlawej 3la blassa f louage"
             />
             <RoleCard
               on={role === 'driver'}
-              onClick={() => setRole('driver')}
+              onClick={() => {
+                tap()
+                setRole('driver')
+              }}
               icon={<SteeringWheel size={26} />}
               title="Chifour louage"
               sub="3andi louage w n7eb n3abbih asra3"
@@ -177,7 +218,8 @@ function AuthFlow() {
 
       {step === 'name' && (
         <form
-          className={s.authBody}
+          key="name"
+          className={cx(s.authBody, s.stepFwd)}
           onSubmit={(e) => {
             e.preventDefault()
             if (name.trim().length > 1) finish()
@@ -305,8 +347,9 @@ function OtpStep(props: {
   onResend: () => void
   onChangeNumber: () => void
   onOk: () => void
+  dir: 'fwd' | 'back'
 }) {
-  const { phone, code, setCode, expected, sentAt, onResend, onChangeNumber, onOk } = props
+  const { phone, code, setCode, expected, sentAt, onResend, onChangeNumber, onOk, dir } = props
   const inputRef = useRef<HTMLInputElement>(null)
   const [now, setNow] = useState(() => Date.now())
   const wait = Math.max(0, 30 - Math.floor((now - sentAt) / 1000))
@@ -325,7 +368,7 @@ function OtpStep(props: {
   }, [code, expected, onOk])
 
   return (
-    <div className={s.authBody}>
+    <div key="otp" className={cx(s.authBody, dir === 'fwd' ? s.stepFwd : s.stepBack)}>
       <h1 className={cx(s.display, s.authTitle)}>Ekteb el code</h1>
       <p className={s.authSub}>
         Ab3athna code fih 4 ar9am l <b style={{ color: 'var(--ink)' }}>{phone}</b>.{' '}

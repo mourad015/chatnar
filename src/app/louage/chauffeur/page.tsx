@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useCallback, useState } from 'react'
 import { ArrowRight, Bell, Check, Minus, Plus, ShieldCheck, TrendingUp, Users, Van, Zap } from '../_components/icons'
 import { AccountButton } from '../_components/auth'
-import { Logo, Plate, Seats, StatusPill, Toast, cx } from '../_components/ui'
+import { Logo, Plate, Seats, StatusPill, Toast, cx, tap } from '../_components/ui'
 import { CITIES, PLANS, formatPrice, kindFor, stationFor, suggestedPrice, type DriverProfile, type LouageKind } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
@@ -355,15 +355,21 @@ function MyTrip({ id }: { id: string }) {
 function Stepper({ value, max, onChange, unit, big }: { value: number; max: number; onChange: (v: number) => void; unit: string; big?: boolean }) {
   return (
     <div className={s.stepper}>
-      <button type="button" className={s.stepBtn} onClick={() => onChange(Math.max(0, value - 1))} disabled={value <= 0} aria-label="Na99es">
+      <button type="button" className={s.stepBtn} onClick={() => {
+          tap()
+          onChange(Math.max(0, value - 1))
+        }} disabled={value <= 0} aria-label="Na99es">
         <Minus size={22} />
       </button>
       <div className={s.stepValue} aria-live="polite">
-        {value}
+        <span key={value} className={s.numIn}>{value}</span>
         {big ? `/${max}` : ''}
         <small>{unit}</small>
       </div>
-      <button type="button" className={cx(s.stepBtn, s.stepBtnMain)} onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max} aria-label="Zid">
+      <button type="button" className={cx(s.stepBtn, s.stepBtnMain)} onClick={() => {
+          tap()
+          onChange(Math.min(max, value + 1))
+        }} disabled={value >= max} aria-label="Zid">
         <Plus size={22} />
       </button>
     </div>

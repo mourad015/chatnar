@@ -2,12 +2,21 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { BadgeCheck, Search, Star, SteeringWheel, Users, Van, X } from './icons'
 import { type Departure, formatClock, formatIn, formatPrice } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
+
+/** Light haptic tick where the phone supports it (Android). */
+export function tap(ms = 8) {
+  try {
+    navigator.vibrate?.(ms)
+  } catch {
+    /* not supported */
+  }
+}
 
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ')
@@ -79,7 +88,10 @@ export function OptionRow({ d, selected, onSelect, index = 0 }: { d: Departure; 
     <button
       type="button"
       className={cx(s.opt, selected && s.optOn, d.status === 'full' && s.optFull)}
-      onClick={onSelect}
+      onClick={() => {
+        tap()
+        onSelect()
+      }}
       aria-pressed={selected}
       style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
     >
@@ -113,10 +125,20 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
   // Render at the app root so a sheet opened from the sticky top bar still
   // sits above the tab bar (the top bar has its own stacking context).
   const [root, setRoot] = useState<HTMLElement | null>(null)
+  const [closing, setClosing] = useState(false)
+  const [drag, setDrag] = useState<{ y: number; active: boolean } | null>(null)
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const start = useRef<{ y: number; t: number; lastY: number; lastT: number } | null>(null)
+
+  const close = useCallback(() => {
+    setClosing(true)
+    setTimeout(onClose, 300)
+  }, [onClose])
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- the portal target only exists after mount
     setRoot(document.querySelector<HTMLElement>('[data-blassa-root]'))
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
     window.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -124,12 +146,63 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = prev
     }
-  }, [onClose])
+  }, [close])
+
+  // Drag down to dismiss, from the grabber or anywhere while scrolled to top.
+  const onPointerDown = (e: React.PointerEvent) => {
+    const el = sheetRef.current
+    if (!el || el.scrollTop > 0 || closing) return
+    if ((e.target as HTMLElement).closest('button, a, input, select, label')) return
+    start.current = { y: e.clientY, t: e.timeStamp, lastY: e.clientY, lastT: e.timeStamp }
+    el.setPointerCapture(e.pointerId)
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!start.current) return
+    const dy = e.clientY - start.current.y
+    // Rubber band when pulling up.
+    const y = dy > 0 ? dy : -Math.sqrt(-dy) * 2
+    start.current.lastY = e.clientY
+    start.current.lastT = e.timeStamp
+    setDrag({ y, active: true })
+  }
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!start.current) return
+    const dy = e.clientY - start.current.y
+    const dt = Math.max(1, e.timeStamp - start.current.t)
+    const velocity = dy / dt // px per ms
+    start.current = null
+    const h = sheetRef.current?.offsetHeight ?? 600
+    if (dy > h * 0.3 || (velocity > 0.5 && dy > 30)) {
+      setDrag(null)
+      close()
+    } else {
+      // Spring back, then drop the inline transform so fixed children
+      // (toasts) are positioned against the screen again.
+      setDrag({ y: 0, active: false })
+      setTimeout(() => setDrag(null), 650)
+    }
+  }
+
+  const progress = drag && drag.y > 0 ? Math.min(1, drag.y / 400) : 0
   const sheet = (
     <>
-      <div className={s.backdrop} onClick={onClose} />
-      <div className={s.sheet} role="dialog" aria-modal="true" aria-label={label}>
-        <button type="button" className={s.sheetClose} onClick={onClose} aria-label="Sakker">
+      <div className={cx(s.backdrop, closing && s.backdropClosing)} style={progress ? { opacity: 1 - progress } : undefined} onClick={close} />
+      <div
+        ref={sheetRef}
+        className={cx(s.sheet, drag?.active && s.sheetDragging, drag && !drag.active && s.sheetSettle, closing && s.sheetClosing)}
+        style={drag ? { transform: `translateY(${drag.y}px)` } : undefined}
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+      >
+        <div className={s.grabber} aria-hidden>
+          <span />
+        </div>
+        <button type="button" className={s.sheetClose} onClick={close} aria-label="Sakker">
           <X size={18} />
         </button>
         {children}
@@ -140,12 +213,17 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
 }
 
 export function Toast({ children, onDone }: { children: React.ReactNode; onDone: () => void }) {
+  const [leaving, setLeaving] = useState(false)
   useEffect(() => {
-    const t = setTimeout(onDone, 2600)
-    return () => clearTimeout(t)
+    const a = setTimeout(() => setLeaving(true), 2300)
+    const b = setTimeout(onDone, 2650)
+    return () => {
+      clearTimeout(a)
+      clearTimeout(b)
+    }
   }, [onDone])
   return (
-    <div className={s.toast} role="status">
+    <div className={cx(s.toast, leaving && s.toastOut)} role="status">
       {children}
     </div>
   )
@@ -164,7 +242,7 @@ export function TabBar() {
       {TABS.map(({ href, label, icon: Icon }) => {
         const on = path === href
         return (
-          <Link key={href} href={href} className={cx(s.tab, on && s.tabOn)} aria-current={on ? 'page' : undefined}>
+          <Link key={href} href={href} className={cx(s.tab, on && s.tabOn)} aria-current={on ? 'page' : undefined} onClick={() => tap()}>
             <Icon size={22} />
             {label}
           </Link>

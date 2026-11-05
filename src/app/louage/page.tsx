@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { ArrowUpDown, Bus, CarTaxiFront, Check, Copy, Phone, Search, Star, TramFront, Users, Van } from './_components/icons'
 import { AccountButton } from './_components/auth'
-import { Avatar, Logo, OptionRow, Plate, Seats, Sheet, StatusPill, Toast, cx, seatsLeftLabel } from './_components/ui'
+import { Avatar, Logo, OptionRow, Plate, Seats, Sheet, StatusPill, Toast, cx, seatsLeftLabel, tap } from './_components/ui'
 import { CITIES, POPULAR, formatClock, formatPrice, type Departure } from './_lib/data'
 import { HOLD_MINUTES, useBlassa } from './_lib/store'
 import s from './louage.module.css'
@@ -317,6 +317,7 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
           className={cx(s.btn, s.btnPrimary, s.btnBlock)}
           disabled={left <= 0}
           onClick={() => {
+            tap(14)
             reserve(d.id)
             setToast('Mrigel, blastek m7foudha')
           }}
