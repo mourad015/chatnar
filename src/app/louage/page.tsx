@@ -1,20 +1,30 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
-import { ArrowUpDown, Check, Clock, MapPin, Navigation, Phone, Search, Star, Users } from './_components/icons'
-import { Avatar, DepartureCard, Logo, Plate, Seats, Sheet, StatusPill, Toast, cx, seatsLeftLabel } from './_components/ui'
-import { CITIES, POPULAR, formatPrice, type Departure } from './_lib/data'
+import { ArrowUpDown, Bus, CarTaxiFront, Check, Copy, Phone, Search, Star, TramFront, Users, Van } from './_components/icons'
+import { Avatar, Logo, OptionRow, Plate, Seats, Sheet, StatusPill, Toast, cx, seatsLeftLabel } from './_components/ui'
+import { CITIES, POPULAR, formatClock, formatPrice, type Departure } from './_lib/data'
 import { HOLD_MINUTES, useBlassa } from './_lib/store'
 import s from './louage.module.css'
 
 type Filter = 'all' | 'full-leave' | 'timed'
+
+const MODES = [
+  { id: 'louage', label: 'Louage', art: <Van width={50} />, soon: false },
+  { id: 'taxi', label: 'Taxi', art: <CarTaxiFront size={30} />, soon: true },
+  { id: 'car', label: 'Car', art: <Bus size={30} />, soon: true },
+  { id: 'metro', label: 'Métro', art: <TramFront size={30} />, soon: true },
+]
 
 export default function RiderHome() {
   const { departures, ready, now } = useBlassa()
   const [from, setFrom] = useState('Tunis')
   const [to, setTo] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
-  const [openId, setOpenId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const hideToast = useCallback(() => setToast(null), [])
 
   const results = useMemo(() => {
     return departures
@@ -29,13 +39,14 @@ export default function RiderHome() {
   }, [departures, from, to, filter, now])
 
   const totalOpen = departures.filter((d) => d.status === 'open').length
-  const open = departures.find((d) => d.id === openId) ?? null
-  const close = useCallback(() => setOpenId(null), [])
+  const selected = departures.find((d) => d.id === selectedId) ?? null
+  const close = useCallback(() => setSheetOpen(false), [])
 
   const swap = () => {
     if (!to) return
     setFrom(to)
     setTo(from)
+    setSelectedId(null)
   }
 
   return (
@@ -48,63 +59,72 @@ export default function RiderHome() {
         </span>
       </header>
 
-      <section className={s.hero}>
-        <p className={s.eyebrow} style={{ color: 'var(--hero-muted)' }}>Louage · Tounes</p>
-        <h1 className={cx(s.display, s.heroTitle)}>
-          Win mechi <em>lyoum?</em>
-        </h1>
-        <p className={s.heroSub}>Chouf el blayes el fergha w el soum 9bal ma temchi lel station.</p>
+      <h1 className={cx(s.display, s.greet)}>Win mechi lyoum?</h1>
 
-        <div className={s.search}>
-          <label className={s.field}>
-            <span className={s.fieldIcon}><Navigation size={15} /></span>
-            <span className={s.fieldText}>
-              <span className={s.fieldLabel}>Mnin</span>
-              <span className={s.fieldValue}>{from}</span>
-            </span>
-            <select className={s.fieldSelect} value={from} onChange={(e) => setFrom(e.target.value)} aria-label="Mnin">
-              {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-          <label className={s.field}>
-            <span className={cx(s.fieldIcon, s.fieldIconTo)}><MapPin size={15} /></span>
-            <span className={s.fieldText}>
-              <span className={s.fieldLabel}>Win</span>
-              <span className={cx(s.fieldValue, !to && s.fieldPlaceholder)}>{to || 'Ay blassa'}</span>
-            </span>
-            <select className={s.fieldSelect} value={to} onChange={(e) => setTo(e.target.value)} aria-label="Win">
-              <option value="">Ay blassa</option>
-              {CITIES.filter((c) => c !== from).map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-          <button type="button" className={s.swap} onClick={swap} aria-label="Badel el ittijah" disabled={!to}>
-            <ArrowUpDown size={18} />
-          </button>
-        </div>
-
-        <div className={s.chips}>
-          <button type="button" className={cx(s.chip, !to && s.chipOn)} onClick={() => setTo('')}>El kol</button>
-          {POPULAR.filter((c) => c !== from).map((c) => (
-            <button key={c} type="button" className={cx(s.chip, to === c && s.chipOn)} onClick={() => setTo(c)}>
-              {c}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <div className={s.sectionHead}>
-        <div>
-          <p className={s.eyebrow}>Départs taw</p>
-          <h2 className={cx(s.display, s.sectionTitle)}>
-            {from} {to ? `→ ${to}` : ''}
-          </h2>
-        </div>
-        <span className={s.muted} style={{ fontSize: 13 }}>{ready ? `${results.length} louage` : ''}</span>
+      <div className={s.where}>
+        <span className={s.whereLine} aria-hidden />
+        <label className={s.whereRow}>
+          <span className={s.whereMark} />
+          <span className={s.whereText}>
+            <span className={s.whereLabel}>Mnin</span>
+            <span className={s.whereValue}>{from}</span>
+          </span>
+          <select className={s.fieldSelect} value={from} onChange={(e) => { setFrom(e.target.value); setSelectedId(null) }} aria-label="Mnin">
+            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </label>
+        <label className={s.whereRow}>
+          <span className={cx(s.whereMark, s.whereMarkSq)} />
+          <span className={s.whereText}>
+            <span className={s.whereLabel}>Win</span>
+            <span className={cx(s.whereValue, !to && s.wherePlaceholder)}>{to || 'Ay blassa'}</span>
+          </span>
+          <select className={s.fieldSelect} value={to} onChange={(e) => { setTo(e.target.value); setSelectedId(null) }} aria-label="Win">
+            <option value="">Ay blassa</option>
+            {CITIES.filter((c) => c !== from).map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </label>
+        <button type="button" className={s.swap} onClick={swap} aria-label="Badel el ittijah" disabled={!to}>
+          <ArrowUpDown size={18} />
+        </button>
       </div>
 
-      <div className={s.segment} role="tablist" aria-label="Filtre">
+      <div className={s.tilesHead}>
+        <h2 className={cx(s.display, s.tilesTitle)}>Kifech bech temchi</h2>
+      </div>
+      <div className={s.tiles}>
+        {MODES.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            className={cx(s.tile, !m.soon && s.tileOn, m.soon && s.tileDim)}
+            onClick={() => m.soon && setToast(`${m.label}: 9rib fel appli`)}
+            aria-pressed={!m.soon}
+          >
+            {m.soon && <span className={s.tileSoon}>9rib</span>}
+            <span className={s.tileArt}>{m.art}</span>
+            <span className={s.tileLabel}>{m.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className={s.sectionHead}>
+        <h2 className={cx(s.display, s.sectionTitle)}>Louage men {from}</h2>
+        <span className={s.muted} style={{ fontSize: 13 }}>{ready ? `${results.length} départ` : ''}</span>
+      </div>
+
+      <div className={s.chips}>
+        <button type="button" className={cx(s.chip, !to && s.chipOn)} onClick={() => setTo('')}>El kol</button>
+        {POPULAR.filter((c) => c !== from).map((c) => (
+          <button key={c} type="button" className={cx(s.chip, to === c && s.chipOn)} onClick={() => { setTo(c); setSelectedId(null) }}>
+            {c}
+          </button>
+        ))}
+      </div>
+
+      <div className={s.segment} role="tablist" aria-label="Filtre" style={{ margin: '6px 0 10px' }}>
         {([
-          ['all', 'El kol'],
+          ['all', 'Ay wa9t'],
           ['full-leave', 'Ki yo3mer'],
           ['timed', 'B wa9t'],
         ] as [Filter, string][]).map(([k, label]) => (
@@ -121,8 +141,8 @@ export default function RiderHome() {
         ))}
       </div>
 
-      <div className={s.list}>
-        {!ready && [0, 1, 2].map((i) => <div key={i} className={s.skeleton} />)}
+      <div className={s.list} style={{ paddingBottom: selected ? 84 : 0 }}>
+        {!ready && [0, 1, 2, 3].map((i) => <div key={i} className={s.skeleton} />)}
         {ready && results.length === 0 && (
           <div className={s.empty}>
             <span className={s.emptyIcon}><Search size={22} /></span>
@@ -133,11 +153,31 @@ export default function RiderHome() {
           </div>
         )}
         {results.map((d, i) => (
-          <DepartureCard key={d.id} d={d} index={i} onOpen={() => setOpenId(d.id)} />
+          <OptionRow
+            key={d.id}
+            d={d}
+            index={i}
+            selected={selectedId === d.id}
+            onSelect={() => (selectedId === d.id ? setSheetOpen(true) : setSelectedId(d.id))}
+          />
         ))}
       </div>
 
-      {open && <DepartureSheet d={open} onClose={close} />}
+      {selected && !sheetOpen && (
+        <div className={s.ctaBar}>
+          <button type="button" className={cx(s.btn, s.btnPrimary, s.btnBlock)} onClick={() => setSheetOpen(true)}>
+            Ekhtar {selected.from} → {selected.to} · {formatPrice(selected.price)} DT
+          </button>
+        </div>
+      )}
+
+      {selected && sheetOpen && <DepartureSheet d={selected} onClose={close} />}
+
+      {toast && (
+        <Toast onDone={hideToast}>
+          <Check size={16} /> {toast}
+        </Toast>
+      )}
     </>
   )
 }
@@ -149,14 +189,26 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
   const left = d.seats - d.filled
   const hideToast = useCallback(() => setToast(null), [])
 
+  const copyPhone = async () => {
+    try {
+      await navigator.clipboard.writeText(d.driver.phone)
+      setToast('Numéro tcopia')
+    } catch {
+      setToast(d.driver.phone)
+    }
+  }
+
   return (
     <Sheet onClose={onClose} label={`${d.from} vers ${d.to}`}>
+      <div className={s.sheetHero}>
+        <Van width={150} stripe={d.kind === 'regional' ? 'blue' : 'red'} />
+      </div>
       <StatusPill d={d} now={now} />
       <h2 className={cx(s.display, s.sheetRoute)}>
         {d.from} → {d.to}
       </h2>
       <p className={s.muted} style={{ fontSize: 14 }}>
-        {d.kind === 'regional' ? 'Louage régional (khatt azra9)' : 'Louage interurbain (khatt a7mar)'}
+        {d.kind === 'regional' ? 'Louage régional · khatt azra9' : 'Louage interurbain · khatt a7mar'}
       </p>
 
       <div className={s.timeline}>
@@ -188,8 +240,8 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
         </div>
         <div className={s.fact}>
           <div className={s.eyebrow}>Départ</div>
-          <div className={s.factValue} style={{ fontSize: d.departAt ? 20 : 15 }}>
-            {d.departAt ? new Date(d.departAt).toTimeString().slice(0, 5) : 'Ki yo3mer'}
+          <div className={s.factValue} style={{ fontSize: d.departAt ? 18 : 15 }}>
+            {d.departAt ? formatClock(d.departAt) : 'Ki yo3mer'}
           </div>
         </div>
       </div>
@@ -202,8 +254,8 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
         <Seats total={d.seats} filled={d.filled} mine={reserved ? 1 : 0} large />
         <div className={s.legend}>
           <span><i className={s.legendSwatch} /> Fergha</span>
-          <span><i className={s.legendSwatch} style={{ background: 'var(--ink)', borderColor: 'var(--ink)' }} /> Ma3mra</span>
-          <span><i className={s.legendSwatch} style={{ background: 'var(--red)', borderColor: 'var(--red)' }} /> Blastek</span>
+          <span><i className={s.legendSwatch} style={{ background: 'var(--ink)' }} /> Ma3mra</span>
+          <span><i className={s.legendSwatch} style={{ background: 'var(--red)' }} /> Blastek</span>
         </div>
       </div>
 
@@ -220,48 +272,53 @@ function DepartureSheet({ d, onClose }: { d: Departure; onClose: () => void }) {
         <Plate value={d.driver.plate} />
       </div>
 
+      <div className={s.phoneRow}>
+        <span className={s.phoneNum}>{d.driver.phone}</span>
+        <span className={s.row} style={{ flex: 'none', gap: 6 }}>
+          <button type="button" className={cx(s.btn, s.btnGhost, s.btnSm)} style={{ background: 'var(--surface)' }} onClick={copyPhone} aria-label="Copier le numéro">
+            <Copy size={16} />
+          </button>
+          <a className={cx(s.btn, s.btnGhost, s.btnSm)} style={{ background: 'var(--surface)' }} href={`tel:${d.driver.phone.replace(/\s/g, '')}`} aria-label="Ekleb">
+            <Phone size={16} />
+          </a>
+        </span>
+      </div>
+
       {reserved && (
         <div className={s.confirm}>
           <Check size={22} />
           <div>
-            <strong>Blastek m7foudha!</strong>
+            <strong>Blastek m7foudha</strong>
             El chifour yestannek {HOLD_MINUTES} dkika. Ken bech tet3atel, ekleblou.
           </div>
         </div>
       )}
 
-      <div className={s.row}>
-        <a className={cx(s.btn, s.btnGhost)} href={`tel:${d.driver.phone.replace(/\s/g, '')}`}>
-          <Phone size={18} /> Ekleb
-        </a>
-        {reserved ? (
-          <button
-            type="button"
-            className={cx(s.btn, s.btnInk)}
-            onClick={() => {
-              cancelReservation(d.id)
-              setToast('Blastek tna77at')
-            }}
-          >
-            Batel
-          </button>
-        ) : (
-          <button
-            type="button"
-            className={cx(s.btn, s.btnRed)}
-            disabled={left <= 0}
-            onClick={() => {
-              reserve(d.id)
-              setToast('Mrigel, blastek m7foudha')
-            }}
-          >
-            {left <= 0 ? 'Complet' : 'Hezli blassa'}
-          </button>
-        )}
-      </div>
-      <p className={s.demoNote}>
-        <Clock size={11} style={{ verticalAlign: '-1px' }} /> Tkhalles lel chifour fel louage, kima dima.
-      </p>
+      {reserved ? (
+        <button
+          type="button"
+          className={cx(s.btn, s.btnGhost, s.btnBlock)}
+          onClick={() => {
+            cancelReservation(d.id)
+            setToast('Blastek tna77at')
+          }}
+        >
+          Batel el réservation
+        </button>
+      ) : (
+        <button
+          type="button"
+          className={cx(s.btn, s.btnPrimary, s.btnBlock)}
+          disabled={left <= 0}
+          onClick={() => {
+            reserve(d.id)
+            setToast('Mrigel, blastek m7foudha')
+          }}
+        >
+          {left <= 0 ? 'Complet' : `Hezli blassa · ${formatPrice(d.price)} DT`}
+        </button>
+      )}
+      <p className={s.demoNote}>Tkhalles lel chifour fel louage, kima dima.</p>
 
       {toast && (
         <Toast onDone={hideToast}>

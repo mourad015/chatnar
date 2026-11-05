@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
-import { ArrowRight, BadgeCheck, MapPin, Search, Star, SteeringWheel, X } from './icons'
+import { BadgeCheck, Search, Star, SteeringWheel, Users, Van, X } from './icons'
 import { type Departure, formatClock, formatIn, formatPrice } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
 import s from '../louage.module.css'
@@ -16,7 +16,7 @@ export function Logo() {
   return (
     <Link href="/louage" className={s.logo} aria-label="Blassa, accueil">
       <span className={s.logoWord}>
-        blassa<span className={s.logoDot} />
+        Blassa<span className={s.logoDot} />
       </span>
       <span className={s.logoAr} lang="ar">بلاصة</span>
     </Link>
@@ -59,11 +59,7 @@ export function Avatar({ name }: { name: string }) {
 export function StatusPill({ d, now }: { d: Departure; now: number }) {
   if (d.status === 'full') return <span className={cx(s.pill, s.pillInk)}>Complet</span>
   if (d.departAt) return <span className={cx(s.pill, s.pillAmber)}>{formatClock(d.departAt)} · {formatIn(d.departAt, now)}</span>
-  return (
-    <span className={cx(s.pill, s.pillGreen)}>
-      Yemchi ki yo3mer
-    </span>
-  )
+  return <span className={cx(s.pill, s.pillGreen)}>Yemchi ki yo3mer</span>
 }
 
 export function seatsLeftLabel(d: Departure) {
@@ -73,54 +69,41 @@ export function seatsLeftLabel(d: Departure) {
   return `Ba9i ${left} blayes`
 }
 
-export function DepartureCard({ d, onOpen, index = 0 }: { d: Departure; onOpen: () => void; index?: number }) {
+/** One louage, laid out like a ride option: van, route + details, price. */
+export function OptionRow({ d, selected, onSelect, index = 0 }: { d: Departure; selected: boolean; onSelect: () => void; index?: number }) {
   const { now, isReserved } = useBlassa()
   const left = d.seats - d.filled
-  const mine = isReserved(d.id) ? 1 : 0
+  const mine = isReserved(d.id)
   return (
     <button
       type="button"
-      className={cx(s.card, d.status === 'full' && s.cardFull)}
-      onClick={onOpen}
-      style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+      className={cx(s.opt, selected && s.optOn, d.status === 'full' && s.optFull)}
+      onClick={onSelect}
+      aria-pressed={selected}
+      style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
     >
-      <span className={cx(s.cardStripe, d.kind === 'regional' && s.cardStripeBlue)} aria-hidden />
-      <div className={s.cardTop}>
-        <div style={{ minWidth: 0 }}>
-          <div className={cx(s.route, s.display)}>
-            <span className={s.routeCity}>{d.from}</span>
-            <ArrowRight size={18} className={s.routeArrow} />
-            <span className={s.routeCity}>{d.to}</span>
-          </div>
-          <div className={s.station}>
-            <MapPin size={13} /> {d.station}
-          </div>
-        </div>
-        <div className={s.price}>
-          {formatPrice(d.price)}
-          <span className={s.priceUnit}>DT</span>
-          <span className={s.priceNote}>lel blassa</span>
-        </div>
-      </div>
-
-      <div className={s.cardMid}>
-        <Seats total={d.seats} filled={d.filled} mine={mine} />
-        <span className={cx(s.left, left <= 2 && left > 0 && s.leftLow)}>{seatsLeftLabel(d)}</span>
-      </div>
-
-      <div className={s.cardFoot}>
-        <div className={s.driver}>
-          <Avatar name={d.driver.name} />
-          <div style={{ minWidth: 0 }}>
-            <div className={s.driverName}>{d.driver.name}</div>
-            <div className={s.driverMeta}>
-              <Star size={12} className={s.star} /> {d.driver.rating.toFixed(1)}
-              {mine ? <span className={cx(s.pill, s.pillRed)} style={{ marginLeft: 6, padding: '1px 7px' }}>Blastek</span> : null}
-            </div>
-          </div>
-        </div>
-        <StatusPill d={d} now={now} />
-      </div>
+      <span className={s.optVan}>
+        <Van width={60} stripe={d.kind === 'regional' ? 'blue' : 'red'} />
+      </span>
+      <span className={s.optBody}>
+        <span className={s.optTitle}>
+          {d.to}
+          <span className={s.optSeats}>
+            <Users size={13} /> {left}
+          </span>
+        </span>
+        <span className={s.optSub} style={{ display: 'block' }}>
+          {d.station.replace('Station ', '')} · <Star size={11} className={s.star} style={{ verticalAlign: '-1px' }} /> {d.driver.rating.toFixed(1)} {d.driver.name}
+        </span>
+        <span className={s.optMeta}>
+          <StatusPill d={d} now={now} />
+          {mine ? <span className={cx(s.pill, s.pillRed)}>Blastek</span> : left > 0 && left <= 2 ? <span className={cx(s.pill, s.pillRed)}>{seatsLeftLabel(d)}</span> : null}
+        </span>
+      </span>
+      <span className={s.optPrice}>
+        {formatPrice(d.price)} DT
+        <small>lel blassa</small>
+      </span>
     </button>
   )
 }
@@ -140,7 +123,6 @@ export function Sheet({ onClose, children, label }: { onClose: () => void; child
     <>
       <div className={s.backdrop} onClick={onClose} />
       <div className={s.sheet} role="dialog" aria-modal="true" aria-label={label}>
-        <div className={s.handle} />
         <button type="button" className={s.sheetClose} onClick={onClose} aria-label="Sakker">
           <X size={18} />
         </button>
@@ -176,7 +158,7 @@ export function TabBar() {
         const on = path === href
         return (
           <Link key={href} href={href} className={cx(s.tab, on && s.tabOn)} aria-current={on ? 'page' : undefined}>
-            <Icon size={20} />
+            <Icon size={22} />
             {label}
           </Link>
         )

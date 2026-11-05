@@ -165,7 +165,7 @@ export default function SubscriptionPage() {
               A3mel profil chifour 9bal <ArrowRight size={18} />
             </Link>
           ) : (
-            <button type="button" className={cx(s.btn, s.btnRed, s.btnBlock)} onClick={pay} disabled={paying}>
+            <button type="button" className={cx(s.btn, s.btnPrimary, s.btnBlock)} onClick={pay} disabled={paying}>
               {paying ? (
                 <><LoaderCircle size={18} className={s.spin} /> Jari el khlas…</>
               ) : trial ? (

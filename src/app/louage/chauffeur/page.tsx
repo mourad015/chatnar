@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useCallback, useState } from 'react'
-import { ArrowRight, Bell, Check, Minus, Plus, ShieldCheck, TrendingUp, Users, Zap } from '../_components/icons'
+import { ArrowRight, Bell, Check, Minus, Plus, ShieldCheck, TrendingUp, Users, Van, Zap } from '../_components/icons'
 import { Logo, Plate, Seats, StatusPill, Toast, cx } from '../_components/ui'
 import { CITIES, PLANS, formatPrice, kindFor, stationFor, suggestedPrice, type DriverProfile, type LouageKind } from '../_lib/data'
 import { useBlassa } from '../_lib/store'
@@ -108,7 +108,7 @@ function Onboarding() {
 /* ---------- 2. Paywall ---------- */
 
 function Paywall({ name }: { name: string }) {
-  const { usedTrial } = useBlassa()
+  const { usedTrial, driver } = useBlassa()
   const cheapest = Math.min(...PLANS.map((p) => p.perMonth))
   return (
     <>
@@ -116,34 +116,39 @@ function Paywall({ name }: { name: string }) {
         <p className={s.eyebrow}>Ta3mir el profil · 2/2</p>
       </div>
       <section className={s.pitch}>
-        <p className={s.eyebrow} style={{ color: 'var(--hero-muted)' }}>Ahla {name.split(' ')[0]}</p>
-        <h1 className={cx(s.display, s.pitchTitle)}>
-          3abbi el louage <em>asra3.</em>
-        </h1>
-        <p style={{ color: 'var(--hero-muted)', fontSize: 14.5 }}>
-          El rokkab yetchoufou blayesek w soumek men darhom, w yjiwek toul.
-        </p>
-        <ul className={s.perks}>
-          <li>
-            <span className={s.perkIcon}><Zap size={16} /></span>
-            <div><b>Départs bla 7seb</b><span>Zid kol trajet w kol départ, kol yom.</span></div>
-          </li>
-          <li>
-            <span className={s.perkIcon}><Users size={16} /></span>
-            <div><b>Rokkab y7jzou blayes</b><span>Yeklbouk direct, ma testannech fel station.</span></div>
-          </li>
-          <li>
-            <span className={s.perkIcon}><TrendingUp size={16} /></span>
-            <div><b>Rating w thi9a</b><span>Ta9yim w nombre trajet, bech el nes tethe9 fik.</span></div>
-          </li>
-        </ul>
-        <Link href="/louage/abonnement" className={cx(s.btn, s.btnRed, s.btnBlock)}>
-          {usedTrial ? `Abonni men ${formatPrice(cheapest)} DT/chhar` : 'Jarreb chhar b bleech'}
-          <ArrowRight size={18} />
-        </Link>
-        <p style={{ marginTop: 10, textAlign: 'center', fontSize: 12.5, color: 'var(--hero-muted)' }}>
-          Ba3d men {formatPrice(cheapest)} DT fel chhar · tbatel wa9t ma t7eb
-        </p>
+        <div className={s.pitchArt}>
+          <Van width={190} stripe={driver?.kind === 'regional' ? 'blue' : 'red'} />
+        </div>
+        <div className={s.pitchInner}>
+          <p className={s.eyebrow} style={{ color: 'var(--hero-muted)' }}>Ahla {name.split(' ')[0]}</p>
+          <h1 className={cx(s.display, s.pitchTitle)}>
+            3abbi el louage <em>asra3.</em>
+          </h1>
+          <p style={{ color: 'var(--hero-muted)', fontSize: 14.5 }}>
+            El rokkab yetchoufou blayesek w soumek men darhom, w yjiwek toul.
+          </p>
+          <ul className={s.perks}>
+            <li>
+              <span className={s.perkIcon}><Zap size={16} /></span>
+              <div><b>Départs bla 7seb</b><span>Zid kol trajet w kol départ, kol yom.</span></div>
+            </li>
+            <li>
+              <span className={s.perkIcon}><Users size={16} /></span>
+              <div><b>Rokkab y7jzou blayes</b><span>Yeklbouk direct, ma testannech fel station.</span></div>
+            </li>
+            <li>
+              <span className={s.perkIcon}><TrendingUp size={16} /></span>
+              <div><b>Rating w thi9a</b><span>Ta9yim w nombre trajet, bech el nes tethe9 fik.</span></div>
+            </li>
+          </ul>
+          <Link href="/louage/abonnement" className={cx(s.btn, s.btnBlock)} style={{ background: 'var(--hero-ink)', color: 'var(--hero)' }}>
+            {usedTrial ? `Abonni men ${formatPrice(cheapest)} DT/chhar` : 'Jarreb chhar b bleech'}
+            <ArrowRight size={18} />
+          </Link>
+          <p style={{ marginTop: 10, textAlign: 'center', fontSize: 12.5, color: 'var(--hero-muted)' }}>
+            Ba3d men {formatPrice(cheapest)} DT fel chhar · tbatel wa9t ma t7eb
+          </p>
+        </div>
       </section>
     </>
   )
@@ -279,7 +284,7 @@ function Dashboard() {
             <Stepper value={filled} max={7} onChange={setFilled} unit="rakeb" />
           </div>
 
-          <button type="button" className={cx(s.btn, s.btnRed, s.btnBlock)} disabled={!to || !price || price <= 0} onClick={publish}>
+          <button type="button" className={cx(s.btn, s.btnPrimary, s.btnBlock)} disabled={!to || !price || price <= 0} onClick={publish}>
             <Bell size={18} /> Nachar el départ
           </button>
         </div>
