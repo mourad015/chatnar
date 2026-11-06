@@ -126,3 +126,26 @@ This skill was written from articles and guides, not from watching videos. The n
 - Safe zones: [Hopper HQ](https://www.hopperhq.com/blog/instagram-reel-size/), [Argil](https://argil.ai/blog/instagram-reel-size-e350f), [TryMyPost](https://www.trymypost.com/blog/instagram-reels-safe-zones-text-placement-2026), [Wild & Free Tools](https://wildandfreetools.com/blog/vertical-video-safe-zones-guide-2026/)
 - Easing and timing: [Tomasz Kaye's Seven Commandments of Motion Design](https://steemit.steemapps.com/design/@bitbutter/tomasz-kaye-s-seven-commandments-of-motion-design), [Graduate School: Animation Principles](https://www.graduateschool.edu/learn/premiere-pro/animation-principles-motion), [Cursa: Easing and the Graph Editor](https://cursa.app/en/page/after-effects-for-absolute-beginners-smooth-motion-with-easing-and-the-graph-editor), [Compass motion guide](https://www.compass.com/app/guides/Motion)
 - Hooks and captions: [CapCut hook patterns](https://www.capcut.com/create/short-form-video-hooks-first-3-second-patterns), [AutoClip 3-second hook data](https://autoclip.dev/blog/viral-clip-anatomy-3-second-hook-data), [Metricool viral hooks](https://metricool.com/viral-video-hooks/)
+
+## 10. Mastery notes (from the classic books and courses)
+
+Distilled from *Design for Motion* (Austin Shaw), *The Animator's Survival Kit* (Richard Williams), *Timing for Animation* (Whitaker & Halas, 40th anniv. ed.), School of Motion's Animation Bootcamp, and the installed `motion-taste` / `motion-design` skills. Summaries came from search results, not the full texts.
+
+- **Spacing sells weight.** Same duration, different spacing = different object. Wide spacing = fast/light, tight spacing = slow/heavy. Fewer, better-placed keys beat more keys.
+- **Reading holds:** every readable state holds ≥ 1 s after it settles, +0.25 s per word beyond three, ≥ 2 s for the final line. Text never moves while it's being read.
+- **Exits are ~half an entrance** and use ease-in. Overlap scenes: the next one starts before the last has fully left; hard gaps read as "loading".
+- **Persistent objects over cuts.** Keep one object travelling through the piece and changing role (a clock, a cursor, a dot). Every transition is motivated by something on screen.
+- **One hero moment per video.** Build to it; don't spend it early.
+- **Springs for physical things, bezier tweens for type and camera.** Elastic overshoot only once.
+- **Texture:** grain (~0.08–0.09), vignette, slow drifting background. Idle elements breathe (blinking caret, ticking clock).
+- **Frame 0 is the thumbnail.** Never empty or black.
+
+## 11. Comedy timing
+
+- **Beat before the punchline:** hold 0.4–0.8 s of stillness (or silence in the music) right before the joke lands.
+- **Hold the reaction ("take"):** a reaction that's too short won't register and one that's too long goes dead. Start around 0.8–1.2 s.
+- **Smash cut:** jump abruptly between contradicting contexts; the joke is the contrast. No transition, just a hard cut plus a sound hit.
+- **Rule of three:** two normal items, then the twist. Make the third visually different (accent colour, shake, bigger).
+- **Deadpan text + over-the-top motion** (or the reverse) is funnier than both being loud.
+- **Record-scratch freeze:** stop all motion and the music for a beat, then zoom-punch on the face.
+- **Callbacks:** bring an earlier joke back at the end ("wake up" → "the economy waking up").

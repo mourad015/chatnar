@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tunisian Graduate POV</title>
+<style>
+  :root { --bg:#120F0E; --fg:#F5F0E6; --red:#E70013; --red2:#FF4D5E; --mut:#8A8178; --ink:#120F0E; --skin:#C68A5E; --wood:#6B4A35; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1920px; background:var(--bg); overflow:hidden; }
+  body { font-family:'Inter Display','Inter',sans-serif; color:var(--fg); }
+  .abs { position:absolute; }
+  .mono { font-family:'JetBrains Mono',monospace; }
+  .beat { position:absolute; inset:0; display:none; }
+  .t { position:absolute; left:0; width:1000px; text-align:center; font-weight:900; letter-spacing:-0.03em; white-space:nowrap; }
+  .chip { display:inline-block; padding:18px 34px; border-radius:60px; font-size:46px; font-weight:800; margin:0 8px; background:rgba(245,240,230,.1); }
+  .card { position:absolute; border-radius:30px; background:#1E1A19; box-shadow:inset 0 0 0 3px rgba(255,255,255,.07), 0 30px 80px rgba(0,0,0,.5); }
+  .note { position:absolute; left:30px; width:500px; border-radius:26px; padding:20px 24px; background:#2A2524; }
+  .note .h { font-size:26px; font-weight:700; color:var(--mut); }
+  .note .b { font-size:34px; font-weight:700; margin-top:6px; white-space:nowrap; }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.085; mix-blend-mode:overlay; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%); }
+  #grid { position:absolute; inset:-120px; background-image:radial-gradient(rgba(245,240,230,.07) 2px, transparent 2.6px); background-size:60px 60px; }
+  .eye { position:absolute; width:34px; height:34px; border-radius:50%; background:#fff; overflow:hidden; }
+  .eye i { position:absolute; left:9px; top:9px; width:16px; height:16px; border-radius:50%; background:var(--ink); }
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<div id="world" class="abs" style="inset:0;transform-origin:500px 900px">
+
+  <!-- persistent clock: the object that carries us through the day -->
+  <div id="clockWrap" class="abs mono" style="top:270px;left:0;width:1000px;text-align:center;font-size:66px;font-weight:800;height:84px;overflow:hidden">
+    <span id="clockIcon" style="font-size:54px;vertical-align:6px;margin-right:16px"></span><span id="clockA" style="display:inline-block"></span>
+  </div>
+
+  <!-- B0 hook -->
+  <div class="beat" id="b0">
+    <div class="t mono" id="b0pov" style="top:520px;font-size:48px;font-weight:700;color:var(--mut);letter-spacing:.1em">POV:</div>
+    <div class="t" id="b0a" style="top:590px;font-size:86px;font-weight:800">you wake up as a</div>
+    <div class="t" id="b0b" style="top:690px;font-size:178px;color:var(--red)">TUNISIAN</div>
+    <div class="t" id="b0c" style="top:870px;font-size:178px">GRADUATE</div>
+    <div class="abs" id="b0flag" style="left:440px;top:380px;font-size:110px">🇹🇳</div>
+    <div class="t" style="top:1110px"><span class="chip" id="b0k1">27 y/o</span><span class="chip" id="b0k2">Master's 🎓</span><span class="chip" id="b0k3" style="background:var(--red)">0 jobs</span></div>
+  </div>
+
+  <!-- B1 vacuum -->
+  <div class="beat" id="b1">
+    <div class="abs" id="door" style="left:330px;top:420px;width:340px;height:600px;border-radius:14px;background:var(--wood);box-shadow:inset 0 0 0 14px #5A3D2C">
+      <div class="abs" style="left:40px;top:60px;width:260px;height:200px;border-radius:8px;box-shadow:inset 0 0 0 8px #5A3D2C"></div>
+      <div class="abs" style="left:40px;top:320px;width:260px;height:220px;border-radius:8px;box-shadow:inset 0 0 0 8px #5A3D2C"></div>
+      <div class="abs" style="left:270px;top:300px;width:34px;height:34px;border-radius:50%;background:#D9B26A"></div>
+    </div>
+    <div class="abs" id="vrr" style="left:640px;top:820px;font-size:92px;font-weight:900;color:var(--red2);transform-origin:0 50%">VRRRRR</div>
+    <div class="t" id="b1a" style="top:1090px;font-size:84px">Alarm: <span style="color:var(--mut)">none.</span></div>
+    <div class="t" id="b1b" style="top:1200px;font-size:50px;font-weight:800">Mama's vacuum: right outside your door.</div>
+    <div class="t" id="b1c" style="top:1290px;font-size:110px;color:var(--red)">Again.</div>
+  </div>
+
+  <!-- B2 phone -->
+  <div class="beat" id="b2">
+    <div class="card" id="phone" style="left:220px;top:400px;width:560px;height:640px;border-radius:56px">
+      <div class="abs" style="left:230px;top:20px;width:100px;height:24px;border-radius:12px;background:#2A2524"></div>
+      <div class="note" id="n1" style="top:80px"><div class="h">LinkedIn · now</div><div class="b">0 replies <span style="color:var(--mut)">(12 applications)</span></div></div>
+      <div class="note" id="n2" style="top:250px"><div class="h">Ouled 7ouma 👥 · now</div><div class="b">47 new messages</div></div>
+      <div class="note" id="n3" style="top:420px;background:var(--red)"><div class="h" style="color:rgba(255,255,255,.75)">Cousin Hamza · now</div><div class="b">"rechargi 1 dinar? 🙏"</div></div>
+    </div>
+    <div class="t" id="b2a" style="top:1150px;font-size:110px">Priorities.</div>
+  </div>
+
+  <!-- B3 café -->
+  <div class="beat" id="b3">
+    <div class="abs mono" id="sign" style="left:350px;top:400px;width:300px;height:96px;border-radius:20px;background:var(--red);text-align:center;line-height:96px;font-size:48px;font-weight:800;color:#fff">CAFÉ</div>
+    <div class="abs" id="chair" style="left:230px;top:620px;width:220px;height:380px">
+      <div class="abs" style="left:20px;top:0;width:180px;height:200px;border-radius:30px 30px 10px 10px;background:#ECE6DA"></div>
+      <div class="abs" style="left:0;top:190px;width:220px;height:40px;border-radius:10px;background:#ECE6DA"></div>
+      <div class="abs" style="left:14px;top:220px;width:20px;height:160px;background:#D2CABB"></div><div class="abs" style="left:186px;top:220px;width:20px;height:160px;background:#D2CABB"></div>
+    </div>
+    <div class="abs" id="pin" style="left:190px;top:560px;padding:12px 22px;border-radius:40px;background:var(--fg);color:var(--ink);font-size:34px;font-weight:800">📍 since 2019</div>
+    <div class="abs" id="table" style="left:500px;top:800px;width:320px;height:200px">
+      <div class="abs" style="left:0;top:0;width:320px;height:70px;border-radius:50%;background:#8C6A4F"></div>
+      <div class="abs" style="left:148px;top:50px;width:24px;height:150px;background:#5A3D2C"></div>
+    </div>
+    <div class="abs" id="glass" style="left:625px;top:742px;width:70px;height:84px;border-radius:6px 6px 14px 14px;background:linear-gradient(180deg,#E8D3B0 0%,#E8D3B0 22%,#5B341E 23%,#3A1F10 100%);box-shadow:inset 0 0 0 4px rgba(255,255,255,.35)"></div>
+    <div class="abs" id="hand" style="left:700px;top:690px;width:220px;height:60px;border-radius:30px;background:var(--skin)"></div>
+    <div class="abs" id="price" style="left:760px;top:640px;padding:10px 20px;border-radius:14px;background:var(--fg);color:var(--ink);font-size:36px;font-weight:900;transform-origin:0 100%">1.2 DT</div>
+    <div class="t" id="b3a" style="top:1090px;font-size:84px">Same café. Same chair.</div>
+    <div class="t" id="b3b" style="top:1200px;font-size:52px;font-weight:800;color:var(--mut)">The waiter doesn't even ask anymore.</div>
+  </div>
+
+  <!-- B4 networking -->
+  <div class="beat" id="b4">
+    <div class="t" id="b4a" style="top:700px;font-size:150px">Networking.</div>
+    <div class="abs" id="est" style="left:150px;top:520px;width:300px;height:300px;border-radius:50%;background:repeating-linear-gradient(90deg,#C8102E 0 50px,#F2C230 50px 100px);box-shadow:0 0 0 12px var(--fg)"><div style="position:absolute;inset:0;text-align:center;line-height:300px;font-size:90px;font-weight:900;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)">EST</div></div>
+    <div class="abs" id="ca" style="left:550px;top:520px;width:300px;height:300px;border-radius:50%;background:repeating-linear-gradient(90deg,#E70013 0 50px,#FFFFFF 50px 100px);box-shadow:0 0 0 12px var(--fg)"><div style="position:absolute;inset:0;text-align:center;line-height:300px;font-size:90px;font-weight:900;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)">CA</div></div>
+    <div class="abs" id="vs" style="left:440px;top:600px;width:120px;text-align:center;font-size:96px;font-weight:900;color:var(--red2)">VS</div>
+    <div class="t mono" id="timer" style="top:900px;font-size:64px;font-weight:800">⏱ 0h 00m</div>
+    <div class="t" id="b4b" style="top:1090px;font-size:54px;font-weight:800">Debating Espérance vs Club Africain.</div>
+  </div>
+
+  <!-- B5 job ad + the take -->
+  <div class="beat" id="b5">
+    <div class="abs" id="ad" style="left:140px;top:400px;width:720px;height:560px;border-radius:24px;background:var(--fg);color:var(--ink);padding:44px 50px">
+      <div class="mono" style="font-size:34px;font-weight:800;color:var(--red);letter-spacing:.12em">WANTED</div>
+      <div style="font-size:64px;font-weight:900;letter-spacing:-0.02em;margin:6px 0 30px">Junior Developer</div>
+      <div id="r1" style="font-size:46px;font-weight:700;margin-bottom:22px">• Max age: 25</div>
+      <div id="r2" style="font-size:46px;font-weight:700;margin-bottom:22px">• Experience: 10 years</div>
+      <div id="r3" style="font-size:46px;font-weight:800;color:var(--red)">• Salary: "motivating"</div>
+    </div>
+    <div class="abs" id="face" style="left:390px;top:1010px;width:220px;height:220px;border-radius:50%;background:var(--skin)">
+      <div class="abs" style="left:10px;top:-6px;width:200px;height:100px;border-radius:100px 100px 20px 20px;background:#2A1A12"></div>
+      <div class="eye" id="eL" style="left:52px;top:96px"><i></i></div><div class="eye" id="eR" style="left:134px;top:96px"><i></i></div>
+      <div class="abs" id="mouth" style="left:80px;top:160px;width:60px;height:12px;border-radius:6px;background:#5A2E1C"></div>
+    </div>
+  </div>
+
+  <!-- B6 visa + mama -->
+  <div class="beat" id="b6">
+    <div class="abs mono" id="visaH" style="left:0;top:400px;width:1000px;text-align:center;font-size:44px;font-weight:700;color:var(--mut)">Visa appointment · next available:</div>
+    <div class="abs" id="cal" style="left:330px;top:480px;width:340px;height:340px;border-radius:30px;background:var(--fg);overflow:hidden">
+      <div class="abs" style="left:0;top:0;width:340px;height:90px;background:var(--red)"></div>
+      <div class="abs" id="calM" style="left:0;top:110px;width:340px;text-align:center;font-size:66px;font-weight:900;color:var(--ink)">NOV</div>
+      <div class="abs" id="calY" style="left:0;top:200px;width:340px;text-align:center;font-size:88px;font-weight:900;color:var(--ink)">2026</div>
+    </div>
+    <div class="abs" id="mama" style="left:110px;top:900px;width:780px;padding:28px 36px;border-radius:40px 40px 40px 8px;background:#2A2524">
+      <div style="font-size:30px;font-weight:700;color:var(--mut)">Mama 👩‍🍳</div>
+      <div style="font-size:52px;font-weight:800;margin-top:6px">"Ibn khaltek fi Almania chra karhba."</div>
+      <div style="font-size:34px;font-weight:600;color:var(--mut);margin-top:6px">(Your cousin in Germany bought a car.)</div>
+    </div>
+    <div class="t" id="b6a" style="top:1250px;font-size:96px"><span id="w1">Every.</span> <span id="w2">Single.</span> <span id="w3" style="color:var(--red)">Day.</span></div>
+  </div>
+
+  <!-- B7 CV -->
+  <div class="beat" id="b7">
+    <div class="card" id="file" style="left:200px;top:440px;width:600px;height:520px">
+      <div class="abs" style="left:230px;top:60px;width:140px;height:180px;border-radius:12px;background:var(--fg)"><div class="abs mono" style="left:0;top:120px;width:140px;text-align:center;font-size:30px;font-weight:800;color:var(--red)">PDF</div></div>
+      <div class="abs mono" id="fname" style="left:0;top:280px;width:600px;text-align:center;font-size:34px;font-weight:700"></div>
+      <div class="abs" id="send" style="left:200px;top:380px;width:200px;height:84px;border-radius:42px;background:var(--red);text-align:center;line-height:84px;font-size:38px;font-weight:800">Send</div>
+    </div>
+    <div class="abs" id="plane" style="left:440px;top:820px;font-size:110px">✈️</div>
+    <div class="t" id="b7a" style="top:1090px;font-size:80px">Version 47.</div>
+    <div class="t" id="b7b" style="top:1190px;font-size:62px;font-weight:800;color:var(--mut)">This one's the one.</div>
+  </div>
+
+  <!-- B8 the real stat -->
+  <div class="beat" id="b8">
+    <div class="t mono" id="b8h" style="top:430px;font-size:42px;font-weight:700;color:var(--mut);letter-spacing:.08em">OK, REAL TALK</div>
+    <div class="t" id="stat" style="top:500px;font-size:250px;color:var(--red)">0%</div>
+    <div class="t" id="b8a" style="top:790px;font-size:54px;font-weight:800">of Tunisian graduates are unemployed</div>
+    <div class="t mono" id="b8s" style="top:870px;font-size:30px;color:var(--mut)">INS · Q1 2026 · youth (15–24): 37.5%</div>
+    <div class="t" id="b8b" style="top:1060px;font-size:110px">Not lazy.</div>
+    <div class="t" id="b8c" style="top:1190px;font-size:58px;font-weight:800">Just waiting for the economy</div>
+    <div class="t" id="b8d" style="top:1260px;font-size:58px;font-weight:800">to <span style="color:var(--red)">wake up</span> too.</div>
+  </div>
+
+  <!-- B9 skills -> hire -->
+  <div class="beat" id="b9">
+    <div class="t mono" id="b9h" style="top:400px;font-size:44px;font-weight:700;color:var(--mut);letter-spacing:.08em">MEANWHILE, HIS SKILLS:</div>
+    <div class="abs" id="s1" style="left:120px;top:490px;font-size:60px;font-weight:800">🗣️ 4 languages</div>
+    <div class="abs" id="s2" style="left:120px;top:600px;font-size:60px;font-weight:800">📱 fixes any phone</div>
+    <div class="abs" id="s3" style="left:120px;top:710px;font-size:60px;font-weight:800">🤝 negotiates like a diplomat</div>
+    <div class="abs" id="s4" style="left:120px;top:820px;font-size:60px;font-weight:800">📸 runs the café's Instagram</div>
+    <div class="abs mono" id="s4b" style="left:200px;top:900px;font-size:36px;font-weight:700;color:var(--mut)">(for free)</div>
+    <div class="abs" id="stamp" style="left:110px;top:1060px;width:780px;padding:20px 0;border:14px solid var(--red);border-radius:24px;text-align:center;font-size:120px;font-weight:900;color:var(--red);letter-spacing:-0.02em">HIRE THIS MAN.</div>
+  </div>
+
+  <!-- B10 loop -->
+  <div class="beat" id="b10">
+    <div class="t" id="b10a" style="top:560px;font-size:90px;font-weight:800;color:var(--mut)">Tomorrow:</div>
+    <div class="t" id="b10b" style="top:680px;font-size:130px">same café.</div>
+    <div class="t" id="b10c" style="top:830px;font-size:130px;color:var(--red)">different dream.</div>
+    <div class="t" id="b10d" style="top:1120px;font-size:48px;font-weight:700">Tag the friend with the same chair 🪑</div>
+  </div>
+</div>
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="vig"></div>
+
+<script>
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
+    for (let i = 0; i < 26; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
+}
+const OUT = bez(.16,1,.3,1), IN = bez(.6,0,.9,.35), INOUT = bez(.65,0,.35,1), XIO = bez(.87,0,.13,1), SET = bez(.2,1.35,.4,1), POP = bez(.175,.885,.32,1.275);
+const LIN = x => Math.min(1, Math.max(0, x)), F = 1 / 30;
+const p = (t, s, d, e = OUT) => e(LIN((t - s) / d));
+const lerp = (a, b, k) => a + (b - a) * k;
+const $ = id => document.getElementById(id);
+const tf = (el, t, o) => { el.style.transform = t; if (o !== undefined) el.style.opacity = o; };
+
+// ---------- timeline: beats snap to the 100 bpm grid (0.6 s) ----------
+const B = [0, 3.6, 7.2, 11.4, 15.0, 18.6, 22.8, 27.0, 30.0, 34.8, 40.2, 44.4];
+const CLOCK = [null, ['☀️', '11:47'], ['📱', '12:10'], ['☕', '13:00'], ['⚽', '15:00'], ['💼', '17:00'], ['🛂', '19:00'], ['🌙', '22:00'], null, null, ['☀️', '11:47']];
+
+// cues: [id, kind, at (s, beat-relative)]. kinds: rise | pop | slam | drop | slideL | slideR | fade
+const CUES = {
+  0: [['b0pov', 'rise', -0.4], ['b0a', 'rise', -0.3], ['b0b', 'slam', -0.1], ['b0flag', 'pop', 0.6], ['b0c', 'slam', 0.6], ['b0k1', 'pop', 1.6], ['b0k2', 'pop', 2.0], ['b0k3', 'slam', 2.55]],
+  1: [['door', 'rise', 0.0], ['b1a', 'rise', 0.35], ['vrr', 'pop', 1.2], ['b1b', 'rise', 1.3], ['b1c', 'slam', 2.55]],
+  2: [['phone', 'rise', 0.0], ['n1', 'drop', 0.4], ['n2', 'drop', 1.0], ['n3', 'slam', 1.8], ['b2a', 'rise', 2.75]],
+  3: [['sign', 'drop', 0.0], ['chair', 'rise', 0.15], ['table', 'rise', 0.25], ['b3a', 'rise', 0.4], ['pin', 'pop', 1.1], ['hand', 'slideR', 1.8], ['glass', 'fade', 1.8], ['b3b', 'rise', 2.1], ['price', 'pop', 2.7]],
+  4: [['b4a', 'slam', 0.05], ['est', 'slideL', 1.25], ['ca', 'slideR', 1.25], ['vs', 'slam', 1.5], ['timer', 'rise', 1.6], ['b4b', 'rise', 1.75]],
+  5: [['ad', 'rise', 0.0], ['r1', 'rise', 0.5], ['r2', 'rise', 1.0], ['r3', 'slam', 1.65], ['face', 'pop', 2.4]],
+  6: [['visaH', 'rise', 0.0], ['cal', 'pop', 0.1], ['mama', 'pop', 1.9], ['w1', 'slam', 3.0], ['w2', 'slam', 3.4], ['w3', 'slam', 3.8]],
+  7: [['file', 'rise', 0.0], ['b7a', 'rise', 1.3], ['b7b', 'rise', 1.75]],
+  8: [['b8h', 'rise', 0.0], ['stat', 'pop', 0.25], ['b8a', 'rise', 0.6], ['b8s', 'fade', 1.0], ['b8b', 'slam', 2.2], ['b8c', 'rise', 3.0], ['b8d', 'rise', 3.25]],
+  9: [['b9h', 'rise', 0.0], ['s1', 'slideL', 0.4], ['s2', 'slideL', 0.95], ['s3', 'slideL', 1.5], ['s4', 'slideL', 2.05], ['s4b', 'fade', 2.5], ['stamp', 'stamp', 3.6]],
+  10: [['b10a', 'rise', 0.25], ['b10b', 'rise', 0.75], ['b10c', 'slam', 1.4], ['b10d', 'rise', 2.4]],
+};
+
+function cue(el, kind, lt, at) {
+  if (kind === 'rise') { const k = p(lt, at, 11 * F); tf(el, `translateY(${lerp(70, 0, k)}px)`, LIN(k * 2.5)); }
+  else if (kind === 'pop') { const k = p(lt, at, 10 * F, POP); tf(el, `scale(${k})`, LIN(k * 3)); }
+  else if (kind === 'slam') { const k = p(lt, at, 6 * F, OUT); tf(el, `scale(${lerp(2.3, 1, k)})`, LIN(k * 3)); }
+  else if (kind === 'drop') { const k = p(lt, at, 12 * F, SET); tf(el, `translateY(${lerp(-160, 0, k)}px)`, LIN(k * 3)); }
+  else if (kind === 'slideL') { const k = p(lt, at, 12 * F, SET); tf(el, `translateX(${lerp(-700, 0, k)}px)`, LIN(k * 2)); }
+  else if (kind === 'slideR') { const k = p(lt, at, 12 * F, SET); tf(el, `translateX(${lerp(700, 0, k)}px)`, LIN(k * 2)); }
+  else if (kind === 'fade') { const k = p(lt, at, 8 * F, LIN); el.style.opacity = k; }
+  else if (kind === 'stamp') { const k = p(lt, at, 5 * F, OUT); tf(el, `scale(${lerp(3, 1, k)}) rotate(${lerp(-4, -7, k)}deg)`, LIN(k * 4)); }
+}
+
+// sound + impact list derived from the same cues, so picture and sound can't drift
+const SFX = [];
+for (const [bi, list] of Object.entries(CUES)) for (const [id, kind, at] of list) {
+  const t0 = B[+bi] + at;
+  if (kind === 'slam' || kind === 'stamp') SFX.push([t0 + 4 * F, 'hit']);
+  else if (kind === 'pop') SFX.push([t0, 'pop']);
+  else if (kind === 'drop') SFX.push([t0 + 6 * F, 'ding']);
+  else if (kind === 'slideL' || kind === 'slideR') SFX.push([t0, 'swish']);
+}
+for (let i = 1; i < B.length - 1; i++) if (CLOCK[i]) SFX.push([B[i], 'tick']);
+SFX.push([B[1] + 1.2, 'vacuum'], [B[5] + 3.0, 'scratch'], [B[7] + 1.0, 'send'], [B[3] + 1.8, 'clink']);
+window.SFX = SFX; window.BEATS = B;
+const IMPACTS = SFX.filter(s => s[1] === 'hit').map(s => s[0]);
+
+// ---------- grain ----------
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960); let lastG = -1;
+function grain(f) { f = Math.floor(f / 2); if (f === lastG) return; lastG = f; let s = (f * 2654435761 + 1) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i+1] = d[i+2] = s & 255; d[i+3] = 255; } gctx.putImageData(gimg, 0, 0); }
+
+function render(t) {
+  grain(Math.round(t * 30));
+  $('grid').style.transform = `translateY(${-(t * 20) % 60}px)`;
+  let bi = 0; for (let i = 0; i < B.length - 1; i++) if (t >= B[i]) bi = i;
+  const lt = t - B[bi];
+  for (let i = 0; i < 11; i++) $('b' + i).style.display = i === bi ? 'block' : 'none';
+
+  // camera: impacts shake, smash-cut punch-in, freeze-zoom on the "take"
+  let x = 0, y = 0, r = 0, s = 1;
+  for (const h of IMPACTS) if (t >= h && t < h + 0.45) { const d = Math.exp(-(t - h) * 14); x += 14 * d * Math.sin((t - h) * 95); y += 10 * d * Math.cos((t - h) * 83); r += 0.7 * d * Math.sin((t - h) * 71); }
+  s *= 1 + 0.05 * (1 - p(lt, 0, 9 * F));
+  if (bi === 5) { const kz = p(lt, 3.0, 4 * F, OUT); s *= lerp(1, 1.9, kz); }
+  const wo = bi === 5 && lt > 3.0 ? '500px 1120px' : '500px 900px';
+  $('world').style.transformOrigin = wo;
+  tf($('world'), `translate(${x}px, ${y}px) rotate(${r}deg) scale(${s})`);
+
+  // persistent clock: whips to the new time on every smash cut
+  const ck = CLOCK[bi];
+  const cw = $('clockWrap');
+  if (ck) { cw.style.opacity = 1; $('clockIcon').textContent = ck[0]; $('clockA').textContent = ck[1];
+    const k = p(lt, 0, 7 * F, SET); tf($('clockA'), `translateY(${lerp(90, 0, k)}px)`); tf($('clockIcon'), `rotate(${lerp(-90, 0, k)}deg)`); }
+  else cw.style.opacity = 0;
+
+  // generic cues
+  for (const [id, kind, at] of CUES[bi]) cue($(id), kind, lt, at);
+
+  // ---- beat-specific motion ----
+  if (bi === 1) { const on = lt > 1.2; const j = on ? Math.sin(lt * 60) * 8 : 0;
+    tf($('door'), `translateX(${j}px) rotate(${j * 0.15}deg)`, p(lt, 0, 8 * F, LIN));
+    tf($('vrr'), `scale(${p(lt, 1.2, 10 * F, POP)}) translate(${Math.sin(lt * 47) * 6}px, ${Math.cos(lt * 53) * 6}px) skewX(-8deg)`, on ? 1 : 0); }
+  if (bi === 2) { const k3 = p(lt, 1.8, 6 * F); tf($('n3'), `scale(${lerp(1.6, 1, k3)}) rotate(${Math.sin(LIN((lt - 1.9) / 0.4) * Math.PI * 4) * 3 * (1 - LIN((lt - 1.9) / 0.4))}deg)`, LIN(k3 * 3)); }
+  if (bi === 3) { const kh = p(lt, 1.8, 12 * F, SET), kb = p(lt, 2.5, 8 * F, IN);
+    tf($('hand'), `translateX(${lerp(700, 0, kh) + lerp(0, 600, kb)}px)`, lt > 1.8 ? 1 : 0);
+    tf($('glass'), `translateY(${lerp(-40, 0, kh)}px)`, lt > 1.85 ? 1 : 0);
+    const kp = p(lt, 2.7, 10 * F, POP); tf($('price'), `scale(${kp}) rotate(${lerp(-20, -6, kp)}deg)`, LIN(kp * 3)); }
+  if (bi === 4) { const hide = p(lt, 1.15, 3 * F, IN); $('b4a').style.opacity = lt < 1.15 ? $('b4a').style.opacity : 1 - hide;
+    const mins = Math.floor(LIN((lt - 1.7) / 1.6) * 192); $('timer').textContent = `⏱ ${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, '0')}m`;
+    const sh = lt > 1.5 ? Math.sin(lt * 9) * 6 : 0; tf($('vs'), `scale(${lerp(2.3, 1, p(lt, 1.5, 6 * F)) * (1 + 0.06 * Math.sin(lt * 14))}) rotate(${sh}deg)`, LIN(p(lt, 1.5, 6 * F) * 3)); }
+  if (bi === 5) { // the take: eyes bulge on the record scratch, then hold
+    const kt = p(lt, 3.0, 4 * F, POP);
+    ['eL', 'eR'].forEach(id => tf($(id), `scale(${lerp(1, 1.9, kt)})`));
+    tf($('mouth'), `scaleX(${lerp(1, 0.5, kt)}) scaleY(${lerp(1, 3, kt)})`); }
+  if (bi === 6) { const months = ['NOV', 'DEC', 'JAN', 'FEB', 'MAR']; const kf = LIN((lt - 0.4) / 1.1);
+    const idx = Math.min(4, Math.floor(Math.pow(kf, 1.6) * 4.999)); $('calM').textContent = months[idx]; $('calY').textContent = idx >= 2 ? '2027' : '2026';
+    const land = p(lt, 1.5, 8 * F, POP); $('calM').style.color = $('calY').style.color = lt > 1.5 ? 'var(--red)' : 'var(--ink)';
+    tf($('cal'), `scale(${p(lt, 0.1, 10 * F, POP) * (lt > 1.5 ? lerp(1.15, 1, land) : 1)}) rotate(${lt > 0.4 && lt < 1.5 ? Math.sin(lt * 40) * 2 : 0}deg)`); }
+  if (bi === 7) { const name = 'CV_final_FINAL_v47.pdf'; $('fname').textContent = name.slice(0, Math.floor(name.length * LIN((lt - 0.25) / 0.75)));
+    const press = lt > 1.0 && lt < 1.2 ? 0.9 : 1; tf($('send'), `scale(${press})`);
+    const kp = p(lt, 1.05, 18 * F, IN); tf($('plane'), `translate(${lerp(0, 700, kp)}px, ${lerp(0, -700, kp) - Math.sin(kp * Math.PI) * 60}px) rotate(${lerp(0, 25, kp)}deg) scale(${lerp(0.8, 0.4, kp)})`, lt > 1.05 ? 1 : 0); }
+  if (bi === 8) { const kn = p(lt, 0.25, 1.1); $('stat').textContent = (24.2 * kn).toFixed(1) + '%'; }
+  if (bi === 10) { const kf = p(t, B[11] - 0.35, 10 * F, IN); $('b10').style.opacity = 1 - kf; } else $('b10').style.opacity = 1;
+}
+window.render = render;
+render(0);
+</script>
+</body>
+</html>
