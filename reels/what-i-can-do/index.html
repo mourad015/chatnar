@@ -1,0 +1,329 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>What I Can Do</title>
+<style>
+  :root {
+    --bg: #0D0D0F; --fg: #F5F2EA; --ac: #FF6B4A; --ac2: #FFB29E;
+    --mut: #77726B; --card: #16161A; --line: #2A2A31; --ok: #3DDC84;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; background: var(--bg); overflow: hidden; }
+  body { font-family: 'Inter Display', 'Inter', sans-serif; color: var(--fg); }
+  .abs { position: absolute; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  #grid { position: absolute; inset: -120px; background-image: radial-gradient(rgba(245,242,234,.09) 2px, transparent 2.6px); background-size: 60px 60px; }
+  #glow { position: absolute; width: 1000px; height: 1000px; border-radius: 50%; background: radial-gradient(circle, rgba(255,107,74,.22), rgba(255,107,74,0) 62%); }
+  #content { position: absolute; inset: 0; transform-origin: 500px 900px; }
+  .scene { position: absolute; inset: 0; display: none; }
+  /* text lines are centered on x=500 (middle of the safe area 60–940) */
+  .line { position: absolute; left: 0; width: 1000px; text-align: center; overflow: hidden; font-weight: 900; letter-spacing: -0.03em; white-space: nowrap; }
+  .w { display: inline-block; }
+  .card { position: absolute; background: var(--card); border: 3px solid var(--line); border-radius: 40px; overflow: hidden; }
+  .dots { position: absolute; top: 34px; left: 40px; display: flex; gap: 16px; }
+  .dots i { width: 22px; height: 22px; border-radius: 50%; background: var(--line); display: block; }
+  #cap { position: absolute; top: 1250px; left: 0; width: 1000px; text-align: center; font-weight: 900; font-size: 112px; letter-spacing: -0.035em; white-space: nowrap; }
+  #cap span { display: inline-block; }
+  #counter { position: absolute; top: 280px; left: 80px; font-size: 40px; color: var(--mut); }
+  #counter b { color: var(--ac); font-weight: 700; }
+  #wipe { position: absolute; top: -240px; width: 1800px; height: 2400px; transform-origin: 0 0; }
+  #wipeNum { position: absolute; left: 0; width: 1800px; top: 1080px; text-align: center; font-size: 300px; font-weight: 800; color: var(--bg); }
+  .bar { position: absolute; bottom: 0; width: 80px; border-radius: 18px 18px 6px 6px; transform-origin: 50% 100%; }
+  .el { position: absolute; }
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<div id="glow"></div>
+
+<div id="content">
+  <!-- 0: hook -->
+  <div class="scene" id="s0">
+    <div class="line" id="h1" style="top:520px;height:160px;font-size:132px;line-height:160px"><span class="w">What</span> <span class="w">can</span> <span class="w">AI</span></div>
+    <div class="line" id="h2" style="top:680px;height:160px;font-size:132px;line-height:160px"><span class="w">actually</span></div>
+    <div class="line" id="h3" style="top:820px;height:420px;font-size:360px;line-height:420px;overflow:visible;color:var(--ac)"><span class="w" id="hDo">DO?</span></div>
+    <div class="line mono" id="hSub" style="top:1300px;height:70px;font-size:44px;font-weight:500;color:var(--mut);letter-spacing:0">5 skills &middot; 15 seconds</div>
+  </div>
+
+  <!-- 1: code -->
+  <div class="scene" id="s1">
+    <div class="card" id="codeCard" style="left:80px;top:460px;width:840px;height:600px">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="abs mono" style="top:26px;right:44px;font-size:30px;color:var(--mut)">reel.ts</div>
+      <pre class="abs mono" id="code" style="top:120px;left:48px;font-size:42px;line-height:72px"></pre>
+    </div>
+  </div>
+
+  <!-- 2: bugs -->
+  <div class="scene" id="s2">
+    <div class="card" id="termCard" style="left:80px;top:480px;width:840px;height:600px">
+      <div class="dots"><i></i><i></i><i></i></div>
+            <div class="abs mono" id="t1" style="top:140px;left:48px;font-size:40px">$ npm test</div>
+      <div class="abs mono" id="t2" style="top:240px;left:48px;font-size:40px;color:var(--ac)">✗ TypeError: x is undefined<div class="abs" id="strike" style="left:0;top:26px;height:5px;width:100%;background:var(--ac);transform-origin:0 50%"></div></div>
+      <div class="abs mono" id="t3" style="top:340px;left:48px;font-size:40px;color:var(--ok)">✓ fixed in 1 line</div>
+      <div class="abs mono" id="t4" style="top:440px;left:48px;font-size:40px;color:var(--ok)">✓ 42/42 tests passed</div>
+    </div>
+    <div class="abs" id="okBadge" style="left:770px;top:400px;width:150px;height:150px;border-radius:50%;background:var(--ok)">
+      <svg width="150" height="150" viewBox="0 0 150 150"><path id="okPath" d="M44 78 L66 100 L108 54" fill="none" stroke="#0D0D0F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+    </div>
+  </div>
+
+  <!-- 3: apps -->
+  <div class="scene" id="s3">
+    <div class="abs" id="phone" style="left:290px;top:410px;width:420px;height:790px;border-radius:66px;border:10px solid var(--line);background:#121215;overflow:hidden;transform-origin:50% 100%">
+      <div class="el" id="a0" style="left:150px;top:18px;width:100px;height:26px;border-radius:13px;background:var(--line)"></div>
+      <div class="el" id="a1" style="left:26px;top:70px;width:348px;height:150px;border-radius:30px;background:var(--ac);padding:28px">
+        <div style="font-size:26px;font-weight:600;color:#0D0D0F;opacity:.7">Good morning</div>
+        <div style="font-size:48px;font-weight:900;color:#0D0D0F;letter-spacing:-0.03em">Your app</div>
+      </div>
+      <div class="el" id="a2" style="left:26px;top:244px;width:348px;height:110px;border-radius:26px;background:#1F1F25"><i style="position:absolute;left:22px;top:23px;width:64px;height:64px;border-radius:50%;background:var(--ac2)"></i><i style="position:absolute;left:106px;top:32px;width:180px;height:18px;border-radius:9px;background:#3A3A42"></i><i style="position:absolute;left:106px;top:62px;width:120px;height:16px;border-radius:8px;background:#2C2C33"></i></div>
+      <div class="el" id="a3" style="left:26px;top:374px;width:348px;height:110px;border-radius:26px;background:#1F1F25"><i style="position:absolute;left:22px;top:23px;width:64px;height:64px;border-radius:50%;background:var(--fg)"></i><i style="position:absolute;left:106px;top:32px;width:200px;height:18px;border-radius:9px;background:#3A3A42"></i><i style="position:absolute;left:106px;top:62px;width:90px;height:16px;border-radius:8px;background:#2C2C33"></i></div>
+      <div class="el" id="a4" style="left:26px;top:504px;width:348px;height:110px;border-radius:26px;background:#1F1F25"><i style="position:absolute;left:22px;top:23px;width:64px;height:64px;border-radius:50%;background:var(--ac)"></i><i style="position:absolute;left:106px;top:32px;width:150px;height:18px;border-radius:9px;background:#3A3A42"></i><i style="position:absolute;left:106px;top:62px;width:130px;height:16px;border-radius:8px;background:#2C2C33"></i></div>
+      <div class="el" id="a5" style="left:26px;top:648px;width:348px;height:92px;border-radius:46px;background:var(--fg);text-align:center;line-height:92px;font-size:36px;font-weight:800;color:#0D0D0F">Get started</div>
+    </div>
+  </div>
+
+  <!-- 4: data -->
+  <div class="scene" id="s4">
+    <div class="line" id="num" style="top:400px;height:210px;font-size:190px;line-height:210px;color:var(--ac);overflow:visible">+0%</div>
+    <div class="abs" id="chart" style="left:118px;top:660px;width:764px;height:470px">
+      <div class="abs" id="axis" style="left:-20px;bottom:-8px;width:804px;height:5px;border-radius:3px;background:var(--line);transform-origin:0 50%"></div>
+    </div>
+  </div>
+
+  <!-- 5: motion -->
+  <div class="scene" id="s5">
+    <div class="abs" id="ring" style="left:500px;top:780px;width:0;height:0"></div>
+    <div class="abs" id="shape" style="left:360px;top:640px;width:280px;height:280px;background:var(--ac)"></div>
+    <div class="line mono" id="bez" style="top:1110px;height:60px;font-size:40px;font-weight:500;color:var(--mut);letter-spacing:0"></div>
+  </div>
+
+  <!-- 6: outro -->
+  <div class="scene" id="s6">
+    <div id="oTop" class="abs" style="left:0;top:0;width:1080px;height:1920px">
+      <div class="line" id="o1" style="top:500px;height:150px;font-size:124px;line-height:150px"><span class="w">This</span> <span class="w">reel?</span></div>
+      <div class="line" id="o2" style="top:650px;height:150px;font-size:124px;line-height:150px"><span class="w">Made</span> <span class="w">in</span> <span class="w" style="color:var(--ac)">code.</span></div>
+    </div>
+    <div class="line" id="o3" style="top:860px;height:300px;font-size:190px;line-height:300px;overflow:visible"><span class="w" id="oClaude"><span style="font-size:96px;letter-spacing:-0.02em">by </span><span style="color:var(--ac)">Claude</span></span></div>
+    <div class="line mono" id="o4" style="top:1290px;height:60px;font-size:38px;font-weight:500;color:var(--mut);letter-spacing:0">no editor &middot; no templates &middot; just code</div>
+  </div>
+
+  <div id="counter" class="mono"></div>
+  <div id="cap"><span id="capA"></span> <span id="capB" style="color:var(--ac)"></span></div>
+</div>
+
+<div id="wipe"><div id="wipeNum" class="mono"></div></div>
+
+<script>
+// ---------- easing (cubic-bezier, solved by bisection) ----------
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t;
+  const by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 26; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; }
+    return by((lo + hi) / 2);
+  };
+}
+const OUT = bez(.16, 1, .3, 1), IN = bez(.7, 0, .84, 0), INOUT = bez(.65, 0, .35, 1), POP = bez(.34, 1.56, .64, 1);
+const LIN = x => Math.min(1, Math.max(0, x));
+const F = 1 / 30;
+const p = (t, start, dur, ease = OUT) => ease(LIN((t - start) / dur));
+const lerp = (a, b, k) => a + (b - a) * k;
+const $ = id => document.getElementById(id);
+const set = (el, tf, op) => { el.style.transform = tf; if (op !== undefined) el.style.opacity = op; };
+
+// ---------- timeline ----------
+const CUTS = [2, 4, 6, 8, 10, 12];          // every cut lands on a beat (120 bpm)
+const STARTS = [0, 2, 4, 6, 8, 10, 12];
+const CAPS = [null, ['WRITE', 'CODE'], ['FIX', 'BUGS'], ['BUILD', 'APPS'], ['CRUNCH', 'DATA'], ['MAKE', 'MOTION'], null];
+
+// ---------- static content ----------
+const CODE = [
+  [['const ', 'ac'], ['reel = ', 'fg'], ['make', 'ac'], ['({', 'fg']],
+  [['  hook: ', 'fg'], ['"0.0s"', 'ac2'], [',', 'fg']],
+  [['  ease: ', 'fg'], ['"out"', 'ac2'], [',', 'fg']],
+  [['  vibe: ', 'fg'], ['"unreal"', 'ac2'], [',', 'fg']],
+  [['});', 'fg']],
+  [['ship', 'ac'], ['(reel);', 'fg']],
+];
+const CODE_LEN = CODE.reduce((n, l) => n + l.reduce((m, [s]) => m + s.length, 0) + 1, 0);
+function renderCode(chars, showCursor) {
+  let out = '', left = chars;
+  for (const line of CODE) {
+    for (const [s, c] of line) {
+      if (left <= 0) break;
+      const piece = s.slice(0, left); left -= piece.length;
+      out += `<span style="color:var(--${c})">${piece.replace(/</g, '&lt;')}</span>`;
+    }
+    if (left <= 0) break;
+    out += '\n'; left -= 1;
+  }
+  if (showCursor) out += '<span style="display:inline-block;width:24px;height:46px;background:var(--ac);vertical-align:-8px"></span>';
+  return out;
+}
+
+const BARS = [170, 230, 200, 290, 260, 350, 450];
+const chart = $('chart');
+BARS.forEach((h, i) => {
+  const b = document.createElement('div');
+  b.className = 'bar'; b.id = 'bar' + i;
+  b.style.left = (i * 114) + 'px'; b.style.height = h + 'px';
+  b.style.background = i === BARS.length - 1 ? 'var(--ac)' : (i % 2 ? '#3A3A42' : '#2E2E35');
+  chart.appendChild(b);
+});
+
+const ring = $('ring');
+for (let i = 0; i < 8; i++) {
+  const d = document.createElement('div');
+  d.className = 'abs'; d.id = 'dot' + i;
+  d.style.cssText += 'width:34px;height:34px;border-radius:50%;left:-17px;top:-17px;background:' + (i % 2 ? 'var(--fg)' : 'var(--ac2)');
+  ring.appendChild(d);
+}
+const BEZ_TXT = 'cubic-bezier(.16, 1, .3, 1)';
+
+// slide-up word reveal: the signature text move
+function reveal(lineEl, t, start, stagger = 3 * F, dur = 11 * F) {
+  [...lineEl.querySelectorAll('.w')].forEach((w, i) => {
+    const k = p(t, start + i * stagger, dur, OUT);
+    set(w, `translateY(${lerp(105, 0, k)}%)`);
+  });
+}
+
+// ---------- render one frame ----------
+function render(t) {
+  // background: constant drift (linear is fine for constant motion)
+  $('grid').style.transform = `translateY(${-(t * 24) % 60}px)`;
+  set($('glow'), `translate(${500 + 220 * Math.sin(t * 0.7) - 500}px, ${820 + 260 * Math.cos(t * 0.5) - 500}px)`);
+
+  let s = 0; for (let i = 0; i < STARTS.length; i++) if (t >= STARTS[i]) s = i;
+  const lt = t - STARTS[s];
+  for (let i = 0; i < 7; i++) $('s' + i).style.display = i === s ? 'block' : 'none';
+
+  // zoom punch on every cut
+  let punch = 0;
+  for (const c of CUTS) if (t >= c && t < c + 0.5) punch = 1 - p(t, c, 12 * F, OUT);
+  set($('content'), `scale(${1 + 0.07 * punch})`);
+
+  // whip wipe covering each cut
+  let wx = -3000, wipeIdx = -1;
+  CUTS.forEach((c, i) => { if (t >= c - 5 * F && t <= c + 5 * F) { wx = lerp(-1950, 1250, INOUT(LIN((t - c + 5 * F) / (10 * F)))); wipeIdx = i; } });
+  const wipe = $('wipe');
+  wipe.style.background = wipeIdx % 2 ? 'var(--fg)' : 'var(--ac)';
+  set(wipe, `translateX(${wx}px) skewX(-12deg)`);
+  $('wipeNum').textContent = wipeIdx >= 0 && wipeIdx < 5 ? '0' + (wipeIdx + 1) : '';
+  $('wipeNum').style.transform = 'skewX(12deg)';
+
+  // counter + caption (same spot every scene)
+  const counter = $('counter');
+  if (s >= 1 && s <= 5) { counter.innerHTML = `<b>0${s}</b> / 05`; set(counter, `translateY(${lerp(30, 0, p(lt, 0.1, 8 * F))}px)`, p(lt, 0.1, 6 * F, LIN)); }
+  else counter.style.opacity = 0;
+  const cap = CAPS[s];
+  if (cap) {
+    $('capA').textContent = cap[0]; $('capB').textContent = cap[1];
+    const ka = p(lt, 0.14, 7 * F, POP), kb = p(lt, 0.14 + 3 * F, 7 * F, POP);
+    set($('capA'), `scale(${lerp(0.82, 1, ka)})`, LIN(ka * 3));
+    set($('capB'), `scale(${lerp(0.82, 1, kb)})`, LIN(kb * 3));
+  } else { $('capA').textContent = ''; $('capB').textContent = ''; }
+
+  if (s === 0) {
+    // starts at -0.15 s so frame 1 is already moving
+    reveal($('h1'), t, -0.15);
+    reveal($('h2'), t, -0.15 + 9 * F);
+    // anticipation, then pop on the beat at 0.5 s
+    const kd = p(t, 0.42, 10 * F, POP);
+    set($('hDo'), `scale(${kd}) rotate(${lerp(-10, 0, p(t, 0.42, 14 * F))}deg)`, LIN(kd * 4));
+    const ks = p(t, 1.0, 10 * F);
+    set($('hSub'), `translateY(${lerp(40, 0, ks)}px)`, ks);
+    // slow camera push while it holds
+    set($('s0'), `scale(${1 + 0.03 * LIN((t - 0.6) / 1.4)})`);
+  }
+
+  if (s === 1) {
+    const kc = p(lt, 0.06, 14 * F);
+    set($('codeCard'), `translateY(${lerp(140, 0, kc)}px) scale(${lerp(0.92, 1, kc)})`, LIN(kc * 2.5));
+    const typed = Math.floor(CODE_LEN * LIN((lt - 0.3) / 1.25));
+    const blink = lt > 1.55 ? Math.floor(lt * 4) % 2 === 0 : true;
+    $('code').innerHTML = renderCode(typed, blink);
+  }
+
+  if (s === 2) {
+    const kc = p(lt, 0.06, 14 * F);
+    set($('termCard'), `translateY(${lerp(140, 0, kc)}px) scale(${lerp(0.92, 1, kc)})`, LIN(kc * 2.5));
+    const k1 = p(lt, 0.15, 8 * F); set($('t1'), `translateY(${lerp(30, 0, k1)}px)`, k1);
+    const k2 = p(lt, 0.26, 8 * F);
+    const shake = lt > 0.78 && lt < 0.98 ? Math.sin((lt - 0.78) * 70) * 14 * (1 - (lt - 0.78) / 0.2) : 0;
+    set($('t2'), `translate(${shake}px, ${lerp(30, 0, k2)}px)`, lt > 1.0 ? lerp(1, 0.35, p(lt, 1.0, 6 * F)) : k2);
+    set($('strike'), `scaleX(${p(lt, 1.0, 6 * F)})`);
+    const k3 = p(lt, 1.06, 8 * F); set($('t3'), `translateY(${lerp(30, 0, k3)}px)`, k3);
+    const k4 = p(lt, 1.16, 8 * F); set($('t4'), `translateY(${lerp(30, 0, k4)}px)`, k4);
+    const g = p(lt, 1.0, 10 * F);
+    $('termCard').style.borderColor = g > 0 ? 'rgba(61,220,132,' + (0.25 + 0.75 * g) + ')' : 'var(--line)';
+    $('termCard').style.boxShadow = g > 0 ? `0 0 ${80 * g}px rgba(61,220,132,${0.28 * g})` : 'none';
+    const kb = p(lt, 1.08, 9 * F, POP);
+    set($('okBadge'), `scale(${kb}) rotate(${lerp(-30, 0, p(lt, 1.08, 12 * F))}deg)`, LIN(kb * 4));
+    $('okPath').style.strokeDashoffset = 100 * (1 - p(lt, 1.18, 9 * F));
+  }
+
+  if (s === 3) {
+    const kp = p(lt, 0.04, 16 * F);
+    set($('phone'), `translateY(${lerp(260, 0, kp)}px) rotate(${lerp(-9, 0, kp)}deg)`, LIN(kp * 2));
+    for (let i = 0; i <= 5; i++) {
+      const start = 0.24 + i * 3 * F;
+      const k = i === 5 ? p(lt, start, 10 * F, POP) : p(lt, start, 10 * F);
+      set($('a' + i), i === 5 ? `scale(${k})` : `translateY(${lerp(-70, 0, k)}px)`, LIN(k * 3));
+    }
+  }
+
+  if (s === 4) {
+    const kn = p(lt, 0.25, 1.0);
+    $('num').textContent = '+' + Math.round(248 * kn) + '%';
+    const kpop = p(lt, 0.18, 8 * F, POP);
+    set($('num'), `scale(${lerp(0.7, 1, kpop)})`, LIN(kpop * 3));
+    set($('axis'), `scaleX(${p(lt, 0.1, 12 * F)})`);
+    BARS.forEach((h, i) => {
+      const k = i === BARS.length - 1 ? p(lt, 0.2 + i * 3 * F, 14 * F, POP) : p(lt, 0.2 + i * 3 * F, 14 * F);
+      set($('bar' + i), `scaleY(${k})`);
+    });
+  }
+
+  if (s === 5) {
+    const kin = p(lt, 0.08, 9 * F, POP);
+    const km = p(lt, 0.5, 18 * F, INOUT);        // square -> circle, rotate on Z only
+    const shape = $('shape');
+    shape.style.borderRadius = lerp(36, 140, km) + 'px';
+    set(shape, `scale(${kin * lerp(1, 0.86, km)}) rotate(${lerp(0, 180, km)}deg)`, LIN(kin * 3));
+    const spin = lt * 40;                         // constant orbit
+    for (let i = 0; i < 8; i++) {
+      const k = p(lt, 0.3 + i * 2 * F, 9 * F, POP);
+      const a = (i / 8) * Math.PI * 2 + spin * Math.PI / 180;
+      const r = 300 * lerp(0.4, 1, p(lt, 0.3 + i * 2 * F, 12 * F));
+      set($('dot' + i), `translate(${Math.cos(a) * r}px, ${Math.sin(a) * r}px) scale(${k})`, LIN(k * 3));
+    }
+    $('bez').textContent = BEZ_TXT.slice(0, Math.floor(BEZ_TXT.length * LIN((lt - 0.55) / 0.6)));
+  }
+
+  if (s === 6) {
+    reveal($('o1'), lt, 0.1);
+    reveal($('o2'), lt, 0.5);
+    const kc = p(lt, 0.96, 10 * F, POP);          // lands on the 13.0 s beat
+    set($('oClaude'), `scale(${kc})`, LIN(kc * 4));
+    // focus shifts to "Claude": the lines above step back
+    const kb = p(lt, 0.96, 12 * F);
+    set($('oTop'), `translateY(${lerp(0, -40, kb)}px)`, lerp(1, 0.45, kb));
+    const k4 = p(lt, 1.55, 10 * F);
+    set($('o4'), `translateY(${lerp(30, 0, k4)}px)`, k4);
+    // exit with ease-in so the loop restarts on an empty frame
+    const ke = p(lt, 2.6, 11 * F, IN);
+    set($('s6'), `translateY(${lerp(0, -160, ke)}px)`, 1 - ke);
+  } else {
+    $('s6').style.opacity = 1;
+  }
+}
+window.render = render;
+render(0);
+</script>
+</body>
+</html>
