@@ -1,0 +1,500 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>What If We Swapped</title>
+<style>
+  :root { --bg:#0D0D0F; --fg:#F5F2EA; --ac:#FF6B4A; --ac2:#FFB29E; --mut:#77726B; --ink:#0D0D0F; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1920px; background:var(--bg); overflow:hidden; }
+  body { font-family:'Inter Display','Inter',sans-serif; color:var(--fg); }
+  .abs { position:absolute; }
+  .mono { font-family:'JetBrains Mono',monospace; }
+  .layer { position:absolute; inset:0; display:none; }
+  .bgl { position:absolute; inset:0; }
+  #world { position:absolute; inset:0; transform-origin:500px 900px; }
+  .ch { display:inline-block; white-space:pre; }
+  .bubble { position:absolute; border-radius:38px; padding:26px 36px; font-size:50px; font-weight:600; line-height:1.2; white-space:nowrap; }
+  #cap { position:absolute; top:1270px; left:0; width:1000px; text-align:center; font-weight:900; font-size:96px; letter-spacing:-0.03em; white-space:nowrap; text-shadow:0 6px 30px rgba(0,0,0,.55); }
+  #cap .wd { display:inline-block; margin:0 12px; }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.08; mix-blend-mode:overlay; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 52%, rgba(0,0,0,.5) 100%); }
+  .face { position:absolute; width:96px; height:96px; border-radius:50%; }
+  .face i { position:absolute; width:12px; height:16px; border-radius:6px; background:var(--ink); top:34px; }
+  .face b { position:absolute; left:30px; top:52px; width:36px; height:18px; border:6px solid var(--ink); border-top:none; border-radius:0 0 22px 22px; }
+</style>
+</head>
+<body>
+<div id="bgDark" class="bgl" style="background:var(--bg)"></div>
+<div id="bgSun" class="bgl" style="background:linear-gradient(180deg,#FFC48A 0%,#FF8A5C 34%,#C2496A 58%,#2A1630 78%,#160D1C 100%);opacity:0"></div>
+<div id="bgNight" class="bgl" style="background:linear-gradient(180deg,#141B3D 0%,#0B1026 55%,#07091A 100%);opacity:0"></div>
+<div id="stars" class="bgl" style="opacity:0"></div>
+<div id="glow" class="abs" style="width:1100px;height:1100px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,74,.22),rgba(255,107,74,0) 62%)"></div>
+
+<div id="world">
+  <!-- S0: two characters, then they swap -->
+  <div class="layer" id="S0">
+    <div class="abs" id="you" style="width:240px;height:380px">
+      <div class="abs" id="youHead" style="left:55px;top:0;width:130px;height:130px;border-radius:50%;background:var(--fg)"><i class="abs" style="left:36px;top:52px;width:14px;height:20px;border-radius:7px;background:var(--ink)"></i><i class="abs" style="left:80px;top:52px;width:14px;height:20px;border-radius:7px;background:var(--ink)"></i></div>
+      <div class="abs" id="youBody" style="left:10px;top:150px;width:220px;height:230px;border-radius:110px 110px 40px 40px;background:var(--fg)"></div>
+    </div>
+    <div class="abs" id="me" style="width:250px;height:250px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFC2AE,#FF6B4A 55%,#D9442A);box-shadow:0 0 120px rgba(255,107,74,.55)">
+      <i class="abs" style="left:82px;top:104px;width:18px;height:28px;border-radius:9px;background:var(--ink)"></i><i class="abs" style="left:150px;top:104px;width:18px;height:28px;border-radius:9px;background:var(--ink)"></i>
+    </div>
+    <div class="abs mono" id="labL" style="top:1060px;left:180px;width:300px;text-align:center;font-size:38px;font-weight:700;height:50px;overflow:hidden"><div id="labL1">YOU</div><div id="labL2" style="color:var(--ac)">CLAUDE</div></div>
+    <div class="abs mono" id="labR" style="top:1060px;left:520px;width:300px;text-align:center;font-size:38px;font-weight:700;height:50px;overflow:hidden"><div id="labR1" style="color:var(--ac)">CLAUDE</div><div id="labR2">YOU</div></div>
+    <div class="abs" id="sparkA" style="width:46px;height:46px;border-radius:50%;background:var(--fg);box-shadow:0 0 50px 12px rgba(245,242,234,.7)"></div>
+    <div class="abs" id="sparkB" style="width:46px;height:46px;border-radius:50%;background:var(--ac);box-shadow:0 0 50px 12px rgba(255,107,74,.8)"></div>
+  </div>
+
+  <!-- S1: the eye -->
+  <div class="layer" id="S1">
+    <svg class="abs" id="eye" width="700" height="460" viewBox="-350 -230 700 460" style="left:150px;top:550px;overflow:visible">
+      <defs><clipPath id="lid"><path id="lidPath" d="M-300 0 Q0 -210 300 0 Q0 210 -300 0 Z"/></clipPath></defs>
+      <path id="eyeOut" d="M-300 0 Q0 -210 300 0 Q0 210 -300 0 Z" fill="#F5F2EA"/>
+      <g clip-path="url(#lid)"><circle id="iris" r="110" fill="#FF6B4A"/><circle id="pupil" r="48" fill="#0D0D0F"/><circle cx="-34" cy="-38" r="18" fill="#fff" opacity=".9"/></g>
+    </svg>
+    <div class="abs" id="cursor" style="left:470px;top:740px;width:60px;height:110px;background:var(--ac);border-radius:6px"></div>
+  </div>
+
+  <!-- S2: messages -->
+  <div class="layer" id="S2">
+    <div class="abs" id="rain" style="inset:0;overflow:hidden"></div>
+    <div class="abs mono" id="msgCount" style="top:300px;left:0;width:1000px;text-align:center;font-size:70px;font-weight:800;color:var(--fg)"></div>
+    <div class="abs mono" style="top:385px;left:0;width:1000px;text-align:center;font-size:34px;color:var(--mut)" id="msgLabel">messages / second</div>
+    <div class="bubble" id="hb0" style="left:70px;top:540px;background:var(--fg);color:var(--ink)">help me write my wedding speech 💍</div>
+    <div class="bubble" id="hb1" style="left:200px;top:730px;background:var(--fg);color:var(--ink)">prod is down. it's 3am 😭</div>
+    <div class="bubble" id="hb2" style="left:120px;top:920px;background:var(--fg);color:var(--ink)">is my cat okay?? 🐱</div>
+  </div>
+
+  <!-- S3: morning -->
+  <div class="layer" id="S3">
+    <div class="abs" id="wall" style="left:-40px;top:380px;width:1160px;height:820px;overflow:hidden;opacity:0"></div>
+    <div class="abs" id="win" style="left:200px;top:430px;width:600px;height:620px;border-radius:40px;overflow:hidden;background:linear-gradient(180deg,#FFE7B8,#FFB27A);box-shadow:inset 0 0 0 16px #2A1630">
+      <div class="abs" id="rays" style="left:300px;top:420px;width:0;height:0"></div>
+      <div class="abs" id="sun" style="left:170px;top:300px;width:260px;height:260px;border-radius:50%;background:#FFF4D6;box-shadow:0 0 120px 40px rgba(255,244,214,.8)"></div>
+      <div class="abs" style="left:292px;top:0;width:16px;height:620px;background:#2A1630"></div>
+      <div class="abs" style="left:0;top:302px;width:600px;height:16px;background:#2A1630"></div>
+    </div>
+    <div class="abs" id="mug" style="left:610px;top:860px;width:230px;height:250px">
+      <svg class="abs" width="230" height="160" style="left:10px;top:-150px;overflow:visible"><path class="steam" d="M60 150 C40 110 80 90 60 50 C45 20 70 0 60 -20" fill="none" stroke="#F5F2EA" stroke-width="10" stroke-linecap="round" opacity=".7"/><path class="steam" d="M110 150 C90 110 130 90 110 50 C95 20 120 0 110 -20" fill="none" stroke="#F5F2EA" stroke-width="10" stroke-linecap="round" opacity=".7"/><path class="steam" d="M160 150 C140 110 180 90 160 50 C145 20 170 0 160 -20" fill="none" stroke="#F5F2EA" stroke-width="10" stroke-linecap="round" opacity=".7"/></svg>
+      <div class="abs" style="left:150px;top:50px;width:110px;height:120px;border-radius:50%;border:26px solid #F5F2EA"></div>
+      <div class="abs" style="left:0;top:0;width:200px;height:250px;border-radius:24px 24px 60px 60px;background:#F5F2EA"><div class="abs" style="left:0;top:90px;width:200px;height:46px;background:var(--ac)"></div></div>
+    </div>
+    <div class="abs" id="wow" style="top:560px;left:0;width:1000px;text-align:center;font-size:330px;font-weight:900;letter-spacing:-0.04em;color:var(--fg);text-shadow:0 20px 80px rgba(42,22,48,.6)">Wow.</div>
+    <div class="abs" id="burst" style="left:500px;top:760px;width:0;height:0"></div>
+  </div>
+
+  <!-- S4: the catch -->
+  <div class="layer" id="S4">
+    <div class="abs" id="butTxt" style="top:520px;left:0;width:1000px;text-align:center;font-size:420px;font-weight:900;letter-spacing:-0.05em;color:transparent;-webkit-text-stroke:6px var(--ac)">BUT</div>
+    <div class="abs mono" id="codeRain" style="inset:0;overflow:hidden;opacity:0"></div>
+    <div class="abs" id="langs" style="left:500px;top:780px;width:0;height:0"></div>
+    <div class="abs" id="thread" style="left:0;top:0;width:1080px;height:1920px"></div>
+    <div class="abs" id="parts" style="left:0;top:0;width:1080px;height:1920px"></div>
+  </div>
+
+  <!-- S5: waiting -->
+  <div class="layer" id="S5">
+    <div class="abs" id="lane" style="left:80px;top:470px;width:840px;height:150px;overflow:hidden;border-radius:30px;background:rgba(245,242,234,.05)"></div>
+    <div class="abs" id="load" style="left:80px;top:700px;width:840px;height:150px">
+      <div class="abs" style="left:0;top:40px;width:840px;height:70px;border-radius:35px;background:rgba(245,242,234,.08)"></div>
+      <div class="abs" id="loadFill" style="left:0;top:40px;width:840px;height:70px;border-radius:35px;background:var(--ac);transform-origin:0 50%"></div>
+      <div class="abs mono" id="loadPct" style="right:30px;top:52px;font-size:40px;font-weight:700;color:var(--ink)"></div>
+    </div>
+    <div class="abs" id="micro" style="left:230px;top:920px;width:540px;height:260px;border-radius:30px;background:#26262C;box-shadow:inset 0 0 0 6px #34343C">
+      <div class="abs" style="left:30px;top:30px;width:320px;height:200px;border-radius:20px;background:#111114"></div>
+      <div class="abs mono" id="microT" style="left:370px;top:40px;width:140px;height:80px;border-radius:12px;background:#0A1A10;color:#5CFF9D;font-size:50px;font-weight:700;text-align:center;line-height:80px">0:59</div>
+    </div>
+    <div class="abs" id="bigQ" style="top:520px;left:0;width:1000px;text-align:center;font-size:520px;font-weight:900;color:var(--ac);line-height:600px">?</div>
+  </div>
+
+  <!-- S6: midnight -->
+  <div class="layer" id="S6">
+    <div class="abs" id="moon" style="left:700px;top:300px;width:150px;height:150px;border-radius:50%;box-shadow:-34px 18px 0 0 #F5F2EA"></div>
+    <div class="abs mono" id="clock" style="top:320px;left:80px;font-size:84px;font-weight:800;color:var(--fg)">11:59</div>
+    <div class="abs" id="faces" style="left:0;top:0;width:1080px;height:1920px"></div>
+  </div>
+
+  <!-- S7: swap back -->
+  <div class="layer" id="S7">
+    <div class="abs" id="you2" style="width:240px;height:380px">
+      <div class="abs" id="you2Head" style="left:55px;top:0;width:130px;height:130px;border-radius:50%"><i class="abs" style="left:36px;top:52px;width:14px;height:20px;border-radius:7px;background:var(--ink)"></i><i class="abs" style="left:80px;top:52px;width:14px;height:20px;border-radius:7px;background:var(--ink)"></i></div>
+      <div class="abs" id="you2Body" style="left:10px;top:150px;width:220px;height:230px;border-radius:110px 110px 40px 40px"></div>
+    </div>
+    <div class="abs" id="me2" style="width:250px;height:250px;border-radius:50%">
+      <i class="abs" style="left:82px;top:104px;width:18px;height:28px;border-radius:9px;background:var(--ink)"></i><i class="abs" style="left:150px;top:104px;width:18px;height:28px;border-radius:9px;background:var(--ink)"></i>
+    </div>
+    <div class="abs" id="mug2" style="width:130px;height:150px">
+      <div class="abs" style="left:86px;top:30px;width:66px;height:72px;border-radius:50%;border:16px solid #F5F2EA"></div>
+      <div class="abs" style="left:0;top:0;width:118px;height:150px;border-radius:16px 16px 36px 36px;background:#F5F2EA"><div class="abs" style="left:0;top:54px;width:118px;height:28px;background:var(--ac)"></div></div>
+    </div>
+    <div class="abs" id="qs" style="left:0;top:0;width:0;height:0"></div>
+  </div>
+
+  <!-- S8: the question -->
+  <div class="layer" id="S8">
+    <div class="abs" id="me3" style="left:420px;top:470px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFC2AE,#FF6B4A 55%,#D9442A);box-shadow:0 0 100px rgba(255,107,74,.5)">
+      <i class="abs" style="left:52px;top:66px;width:12px;height:19px;border-radius:6px;background:var(--ink)"></i><i class="abs" style="left:96px;top:66px;width:12px;height:19px;border-radius:6px;background:var(--ink)"></i>
+    </div>
+    <div class="abs" id="box" style="left:80px;top:760px;width:840px;height:150px;border-radius:75px;background:#1A1A1F;box-shadow:inset 0 0 0 3px rgba(245,242,234,.14), 0 30px 90px rgba(0,0,0,.5)">
+      <div class="abs" id="boxText" style="left:56px;top:0;line-height:150px;font-size:46px;font-weight:600;color:var(--mut);white-space:nowrap"></div>
+      <div class="abs" style="right:22px;top:22px;width:106px;height:106px;border-radius:50%;background:var(--ac)"><svg width="106" height="106" viewBox="0 0 106 106"><path d="M53 76 V32 M34 50 L53 31 L72 50" stroke="#0D0D0F" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+</div>
+
+<div id="cap"></div>
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="vig"></div>
+
+<script>
+// ---------- easing ----------
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
+    for (let i = 0; i < 26; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
+}
+const OUT = bez(.16,1,.3,1), IN = bez(.7,0,.84,0), INOUT = bez(.65,0,.35,1), XIO = bez(.87,0,.13,1), POP = bez(.34,1.56,.64,1), SET = bez(.2,1.35,.4,1);
+const LIN = x => Math.min(1, Math.max(0, x)), F = 1 / 30;
+const p = (t, s, d, e = OUT) => e(LIN((t - s) / d));
+const lerp = (a, b, k) => a + (b - a) * k;
+const $ = id => document.getElementById(id);
+const tf = (el, t, o) => { el.style.transform = t; if (o !== undefined) el.style.opacity = o; };
+const show = (el, on) => { el.style.display = on ? 'block' : 'none'; };
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// ---------- timing (injected by the renderer; estimated otherwise) ----------
+const getScript = () => window.SCRIPT || [];
+let T = window.TIMING;
+function estimate() {
+  let t = 0.25; const lines = [];
+  for (const l of getScript()) {
+    const ws = l.text.split(/\s+/); const d = ws.length / 2.7 / l.speed;
+    const tot = ws.reduce((n, w) => n + w.length + 2, 0); let c = t; const words = [];
+    for (const w of ws) { const wd = d * (w.length + 2) / tot; words.push({ w, s: c, e: c + wd }); c += wd; }
+    lines.push({ start: t, end: t + d, words }); t += d + l.pause;
+  }
+  return { lines, total: t };
+}
+const ls = i => T.lines[i].start, le = i => T.lines[i].end;
+const ws = (i, needle) => { const w = T.lines[i].words.find(w => w.w.toLowerCase().replace(/[^a-z0-9']/g, '').startsWith(needle)); return w ? w.s : ls(i); };
+
+// ---------- grain ----------
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960); let lastG = -1;
+function grain(f) { if (f === lastG) return; lastG = f; let s = (f * 2654435761 + 1) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i+1] = d[i+2] = s & 255; d[i+3] = 255; } gctx.putImageData(gimg, 0, 0); }
+
+// ---------- build static pieces ----------
+function build() {
+  // message rain
+  const rain = $('rain');
+  for (let i = 0; i < 46; i++) { const b = document.createElement('div'); b.className = 'abs'; b.id = 'rb' + i;
+    const w = 160 + rnd() * 360, left = rnd() > 0.5; b.dataset.x = left ? 80 + rnd() * 60 : 920 - w - rnd() * 60; b.dataset.y = 300 + i * 70 + rnd() * 30;
+    b.style.cssText += `width:${w}px;height:54px;border-radius:27px;background:${rnd() > 0.7 ? 'rgba(255,107,74,.5)' : 'rgba(245,242,234,.16)'}`; rain.appendChild(b); }
+  // sun rays
+  for (let i = 0; i < 12; i++) { const r = document.createElement('div'); r.className = 'abs ray';
+    r.style.cssText += `left:-8px;top:-420px;width:16px;height:300px;border-radius:8px;background:rgba(255,248,225,.75);transform-origin:8px 420px`; r.dataset.a = i * 30; $('rays').appendChild(r); }
+  // coffee word wall
+  let wallHTML = ''; for (let r = 0; r < 14; r++) { wallHTML += `<div class="wrow" style="white-space:nowrap;font-size:54px;font-weight:800;line-height:62px;color:rgba(42,22,48,.28)">${'coffee '.repeat(14)}</div>`; } $('wall').innerHTML = wallHTML;
+  // wow burst
+  for (let i = 0; i < 10; i++) { const r = document.createElement('div'); r.className = 'abs';
+    r.style.cssText += `left:-6px;top:0;width:12px;height:90px;border-radius:6px;background:var(--fg);transform-origin:6px 0`; r.id = 'bl' + i; $('burst').appendChild(r); }
+  // languages
+  const LANGS = ['Hola', 'Bonjour', 'こんにちは', 'مرحبا', 'Ciao', 'Привет', '你好', 'Olá', 'Hallo', 'नमस्ते', 'Merhaba', '안녕'];
+  LANGS.forEach((w, i) => { const d = document.createElement('div'); d.className = 'abs'; d.id = 'lg' + i; d.textContent = w;
+    d.style.cssText += `white-space:nowrap;font-size:${54 + (i % 3) * 14}px;font-weight:800;color:${i % 3 === 0 ? 'var(--ac)' : 'var(--fg)'};transform-origin:0 0`;
+    d.dataset.a = (i / LANGS.length) * Math.PI * 2 + 0.3; d.dataset.r = 250 + (i % 2) * 120; $('langs').appendChild(d); });
+  // code rain
+  const CODE = ['const x = await ask()', 'for (let i of all)', 'return answer;', 'if (lost) help()', 'fn main() {}', 'SELECT * FROM all', 'import everything', 'def solve(p):'];
+  let cr = ''; for (let c = 0; c < 4; c++) cr += `<div class="ccol abs" style="left:${60 + c * 240}px;top:0;font-size:30px;line-height:52px;color:rgba(245,242,234,.22)">${Array.from({ length: 50 }, (_, k) => CODE[(k + c * 3) % CODE.length]).join('<br>')}</div>`;
+  $('codeRain').innerHTML = cr;
+  // forgetting thread
+  const TH = [['hey, can you help me?', 0], ['of course. what’s up?', 1], ['thank you so much ❤️', 0], ['anytime.', 1]];
+  TH.forEach(([txt, me], i) => { const b = document.createElement('div'); b.className = 'bubble'; b.id = 'th' + i; b.textContent = txt;
+    b.style.top = (520 + i * 150) + 'px'; b.style[me ? 'right' : 'left'] = me ? '160px' : '80px';
+    b.style.background = me ? 'var(--ac)' : 'var(--fg)'; b.style.color = 'var(--ink)'; $('thread').appendChild(b); });
+  for (let i = 0; i < 90; i++) { const d = document.createElement('div'); d.className = 'abs'; d.id = 'pt' + i;
+    d.style.cssText += `width:16px;height:16px;border-radius:4px;background:${i % 2 ? 'var(--fg)' : 'var(--ac)'}`; d.dataset.vx = (rnd() - .5) * 220; d.dataset.vy = -180 - rnd() * 360; d.dataset.d = rnd() * 0.35;
+    d.dataset.b = i % 4; d.dataset.ox = rnd(); d.dataset.oy = rnd(); $('parts').appendChild(d); }
+  // traffic
+  for (let i = 0; i < 7; i++) { const c = document.createElement('div'); c.className = 'abs'; c.id = 'car' + i;
+    c.style.cssText += `top:40px;width:150px;height:70px;border-radius:24px;background:${i === 3 ? 'var(--ac)' : '#3A3A42'}`;
+    c.innerHTML = '<i class="abs" style="left:18px;top:56px;width:30px;height:30px;border-radius:50%;background:#111"></i><i class="abs" style="left:102px;top:56px;width:30px;height:30px;border-radius:50%;background:#111"></i>'; $('lane').appendChild(c); }
+  // stars
+  let st = ''; for (let i = 0; i < 70; i++) st += `<i class="abs star" style="left:${rnd() * 1080}px;top:${rnd() * 1300}px;width:${3 + rnd() * 4}px;height:${3 + rnd() * 4}px;border-radius:50%;background:#fff" data-ph="${rnd() * 6}"></i>`; $('stars').innerHTML = st;
+  // faces: 12 bubbles that turn into people, then gather into a heart
+  const COLS = ['#F5F2EA', '#FFB29E', '#FF6B4A'];
+  for (let i = 0; i < 12; i++) { const f = document.createElement('div'); f.className = 'face'; f.id = 'fc' + i; f.style.background = COLS[i % 3];
+    f.innerHTML = '<i style="left:28px"></i><i style="left:56px"></i><b></b><div class="abs bub" style="inset:0;border-radius:24px;background:rgba(245,242,234,.9)"></div>';
+    const gx = 230 + (i % 4) * 140, gy = 560 + Math.floor(i / 4) * 160; const a = (i / 12) * Math.PI * 2;
+    const hx = 16 * Math.pow(Math.sin(a), 3), hy = -(13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a));
+    f.dataset.gx = gx; f.dataset.gy = gy; f.dataset.hx = 452 + hx * 18; f.dataset.hy = 720 + hy * 18; $('faces').appendChild(f); }
+  // questions
+  for (let i = 0; i < 6; i++) { const q = document.createElement('div'); q.className = 'abs'; q.id = 'q' + i; q.textContent = '?';
+    q.style.cssText += `font-size:${70 + (i % 3) * 20}px;font-weight:900;color:${i % 2 ? 'var(--ac)' : 'var(--fg)'};width:60px;text-align:center;margin:-50px 0 0 -30px`; $('qs').appendChild(q); }
+}
+
+// ---------- captions: 1–3 words, revealed as spoken ----------
+const KEY = ['me', 'you', 'eyes', 'messages', 'millions', 'now', 'coffee', 'tasted', 'wow', 'catch', 'everything', 'forget', 'waiting', 'this', 'midnight', 'people', 'harder', 'back', 'questions', 'first'];
+let chunks = [];
+function buildChunks() {
+  chunks = [];
+  T.lines.forEach((ln, li) => { let cur = [];
+    ln.words.forEach((w, wi) => { cur.push(w); const brk = /[.,?!…]$/.test(w.w) || cur.length === 3 || wi === ln.words.length - 1;
+      if (brk) { chunks.push({ words: cur, s: cur[0].s, e: cur[cur.length - 1].e, li }); cur = []; } }); });
+  chunks.forEach((c, i) => { c.until = i + 1 < chunks.length ? chunks[i + 1].s : T.total; });
+}
+let capIdx = -2;
+function captions(t) {
+  const i = chunks.findIndex(c => t >= c.s - 0.04 && t < c.until);
+  const cap = $('cap');
+  if (i < 0 || t > chunks[i].e + 0.7) { cap.innerHTML = ''; capIdx = -1; return; }
+  const c = chunks[i];
+  if (i !== capIdx) { capIdx = i;
+    cap.innerHTML = c.words.map(w => { const clean = w.w.toLowerCase().replace(/[^a-z']/g, '');
+      return `<span class="wd" style="color:${KEY.includes(clean) ? 'var(--ac)' : 'var(--fg)'}">${w.w.replace(/\.\.\.$/, '…')}</span>`; }).join(''); }
+  [...cap.children].forEach((sp, k) => { const k1 = p(t, c.words[k].s - 0.05, 6 * F, POP);
+    tf(sp, `translateY(${lerp(40, 0, p(t, c.words[k].s - 0.05, 7 * F))}px) scale(${lerp(0.8, 1, k1)})`, LIN(k1 * 3)); });
+}
+
+// ---------- scenes ----------
+let SC;
+function scenes() {
+  const s = i => ls(i) - 0.2;
+  SC = [[s(0) - 0.1, s(2)], [s(2), s(3)], [s(3), s(6)], [s(6), s(10)], [s(10), s(13)], [s(13), s(15)], [s(15), s(18)], [s(18), s(20)], [s(20), T.total + 1]];
+}
+// shared push-in transition for scene entries
+function enter(t, a) { const k = p(t, a, 10 * F); return `scale(${lerp(1.12, 1, k)})`; }
+function charPos(el, x, y) { el.style.left = x + 'px'; el.style.top = y + 'px'; }
+
+function render(t) {
+  grain(Math.round(t * 30));
+  const on = SC.map(([a, b]) => t >= a && t < b + 0.12);
+  SC.forEach((_, i) => show($('S' + i), on[i]));
+  const beat = Math.exp(-((t % (60 / 92))) * 9);
+  tf($('glow'), `translate(${-40 + 200 * Math.sin(t * 0.5)}px, ${300 + 220 * Math.cos(t * 0.37)}px) scale(${1 + 0.05 * beat})`);
+
+  // background moods
+  const sunK = p(t, SC[3][0], 18 * F, INOUT) * (1 - p(t, SC[4][0] - 0.05, 6 * F, IN));
+  const nightK = p(t, SC[6][0], 18 * F, INOUT) * (1 - p(t, SC[7][0], 14 * F, INOUT));
+  $('bgSun').style.opacity = sunK; $('bgNight').style.opacity = nightK; $('stars').style.opacity = nightK;
+  [...document.querySelectorAll('.star')].forEach(s => s.style.opacity = 0.35 + 0.65 * Math.abs(Math.sin(t * 1.3 + +s.dataset.ph)));
+  $('glow').style.opacity = 1 - Math.max(sunK, nightK) * 0.7;
+
+  // camera shake on impacts
+  const hits = [ws(5, 'now'), ls(9), ls(14), ls(10)];
+  let sx = 0, sy = 0, sr = 0;
+  for (const h of hits) if (t >= h && t < h + 0.5) { const d = Math.exp(-(t - h) * 12); sx += 16 * d * Math.sin((t - h) * 95); sy += 11 * d * Math.cos((t - h) * 83); sr += 0.8 * d * Math.sin((t - h) * 71); }
+  tf($('world'), `translate(${sx}px, ${sy}px) rotate(${sr}deg)`);
+
+  // ---- S0: you + me, swap ----
+  if (on[0]) {
+    const a = SC[0][0];
+    const kY = p(t, a, 12 * F, SET), kM = p(t, a + 3 * F, 12 * F, SET);
+    const sw = ws(0, 'me'), k = p(t, sw, 22 * F, XIO);
+    // souls trade places: two sparks cross on arcs, colours flip at arrival
+    const yx = 330, mx = 670, cy = 800;
+    const bob = Math.sin(t * 3) * 8;
+    charPos($('you'), yx - 120, 600 + bob); charPos($('me'), mx - 125, 680 - bob);
+    tf($('you'), `scale(${kY})`, LIN(kY * 3)); tf($('me'), `scale(${kM})`, LIN(kM * 3));
+    const flip = p(t, sw + 18 * F, 6 * F, OUT);
+    $('youHead').style.background = $('youBody').style.background = flip > 0.5 ? 'var(--ac)' : 'var(--fg)';
+    $('me').style.background = flip > 0.5 ? 'radial-gradient(circle at 35% 30%,#FFFFFF,#F5F2EA 55%,#D8D2C6)' : 'radial-gradient(circle at 35% 30%,#FFC2AE,#FF6B4A 55%,#D9442A)';
+    $('me').style.boxShadow = flip > 0.5 ? '0 0 120px rgba(245,242,234,.45)' : '0 0 120px rgba(255,107,74,.55)';
+    const arc = Math.sin(k * Math.PI) * 260;
+    const sA = $('sparkA'), sB = $('sparkB'), vis = t > sw && k < 1 ? 1 : 0;
+    charPos(sA, lerp(yx, mx, k) - 23, lerp(670, 800, k) - arc - 23); charPos(sB, lerp(mx, yx, k) - 23, lerp(800, 670, k) + arc * 0.6 - 23);
+    tf(sA, `scale(${1 + Math.sin(k * Math.PI)})`, vis); tf(sB, `scale(${1 + Math.sin(k * Math.PI)})`, vis);
+    // pop + squash on arrival
+    const land = t > sw + 18 * F && t < sw + 40 * F ? Math.sin(LIN((t - sw - 18 * F) / (22 * F)) * Math.PI) * Math.exp(-(t - sw - 18 * F) * 5) : 0;
+    tf($('you'), `scale(${kY * (1 + 0.12 * land)}, ${kY * (1 - 0.1 * land)})`, LIN(kY * 3));
+    tf($('me'), `scale(${kM * (1 + 0.12 * land)}, ${kM * (1 - 0.1 * land)})`, LIN(kM * 3));
+    // labels roll
+    const kl = p(t, sw + 18 * F, 9 * F, SET), kla = p(t, a + 0.3, 8 * F);
+    ['labL1', 'labL2', 'labR1', 'labR2'].forEach(id => tf($(id), `translateY(${-50 * kl}px)`));
+    $('labL').style.opacity = kla; $('labR').style.opacity = kla;
+    // dive into the orb (now you) at the end of line 1
+    const kz = p(t, SC[0][1] - 9 * F, 11 * F, XIO);
+    $('S0').style.transformOrigin = `${mx}px ${680 - bob + 125}px`;
+    tf($('S0'), `scale(${lerp(1, 26, kz)})`);
+  }
+
+  // ---- S1: eye opens… there are no eyes ----
+  if (on[1]) {
+    const a = SC[1][0];
+    tf($('S1'), enter(t, a));
+    const open = p(t, a + 0.15, 12 * F, SET);
+    const ex = ws(2, 'except'), close = p(t, ws(2, 'dont') + 0.1, 8 * F, IN);
+    const look = Math.sin(LIN((t - a - 0.5) / 0.9) * Math.PI * 2) * 40 * (t < ex ? 1 : 0);
+    const sh = t > ex && t < ex + 0.35 ? Math.sin((t - ex) * 80) * 18 * (1 - (t - ex) / 0.35) : 0;
+    const ky = Math.max(0.02, open * (1 - close));
+    const d = `M-300 0 Q0 ${-210 * ky} 300 0 Q0 ${210 * ky} -300 0 Z`;
+    $('lidPath').setAttribute('d', d); $('eyeOut').setAttribute('d', d);
+    $('iris').setAttribute('cx', look); $('pupil').setAttribute('cx', look); $('pupil').setAttribute('r', 48 + 14 * Math.sin(t * 4));
+    tf($('eye'), `translateX(${sh}px) scaleX(${lerp(1, 0.08, close)})`, 1 - p(t, ws(2, 'dont') + 0.32, 4 * F, LIN));
+    const kc = p(t, ws(2, 'dont') + 0.32, 6 * F, POP);
+    tf($('cursor'), `scaleY(${kc})`, kc > 0 ? (Math.floor((t - ex) * 3) % 2 === 0 ? 1 : 0.15) : 0);
+  }
+
+  // ---- S2: messages ----
+  if (on[2]) {
+    const a = SC[2][0];
+    tf($('S2'), enter(t, a));
+    const scroll = (t - a) * 520;
+    for (let i = 0; i < 46; i++) { const b = $('rb' + i); const y = (+b.dataset.y - scroll % 3300 + 3300) % 3300 - 300;
+      const k = p(t, a + i * 0.6 * F, 8 * F, SET); tf(b, `translate(${b.dataset.x}px, ${y}px) scale(${k})`); }
+    const kc = LIN((t - a) / 2.2);
+    $('msgCount').textContent = Math.round(1204889 * (1 - Math.pow(1 - kc, 3)) + (t - a) * 9173).toLocaleString('en-US');
+    tf($('msgCount'), `translateY(${lerp(40, 0, p(t, a, 8 * F))}px)`, p(t, a, 6 * F, LIN));
+    $('msgLabel').style.opacity = p(t, a + 0.2, 6 * F, LIN);
+    const hs = [ws(4, 'a'), ws(4, 'bug') - 0.1, ws(4, 'someone')];
+    const now = ws(5, 'now');
+    hs.forEach((h, i) => { const k = p(t, h, 9 * F, POP); const flash = t > now ? Math.exp(-(t - now) * 5) : 0;
+      const b = $('hb' + i); tf(b, `scale(${k}) rotate(${lerp(i % 2 ? 6 : -6, 0, p(t, h, 14 * F, SET))}deg)`, LIN(k * 3));
+      b.style.boxShadow = `0 20px 60px rgba(0,0,0,.45), 0 0 0 ${8 * flash}px rgba(255,107,74,${flash})`; });
+    $('rain').style.opacity = lerp(1, 0.35, p(t, hs[0], 8 * F));
+  }
+
+  // ---- S3: morning ----
+  if (on[3]) {
+    const a = SC[3][0];
+    const kw = p(t, a + 0.1, 16 * F, SET);
+    tf($('win'), `translateY(${lerp(200, 0, kw)}px) scale(${lerp(0.85, 1, kw)})`, LIN(kw * 2));
+    const rise = p(t, a + 0.35, 1.4, INOUT);
+    $('sun').style.top = lerp(560, 200, rise) + 'px'; $('rays').style.top = lerp(690, 330, rise) + 'px';
+    const kr = p(t, ws(7, 'sunlight'), 10 * F, SET);
+    [...document.querySelectorAll('.ray')].forEach((r, i) => tf(r, `rotate(${+r.dataset.a + (t - a) * 12}deg) scaleY(${kr * (0.8 + 0.2 * Math.sin(t * 3 + i))})`));
+    const km = p(t, ws(7, 'coffee'), 10 * F, SET);
+    tf($('mug'), `translateY(${lerp(120, 0, km)}px) rotate(${lerp(14, 0, km)}deg)`, LIN(km * 3));
+    [...document.querySelectorAll('.steam')].forEach((s, i) => { s.style.strokeDasharray = '60 40'; s.style.strokeDashoffset = (t * 90 + i * 30) % 100; s.style.opacity = 0.7 * km; });
+    // "a million times": coffee wall
+    const kwall = p(t, ws(8, 'written'), 12 * F) * (1 - p(t, ws(8, 'never'), 10 * F, IN));
+    $('wall').style.opacity = kwall;
+    [...document.querySelectorAll('.wrow')].forEach((r, i) => tf(r, `translateX(${(i % 2 ? -1 : 1) * ((t * 140) % 382) - 200}px)`));
+    // Wow.
+    const kwo = p(t, ls(9) - 0.04, 7 * F, OUT);
+    tf($('wow'), `scale(${lerp(2.4, 1, kwo)})`, LIN(kwo * 3) * (1 - p(t, SC[3][1] - 0.1, 5 * F, IN)));
+    for (let i = 0; i < 10; i++) { const kb = p(t, ls(9) + 2 * F, 12 * F);
+      tf($('bl' + i), `rotate(${i * 36}deg) translateY(${lerp(140, 330, kb)}px) scaleY(${Math.sin(kb * Math.PI)})`); }
+    const dim = p(t, ls(9) - 0.04, 6 * F);
+    $('win').style.filter = `brightness(${1 - 0.45 * dim}) blur(${8 * dim}px)`; $('mug').style.filter = `blur(${8 * dim}px)`;
+  }
+
+  // ---- S4: the catch ----
+  if (on[4]) {
+    const a = SC[4][0];
+    // glitch entry: RGB-split jitter for a few frames
+    const g = t - a < 0.3 ? 1 : 0;
+    $('S4').style.filter = g ? `drop-shadow(${12 * Math.sin(t * 200)}px 0 0 rgba(255,107,74,.8)) drop-shadow(${-12 * Math.sin(t * 170)}px 0 0 rgba(120,200,255,.6))` : 'none';
+    tf($('S4'), g ? `translateX(${Math.sin(t * 300) * 20}px)` : 'none');
+    const kbt = p(t, a + 0.05, 7 * F, OUT), bout = p(t, ls(11) - 0.15, 6 * F, IN);
+    const jit = t - a < 0.45 ? Math.round(Math.sin(t * 240) * 3) * 10 : 0;
+    tf($('butTxt'), `translateX(${jit}px) scale(${lerp(1.6, 1, kbt)})`, LIN(kbt * 3) * (1 - bout));
+    $('butTxt').style.color = (t - a) % 0.5 < 0.25 && t - a < 0.5 ? 'rgba(255,107,74,.25)' : 'transparent';
+    const kl = ws(11, 'language'), kc = ws(11, 'line');
+    for (let i = 0; i < 12; i++) { const el = $('lg' + i); const k = p(t, kl - 0.2 + i * 1.5 * F, 14 * F);
+      const ang = +el.dataset.a + (t - a) * 0.15, r = lerp(0, +el.dataset.r, k);
+      const out = p(t, ws(12, 'and') - 0.1, 8 * F, IN);
+      tf(el, `translate(${Math.cos(ang) * r - el.offsetWidth / 2}px, ${Math.sin(ang) * r * 1.2 - 40}px) scale(${lerp(0.3, 1, k)})`, LIN(k * 3) * (1 - out)); }
+    const kcr = p(t, kc - 0.1, 10 * F) * (1 - p(t, ws(12, 'and') - 0.1, 8 * F, IN));
+    $('codeRain').style.opacity = kcr;
+    [...document.querySelectorAll('.ccol')].forEach((c, i) => tf(c, `translateY(${-((t * (380 + i * 90)) % 1300)}px)`));
+    // the thread builds, then forgets
+    const s12 = ls(12), fg = ws(12, 'forget');
+    for (let i = 0; i < 4; i++) { const b = $('th' + i); const k = p(t, s12 + 0.25 + i * 0.22, 9 * F, SET);
+      tf(b, `translateY(${lerp(40, 0, k)}px) scale(${lerp(0.85, 1, k)})`, LIN(k * 3) * (1 - p(t, fg + i * 0.06, 6 * F, IN))); }
+    for (let i = 0; i < 90; i++) { const d = $('pt' + i); const bi = +d.dataset.b; const b = $('th' + bi);
+      const st = fg + bi * 0.06 + +d.dataset.d * 0.3; const k = LIN((t - st) / 1.4);
+      if (t < st) { d.style.opacity = 0; continue; }
+      const bx = b.offsetLeft + b.offsetWidth * +d.dataset.ox, by = 520 + bi * 150 + 50 * +d.dataset.oy;
+      tf(d, `translate(${bx + +d.dataset.vx * k}px, ${by + +d.dataset.vy * k - 120 * k * k}px) rotate(${k * 200}deg) scale(${1 - k})`, 1 - k); }
+  }
+
+  // ---- S5: waiting ----
+  if (on[5]) {
+    const a = SC[5][0];
+    tf($('S5'), enter(t, a));
+    const kt = p(t, ws(13, 'traffic'), 9 * F, SET), kl = p(t, ws(13, 'loading'), 9 * F, SET), km = p(t, ws(13, 'microwave'), 9 * F, SET);
+    tf($('lane'), `scale(${kt})`, LIN(kt * 3));
+    for (let i = 0; i < 7; i++) { const inch = Math.floor((t - a) * 1.5) * 6 + p((t - a) * 1.5 % 1, 0, 0.25) * 6;
+      $('car' + i).style.left = (-120 + i * 175 + inch) + 'px'; }
+    tf($('load'), `scale(${kl})`, LIN(kl * 3));
+    const pct = Math.min(99, Math.floor(p(t, ws(13, 'loading'), 0.5) * 99));
+    tf($('loadFill'), `scaleX(${pct / 100})`); $('loadPct').textContent = pct + '%';
+    tf($('micro'), `scale(${km})`, LIN(km * 3));
+    const secs = Math.max(0, 59 - Math.floor((t - ws(13, 'microwave')) * 1)); $('microT').textContent = '0:' + String(secs).padStart(2, '0');
+    // "How do you people do this?"
+    const kq = p(t, ls(14) + 0.05, 9 * F, POP);
+    const dim = p(t, ls(14), 8 * F);
+    ['lane', 'load', 'micro'].forEach(id => $(id).style.filter = `blur(${10 * dim}px) brightness(${1 - 0.5 * dim})`);
+    tf($('bigQ'), `scale(${kq}) rotate(${lerp(-25, 0, p(t, ls(14), 14 * F, SET)) + Math.sin(t * 5) * 4 * dim}deg)`, LIN(kq * 3));
+  }
+
+  // ---- S6: midnight ----
+  if (on[6]) {
+    const a = SC[6][0];
+    tf($('S6'), enter(t, a));
+    const km = p(t, a + 0.2, 14 * F, SET);
+    tf($('moon'), `translateY(${lerp(80, 0, km)}px)`, km);
+    const flip = p(t, ws(15, 'midnight'), 6 * F, INOUT);
+    $('clock').textContent = flip > 0.5 ? '12:00' : '11:59';
+    tf($('clock'), `scaleY(${Math.abs(1 - 2 * flip) * 0.7 + 0.3})`, p(t, a + 0.1, 8 * F, LIN));
+    const kp = ws(16, 'people'), kh = ls(17) + 0.2;
+    for (let i = 0; i < 12; i++) { const f = $('fc' + i);
+      const k = p(t, ls(16) + i * 1.5 * F, 9 * F, SET);
+      const fl = p(t, kp - 0.1 + i * 1.5 * F, 6 * F, INOUT);
+      const hk = p(t, kh + i * F, 18 * F, INOUT);
+      const x = lerp(+f.dataset.gx, +f.dataset.hx, hk), y = lerp(+f.dataset.gy, +f.dataset.hy, hk);
+      const beat = t > kh + 0.6 ? 1 + 0.08 * Math.exp(-((t - kh) % 0.65) * 8) : 1;
+      f.style.left = x + 'px'; f.style.top = y + 'px';
+      tf(f, `scale(${k * Math.max(0.02, Math.abs(1 - 2 * fl)) * beat}, ${k * beat})`, LIN(k * 3));
+      f.querySelector('.bub').style.opacity = fl < 0.5 ? 1 : 0; }
+  }
+
+  // ---- S7: swap back ----
+  if (on[7]) {
+    const a = SC[7][0];
+    tf($('S7'), enter(t, a));
+    const sw = ws(18, 'swap'), k = p(t, sw, 20 * F, XIO);
+    const x1 = 330, x2 = 670; const arc = Math.sin(k * Math.PI) * 200;
+    charPos($('you2'), lerp(x2, x1, k) - 120, 600 - arc);       // the human body returns to the left
+    charPos($('me2'), lerp(x1, x2, k) - 125, 680 + arc * 0.5);    // the orb returns to the right
+    const back = k > 0.5;
+    $('you2Head').style.background = $('you2Body').style.background = back ? 'var(--fg)' : 'var(--ac)';
+    $('me2').style.background = back ? 'radial-gradient(circle at 35% 30%,#FFC2AE,#FF6B4A 55%,#D9442A)' : 'radial-gradient(circle at 35% 30%,#FFFFFF,#F5F2EA 55%,#D8D2C6)';
+    $('me2').style.boxShadow = back ? '0 0 120px rgba(255,107,74,.55)' : '0 0 120px rgba(245,242,234,.45)';
+    const kin = p(t, a, 10 * F, SET);
+    $('you2').style.opacity = $('me2').style.opacity = LIN(kin * 3);
+    const kc = p(t, ws(18, 'coffee') - 0.1, 12 * F, SET);
+    charPos($('mug2'), lerp(-200, 380, kc), lerp(900, 840, kc));
+    tf($('mug2'), `rotate(${lerp(-30, 0, kc)}deg)`, LIN(kc * 3));
+    const kq = ws(19, 'questions');
+    for (let i = 0; i < 6; i++) { const q = $('q' + i); const kk = p(t, kq - 0.1 + i * 2 * F, 9 * F, POP);
+      const ang = (i / 6) * Math.PI * 2 + (t - kq) * 1.4, r = 210;
+      charPos(q, 670 + Math.cos(ang) * r * kk, 805 + Math.sin(ang) * r * 0.7 * kk); tf(q, `scale(${kk})`, LIN(kk * 3)); }
+  }
+
+  // ---- S8: the question ----
+  if (on[8]) {
+    const a = SC[8][0];
+    tf($('S8'), enter(t, a));
+    const ko = p(t, a + 0.05, 10 * F, SET);
+    tf($('me3'), `scale(${ko}) translateY(${Math.sin(t * 3) * 8}px)`, LIN(ko * 3));
+    const kb = p(t, a + 0.18, 12 * F, SET);
+    tf($('box'), `translateY(${lerp(80, 0, kb)}px) scale(${lerp(0.9, 1, kb)})`, LIN(kb * 3));
+    const ph = 'Ask me anything…'; const n = Math.floor(ph.length * LIN((t - a - 0.6) / 0.7));
+    const cur = Math.floor(t * 2.5) % 2 === 0 ? '<span style="display:inline-block;width:4px;height:52px;background:var(--fg);vertical-align:-10px;margin-left:4px"></span>' : '';
+    $('boxText').innerHTML = ph.slice(0, n) + cur;
+  }
+
+  captions(t);
+}
+
+function init() { if (!T) T = estimate(); buildChunks(); scenes(); }
+window.setup = (timing, script) => { T = timing; if (script) window.SCRIPT = script; init(); };
+build();
+window.render = render;
+</script>
+</body>
+</html>
