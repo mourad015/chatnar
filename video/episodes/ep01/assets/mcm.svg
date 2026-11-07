@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><defs><radialGradient id="bg" cx=".5" cy=".42" r=".8"><stop offset="0" stop-color="#1b4a86"/><stop offset=".6" stop-color="#0b1f3d"/><stop offset="1" stop-color="#010b1a"/></radialGradient><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd36a"/><stop offset="1" stop-color="#e09612"/></linearGradient><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14406e"/><stop offset="1" stop-color="#061a33"/></linearGradient></defs><rect width="900" height="600" fill="url(#bg)"/>
+<rect y="260" width="900" height="340" fill="url(#sea)"/>
+<g transform="translate(160 150)"><path d="M0 110 L520 110 L480 170 L40 170 Z" fill="#8a97a6" stroke="#fff" stroke-width="5"/><rect x="170" y="40" width="160" height="70" fill="#a9b5c2" stroke="#fff" stroke-width="4"/><rect x="230" y="-30" width="20" height="70" fill="#a9b5c2"/><rect x="190" y="55" width="120" height="16" fill="#011732"/><rect x="360" y="80" width="90" height="30" fill="#a9b5c2" stroke="#fff" stroke-width="3"/>
+<text x="90" y="150" font-family="Cairo" font-weight="900" font-size="34" fill="#011732" direction="ltr">MCM</text></g>
+<g fill="none" stroke="#7CFFB2" stroke-width="5" opacity=".85"><path d="M400 340 Q440 380 400 420"/><path d="M430 320 Q490 380 430 440"/><path d="M460 300 Q540 380 460 460"/></g>
+<g transform="translate(620 430)"><g stroke="#fbdb9a" stroke-width="8"><line x1='0' y1='-62' x2='0' y2='62' transform='rotate(0)'/>
+<line x1='0' y1='-62' x2='0' y2='62' transform='rotate(45)'/>
+<line x1='0' y1='-62' x2='0' y2='62' transform='rotate(90)'/>
+<line x1='0' y1='-62' x2='0' y2='62' transform='rotate(135)'/></g><circle r="46" fill="#1d1f22" stroke="#fbdb9a" stroke-width="6"/><line x1="0" y1="46" x2="0" y2="170" stroke="#fbdb9a" stroke-width="4" stroke-dasharray="8 8"/></g>
+<g stroke="#ff4b4b" stroke-width="14" stroke-linecap="round"><line x1="560" y1="370" x2="680" y2="490"/><line x1="680" y1="370" x2="560" y2="490"/></g>
+</svg>

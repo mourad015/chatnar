@@ -191,7 +191,11 @@
   }
   function deskEl(html, parent = 'desk') { const el = $(html); layer(parent).appendChild(el); gsap.set(el, { autoAlpha: 0 }); return el; }
   function card(src, { x, y, w, h, rot = 0, bw = false, label: label0 = '', parent = 'desk', fit = 'cover', pos = 'center' }) {
-    let label = label0; if (src && window.ASSETS && !window.ASSETS.includes(src.split('/').pop())) { label = label || 'صورة'; src = null; }
+    let label = label0;
+    if (src && window.ASSETS && !window.ASSETS.includes(src.split('/').pop())) {
+      const alt = src.replace(/\.(jpg|png)$/, '.svg');
+      if (window.ASSETS.includes(alt.split('/').pop())) src = alt; else { label = label || 'صورة'; src = null; }
+    }
     const img = src ? `<img src="${src}" style="object-fit:${fit};object-position:${pos};${bw ? 'filter:grayscale(1) contrast(1.1)' : ''}">` : `<div class="ph">${label}</div>`;
     return deskEl(`<div class="card" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${rot}deg)">${img}</div>`, parent);
   }
@@ -232,7 +236,7 @@
     const pts = [];
     for (let i = 0; i <= 64; i++) { const th = -Math.PI / 2 + i / 64 * Math.PI * 2.12; const r = 1 + 0.04 * Math.sin(i * 0.7); pts.push([rx * r * Math.cos(th), ry * r * Math.sin(th)]); }
     const d = pts.map(([px, py], i) => { const X = cx + px * Math.cos(a) - py * Math.sin(a), Y = cy + px * Math.sin(a) + py * Math.cos(a); return (i ? 'L' : 'M') + X.toFixed(1) + ',' + Y.toFixed(1); }).join(' ');
-    const p = inkPath(d, { parent: opts.parent, stroke: opts.color || '#f2c230', width: opts.width || 7 });
+    const p = inkPath(d, { parent: opts.parent, stroke: opts.color || '#f7b52c', width: opts.width || 7 });
     draw(p, t, opts.dur || 0.5);
     sfx(t, 'marker', 0.5);
     return p;
@@ -256,7 +260,7 @@
   }
   function waffleFill(el, t, n, dur = 0.8) {
     const cells = [...el.querySelectorAll('i')].slice(0, n);
-    cells.forEach((c, i) => master.set(c, { backgroundColor: '#151515' }, at(t + i / Math.max(1, n) * dur)));
+    cells.forEach((c, i) => master.set(c, { backgroundColor: '#f7b52c' }, at(t + i / Math.max(1, n) * dur)));
   }
   function calendar(text, { x, y, parent = 'ui' }) {
     return deskEl(`<div class="cal" style="left:${x}px;top:${y}px"><div class="rings"><i></i><i></i></div><div class="cal-body">${text}</div></div>`, parent);

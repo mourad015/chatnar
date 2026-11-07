@@ -62,12 +62,12 @@
   const down = inkPath('M180,990 C300,1010 360,1080 430,1150 C470,1190 520,1225 580,1240', { parent: d1, stroke: '#d63b3b', width: 9 });
   draw(down, R(9) + 0.1, 0.9);
   const m9 = tag('-9%', { x: 640, y: 1250, parent: d1, cls: 'red big' }); show(m9, R(9) + 0.9); sfx(R(9) + 0.9, 'pop');
-  const up = inkPath('M580,1240 C680,1220 760,1120 820,1030 C850,990 880,960 920,930', { parent: d1, stroke: '#151515', width: 9 });
+  const up = inkPath('M580,1240 C680,1220 760,1120 820,1030 C850,990 880,960 920,930', { parent: d1, stroke: '#011732', width: 9 });
   draw(up, R(10) + 0.05, 0.9);
-  const head = inkPath('M880,925 L925,928 L912,970', { parent: d1, stroke: '#151515', width: 9 }); draw(head, R(10) + 0.9, 0.2);
+  const head = inkPath('M880,925 L925,928 L912,970', { parent: d1, stroke: '#011732', width: 9 }); draw(head, R(10) + 0.9, 0.2);
   const n100 = deskEl('<div class="num" style="left:600px;top:930px;font-size:120px">0$</div>', d1);
   show(n100, R(10) + 0.4, 0.2, 'fade'); counter(n100, R(10) + 0.4, 1.2, 0, 100, (v) => Math.round(v) + '$');
-  const ul100 = underline(600, 840, 1060, R(10) + 1.6, { parent: d1, color: '#f2c230', width: 10 });
+  const ul100 = underline(600, 840, 1060, R(10) + 1.6, { parent: d1, color: '#f7b52c', width: 10 });
   const pocket = card(A + 'fuel.jpg', { x: 70, y: 520, w: 470, h: 600, rot: 4, parent: d1, label: 'جيبك' });
   show(pocket, R(11), 0.3, 'slideL'); sfx(R(11), 'whoosh', 0.6);
   ellipse(305, 820, 230, 300, R(12) + 0.1, { parent: d1 });
@@ -179,9 +179,9 @@
   const pinQ = icon('pin', 985, 395); show(pinQ, R(40));
   show(lblQeshm, R(40) + 0.1, 0.3, 'fade');
   camTo(R(41), 1.3, 1080, 470, 1.45);
-  const qRing2 = mapPath([[760, 470], [830, 425], [960, 372], [1100, 330], [1165, 330], [1150, 372], [1020, 425], [880, 470], [790, 490], [760, 470]], { stroke: '#f2c230', width: 6 });
+  const qRing2 = mapPath([[760, 470], [830, 425], [960, 372], [1100, 330], [1165, 330], [1150, 372], [1020, 425], [880, 470], [790, 490], [760, 470]], { stroke: '#f7b52c', width: 6 });
   draw(qRing2, R(42), 0.8); sfx(R(42), 'marker', 0.6);
-  const qFill = svgEl('path', { d: 'M760,470 Q830,425 895,398 Q960,372 1030,351 Q1100,330 1132,330 Q1165,330 1157,351 Q1150,372 1085,398 Q1020,425 950,447 Q880,470 835,480 Q790,490 760,470Z', fill: 'rgba(246,205,64,.35)' });
+  const qFill = svgEl('path', { d: 'M760,470 Q830,425 895,398 Q960,372 1030,351 Q1100,330 1132,330 Q1165,330 1157,351 Q1150,372 1085,398 Q1020,425 950,447 Q880,470 835,480 Q790,490 760,470Z', fill: 'rgba(247,181,44,.35)' });
   show(qFill, R(43), 0.4, 'fade');
   const bigTag = mapTag('أكبر جزيرة في الخليج', 960, 560, { cls: 'y big' }); show(bigTag, R(43) + 0.2); hide(bigTag, R(44) + 0.6);
   const ar1 = mapPath([[1120, 400], [1180, 440], [1230, 500]], { stroke: '#fff', width: 5 });
@@ -249,7 +249,7 @@
   const ships5 = deskEl(`<div class="minis" style="left:135px;top:800px;gap:10px">${[0, 1, 2, 3, 4].map(() => `<div style="transform:scale(1.25);width:150px;height:60px;display:flex;align-items:center;justify-content:center">${ICON.tanker}</div>`).join('')}</div>`, d4);
   show(ships5, R(65), 0.3);
   const n5 = deskEl('<div class="num" style="left:480px;top:960px;font-size:170px">0</div>', d4); show(n5, R(65), 0.2, 'fade'); counter(n5, R(65), 0.8, 0, 5);
-  const ul5 = underline(430, 650, 1170, R(65) + 0.9, { parent: d4, color: '#f2c230', width: 12 });
+  const ul5 = underline(430, 650, 1170, R(65) + 0.9, { parent: d4, color: '#f7b52c', width: 12 });
   for (let i = 0; i < 5; i++) { const b = deskEl(`<div style="position:absolute;left:${150 + i * 160}px;top:745px;transform:scale(.6)">${ICON.burst}</div>`, d4); ft(b, R(66) + i * 0.15, 0.3, { autoAlpha: 0, scale: 0.1 }, { autoAlpha: 1, scale: 0.6 }, 'back.out(3)'); }
   sfx(R(66), 'boom', 0.5);
 
@@ -273,7 +273,7 @@
   const arc2 = mapPath([[985, 410], [1010, 330], [1060, 300], [1095, 292]], { stroke: '#ff5a3c', width: 5 });
   draw(arc2, R(73) + 0.6, 0.5); sfx(R(73) + 0.6, 'whoosh', 0.7);
   burst(1100, 290, R(73) + 1.1, 0.5); fall(dr3, R(73) + 1.25); hide(arc2, R(73) + 1.4); hide(mq, R(74) + 0.2);
-  const qRing3 = mapPath([[760, 470], [830, 425], [960, 372], [1100, 330], [1165, 330], [1150, 372], [1020, 425], [880, 470], [790, 490], [760, 470]], { stroke: '#f2c230', width: 6 });
+  const qRing3 = mapPath([[760, 470], [830, 425], [960, 372], [1100, 330], [1165, 330], [1150, 372], [1020, 425], [880, 470], [790, 490], [760, 470]], { stroke: '#f7b52c', width: 6 });
   draw(qRing3, R(74), 0.6);
   [sam2, qRing3, claim2].forEach((e) => hide(e, R(75) - 0.15)); hide(night, R(75) + 0.5);
 
@@ -289,7 +289,7 @@
   show(hs, R(77), 0.3, 'slideL');
   const tW = tag('واشنطن', { x: 210, y: 1100, parent: d5, cls: 'big' }), tD = tag('الدوحة', { x: 540, y: 1100, parent: d5, cls: 'y big' }), tT = tag('طهران', { x: 870, y: 1100, parent: d5, cls: 'big' });
   show(tD, R(77) + 0.3); show(tW, R(78)); show(tT, R(78) + 0.15);
-  const l1 = inkPath('M440,1100 L320,1100', { parent: d5, stroke: '#151515', width: 6 }), l2 = inkPath('M640,1100 L760,1100', { parent: d5, stroke: '#151515', width: 6 });
+  const l1 = inkPath('M440,1100 L320,1100', { parent: d5, stroke: '#f7b52c', width: 6 }), l2 = inkPath('M640,1100 L760,1100', { parent: d5, stroke: '#f7b52c', width: 6 });
   draw(l1, R(78) + 0.3, 0.3); draw(l2, R(78) + 0.45, 0.3);
   [hs, tW, tD, tT, l1, l2].forEach((e) => hide(e, R(79)));
   const trBW = card(A + 'trump.jpg', { x: 120, y: 230, w: 840, h: 680, rot: -1.5, parent: d5, label: 'ترامب', bw: true, pos: 'center 20%' });
@@ -321,7 +321,7 @@
   const mapCard = card(A + 'hormuz.jpg', { x: 120, y: 420, w: 840, h: 760, rot: -1.5, parent: d7, pos: '62% 35%' });
   show(mapCard, R(88), 0.4, 'drop'); drift(mapCard, R(88), 6);
   [[540, 400, 540, 200], [540, 400, 300, 230], [540, 400, 780, 230], [540, 400, 160, 340], [540, 400, 920, 340]].forEach(([x1, y1, x2, y2], i) => {
-    const p = inkPath(`M${x1},${y1} Q${(x1 + x2) / 2},${Math.min(y1, y2) - 60} ${x2},${y2}`, { parent: d7, stroke: '#151515', width: 5 });
+    const p = inkPath(`M${x1},${y1} Q${(x1 + x2) / 2},${Math.min(y1, y2) - 60} ${x2},${y2}`, { parent: d7, stroke: '#f7b52c', width: 6 });
     p.setAttribute('stroke-dasharray', '2 12'); gsap.set(p, { autoAlpha: 0 }); show(p, R(88) + 0.3 + i * 0.12, 0.2, 'fade');
   });
   ellipse(540, 800, 300, 330, R(90), { parent: d7 });
@@ -332,7 +332,7 @@
   const fadeOut = deskEl('<div style="position:absolute;inset:0;background:#000"></div>', 'captions');
   ft(fadeOut, TL.duration + 0.1, 0.6, { autoAlpha: 0 }, { autoAlpha: 1 }, 'none');
 
-  const endc = deskEl(`<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:50px"><img src="../../engine/logo.jpg" style="width:640px;border-radius:40px;border:6px solid #fff;box-shadow:0 20px 60px rgba(246,205,64,.25)"><div class="tag y big" style="position:static;font-size:64px">تابعنا</div></div>`, 'captions');
+  const endc = deskEl(`<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:50px"><img src="../../engine/logo.jpg" style="width:640px;border-radius:40px;border:6px solid #fff;box-shadow:0 20px 60px rgba(247,181,44,.25)"><div class="tag y big" style="position:static;font-size:64px">تابعنا</div></div>`, 'captions');
   ft(endc, TL.duration + 0.6, 0.6, { autoAlpha: 0, scale: 0.85 }, { autoAlpha: 1, scale: 1 }, 'back.out(1.6)');
   sfx(TL.duration + 0.6, 'whoosh', 0.7);
   captions(rows);

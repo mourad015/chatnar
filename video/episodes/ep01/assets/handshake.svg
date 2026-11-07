@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><defs><radialGradient id="bg" cx=".5" cy=".42" r=".8"><stop offset="0" stop-color="#1b4a86"/><stop offset=".6" stop-color="#0b1f3d"/><stop offset="1" stop-color="#010b1a"/></radialGradient><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd36a"/><stop offset="1" stop-color="#e09612"/></linearGradient><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14406e"/><stop offset="1" stop-color="#061a33"/></linearGradient></defs><rect width="900" height="600" fill="url(#bg)"/>
+<ellipse cx="450" cy="430" rx="360" ry="70" fill="#233e5d" stroke="#fbdb9a" stroke-width="5"/><rect x="90" y="430" width="720" height="40" fill="#162d4d"/>
+<g transform="translate(330 360) rotate(-6)"><rect width="150" height="190" fill="#f6ecd9"/><g stroke="#d9c9a8" stroke-width="8"><line x1='20' y1='40' x2='130' y2='40'/>
+<line x1='20' y1='70' x2='130' y2='70'/>
+<line x1='20' y1='100' x2='130' y2='100'/>
+<line x1='20' y1='130' x2='130' y2='130'/></g></g>
+<rect x="490" y="360" width="16" height="140" rx="6" fill="url(#g)" transform="rotate(30 498 430)"/>
+<g transform="translate(170 150)"><circle cx="0" cy="0" r="60" fill="#0b1f3d" stroke="#fbdb9a" stroke-width="6"/><rect x="-80" y="70" width="160" height="200" rx="60" fill="#0b1f3d" stroke="#fbdb9a" stroke-width="6"/></g>
+<g transform="translate(730 150)"><circle cx="0" cy="0" r="60" fill="#0b1f3d" stroke="#fbdb9a" stroke-width="6"/><rect x="-80" y="70" width="160" height="200" rx="60" fill="#0b1f3d" stroke="#fbdb9a" stroke-width="6"/></g>
+<g transform="translate(450 150)"><circle r="54" fill="url(#g)" stroke="#fff" stroke-width="5"/><path d="M-24 4 L-6 22 L26 -14" stroke="#011732" stroke-width="10" fill="none" stroke-linecap="round"/></g>
+<g stroke="#f7b52c" stroke-width="5" stroke-dasharray="4 12" fill="none" stroke-linecap="round"><path d="M240 140 Q330 90 390 140"/><path d="M660 140 Q570 90 510 140"/></g>
+</svg>
