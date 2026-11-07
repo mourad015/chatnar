@@ -1,0 +1,238 @@
+<title>Mourad Ghalbi Brand Sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: navy masthead, then a single 1040px column of numbered spec sections on a cool paper ground.
+   Single deliberate light look (brand sheets are read like print); every color set explicitly. */
+:root{
+  --navy:#090D32; --red:#DB3445; --white:#FFFFFF;
+  --paper:#F4F5F9; --ink:#090D32; --muted:#5A5E7E; --line:#DCDFEA; --card:#FFFFFF;
+  --display:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --body:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast{background:var(--navy);color:var(--white)}
+.mast .wrap{padding-block:clamp(28px,6vw,64px);display:grid;gap:clamp(28px,5vw,56px)}
+.mast-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A9AED0}
+.mast svg.logo{width:min(560px,100%);height:auto;display:block}
+.mast h1{font-family:var(--display);font-weight:500;font-size:clamp(15px,2vw,18px);margin:0;color:#C9CCE4;max-width:52ch;line-height:1.5}
+.mast h1 b{color:var(--white);font-weight:600}
+section{padding-block:clamp(36px,6vw,64px);border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sh{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+.sh .n{font-family:var(--mono);font-size:12px;color:var(--red);font-weight:500;letter-spacing:.06em}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,3vw,28px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+p.lead{color:var(--muted);max-width:62ch;margin:0 0 24px}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){.g3,.g2{grid-template-columns:minmax(0,1fr)}}
+.tile{border-radius:6px;padding:28px;display:grid;place-items:center;min-height:170px}
+.cap{font-size:13px;color:var(--muted);margin-top:8px}
+.cap b{color:var(--ink);font-weight:600}
+.on-navy{background:var(--navy)} .on-white{background:var(--white);border:1px solid var(--line)} .on-red{background:var(--red)}
+svg.lg{width:100%;max-width:300px;height:auto;display:block}
+svg.ic{width:84px;height:84px;display:block}
+.dark{--bolt:var(--red);--word:var(--navy)} .light{--bolt:var(--red);--word:var(--white)} .mono-w{--bolt:var(--white);--word:var(--white)}
+/* colors */
+.sw{border-radius:6px;overflow:hidden;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.sw .chip{height:150px;padding:16px;display:flex;align-items:flex-end;font-family:var(--display);font-weight:600;font-size:18px}
+.sw dl{margin:0;padding:16px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:13px}
+.sw dt{color:var(--muted)} .sw dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.copy{all:unset;cursor:pointer;font-family:var(--mono);border-bottom:1px dashed currentColor}
+.copy:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ratio{display:flex;height:44px;border-radius:6px;overflow:hidden;margin-top:24px;border:1px solid var(--line)}
+.ratio div{display:flex;align-items:center;padding-left:12px;font-family:var(--mono);font-size:12px}
+.pairs{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.pair{font-size:13px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px 6px 6px;display:flex;align-items:center;gap:8px}
+.pair i{font-style:normal;font-weight:600;border-radius:999px;padding:2px 10px;font-size:12px}
+/* type */
+.spec{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px;min-width:0}
+.spec .lab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.scale{display:grid;gap:14px;margin-top:8px}
+.scale div{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.scale span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.scale p{margin:0;overflow-wrap:anywhere;line-height:1.15}
+/* clear space */
+.cs{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:clamp(20px,4vw,40px);display:grid;place-items:center}
+.cs svg{width:100%;max-width:620px;height:auto}
+ul.rules{margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
+ul.rules b{color:var(--ink)}
+/* do / don't */
+.dd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.dd{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dd figure{margin:0}
+.dd .tile{min-height:120px;padding:18px;position:relative;overflow:hidden}
+.dd figcaption{font-size:13px;margin-top:8px;display:flex;gap:8px;align-items:baseline}
+.mark{font-family:var(--mono);font-size:11px;font-weight:500;padding:1px 7px;border-radius:3px;flex:none}
+.yes{background:#E3F2EA;color:#17663F} .no{background:#FBE5E8;color:#A3192B}
+/* outro */
+video{width:100%;display:block;border-radius:6px;background:var(--navy)}
+.vids{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,.62fr);gap:16px;align-items:start}
+@media (max-width:760px){.vids{grid-template-columns:minmax(0,1fr)}.vids .v916{max-width:280px}}
+.tl{margin-top:28px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px}
+.tl-scroll{overflow-x:auto}
+.track{position:relative;height:170px;margin-top:12px;min-width:600px}
+.axis{position:absolute;left:0;right:0;bottom:22px;border-top:1px solid var(--line)}
+.tick{position:absolute;bottom:0;font-family:var(--mono);font-size:11px;color:var(--muted);transform:translateX(-50%)}
+.bar{position:absolute;height:6px;border-radius:3px}
+.bar span{position:absolute;left:0;bottom:9px;font-size:11.5px;font-weight:500;white-space:nowrap;color:var(--ink)}
+.bar.end span{left:auto;right:0}
+.files{font-family:var(--mono);font-size:12.5px;background:var(--navy);color:#DDE0F2;border-radius:6px;padding:18px 20px;overflow-x:auto;margin-top:16px;line-height:1.8}
+.files em{font-style:normal;color:var(--red)}
+footer{padding-block:28px;color:var(--muted);font-size:12px;font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){video{display:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="20 0 345 87">
+    <polygon points="__BOLT__" style="fill:var(--bolt,#DB3445)"/>
+    <path d="__TEXT__" style="fill:var(--word,#fff)"/>
+  </symbol>
+  <symbol id="icon" viewBox="30 -26 166 166"><polygon points="__BOLT__" style="fill:var(--bolt,#DB3445)"/></symbol>
+</svg>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="mast-top"><span>Brand sheet</span><span>v1.0 · November 2026</span></div>
+    <svg class="logo light" viewBox="20 0 345 87" role="img" aria-label="Mourad Ghalbi logo"><use href="#logo"/></svg>
+    <h1><b>Mourad Ghalbi</b> personal brand. Logo, colors, type and the official video outro, in one place. Use these exact values everywhere.</h1>
+  </div>
+</header>
+
+<main>
+<section><div class="wrap">
+  <div class="sh"><span class="n">01</span><h2>Logo</h2></div>
+  <p class="lead">A red bolt and the stacked wordmark. The bolt stands for speed and energy; the stacked name keeps it compact. Always use the supplied files, never retype the name.</p>
+  <div class="grid g3">
+    <div><div class="tile on-navy light"><svg class="lg"><use href="#logo"/></svg></div><div class="cap"><b>Primary.</b> On brand navy. Use this by default.</div></div>
+    <div><div class="tile on-white dark"><svg class="lg"><use href="#logo"/></svg></div><div class="cap"><b>Light backgrounds.</b> Wordmark switches to navy.</div></div>
+    <div><div class="tile on-navy"><svg class="ic"><use href="#icon"/></svg></div><div class="cap"><b>Icon.</b> The bolt alone, for avatars and favicons.</div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">02</span><h2>Clear space and size</h2></div>
+  <div class="grid g2">
+    <div class="cs">
+      <svg viewBox="-30 -35 445 157" role="img" aria-label="Clear space diagram">
+        <rect x="-30" y="-35" width="445" height="157" fill="#F4F5F9"/>
+        <rect x="8" y="-17" width="369" height="121" fill="none" stroke="#DB3445" stroke-width=".8" stroke-dasharray="3 3"/>
+        <g class="dark"><use href="#logo" x="20" y="0" width="345" height="87"/></g>
+        <rect x="20" y="0" width="345" height="87" fill="none" stroke="#5A5E7E" stroke-width=".4"/>
+        <g font-family="JetBrains Mono, monospace" font-size="8" fill="#DB3445">
+          <line x1="377" y1="40" x2="365" y2="40" stroke="#DB3445" stroke-width=".8"/><text x="383" y="43">X</text>
+          <line x1="190" y1="-17" x2="190" y2="0" stroke="#DB3445" stroke-width=".8"/><text x="195" y="-6">X</text>
+          <text x="8" y="-22">X = height of the "M"</text>
+        </g>
+      </svg>
+    </div>
+    <div class="spec">
+      <ul class="rules">
+        <li><b>Clear space:</b> keep at least X free on every side, where X is the height of the capital "M".</li>
+        <li><b>Minimum size, screen:</b> 140 px wide for the full logo, 24 px for the icon.</li>
+        <li><b>Minimum size, print:</b> 35 mm wide for the full logo.</li>
+        <li><b>Video:</b> the logo should span about 70% of the frame width in 16:9 and about 90% in 9:16.</li>
+        <li><b>Backgrounds:</b> brand navy first, white second. On photos, put the logo on a navy plate.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">03</span><h2>Colors</h2></div>
+  <p class="lead">Three colors, sampled from the original logo. Navy carries the brand, white carries the words, red is the spark. Tap a hex code to copy it.</p>
+  <div class="grid g3">
+    <div class="sw"><div class="chip" style="background:var(--navy);color:var(--white)">Midnight Navy</div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-c="#090D32">#090D32</button></dd><dt>RGB</dt><dd>9 13 50</dd><dt>CMYK</dt><dd>82 74 0 80</dd><dt>Role</dt><dd style="font-family:var(--body)">Backgrounds, dark text</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:var(--red);color:var(--white)">Bolt Red</div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-c="#DB3445">#DB3445</button></dd><dt>RGB</dt><dd>219 52 69</dd><dt>CMYK</dt><dd>0 76 68 14</dd><dt>Role</dt><dd style="font-family:var(--body)">Bolt, accents, highlights</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:var(--white);color:var(--navy);border-bottom:1px solid var(--line)">Pure White</div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-c="#FFFFFF">#FFFFFF</button></dd><dt>RGB</dt><dd>255 255 255</dd><dt>CMYK</dt><dd>0 0 0 0</dd><dt>Role</dt><dd style="font-family:var(--body)">Wordmark, text on navy</dd></dl></div>
+  </div>
+  <div class="ratio" aria-label="Color proportion">
+    <div style="flex:70;background:var(--navy);color:#C9CCE4">Navy 70%</div>
+    <div style="flex:20;background:var(--white);color:var(--navy)">White 20%</div>
+    <div style="flex:10;background:var(--red);color:var(--white)">10%</div>
+  </div>
+  <div class="pairs">
+    <span class="pair"><i style="background:var(--navy);color:var(--white)">Aa</i>White on navy 18.8:1, any size</span>
+    <span class="pair"><i style="background:var(--red);color:var(--white)">Aa</i>White on red 4.6:1, any size</span>
+    <span class="pair"><i style="background:var(--navy);color:var(--red)">Aa</i>Red on navy 4.1:1, large text only</span>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">04</span><h2>Typography</h2></div>
+  <p class="lead">Poppins, the geometric sans that matches the wordmark. SemiBold for headlines, Regular for body. Free on Google Fonts.</p>
+  <div class="grid g2">
+    <div class="spec">
+      <div class="lab">Poppins SemiBold 600 · headlines</div>
+      <p style="font-family:var(--display);font-weight:600;font-size:clamp(40px,7vw,64px);line-height:1;margin:12px 0 6px;letter-spacing:-.01em">Aa Gg 123</p>
+      <p style="margin:0;color:var(--muted);overflow-wrap:anywhere">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</p>
+      <div class="lab" style="margin-top:20px">Poppins Regular 400 · body</div>
+      <p style="margin:8px 0 0">Keep sentences short and direct. Body text sits in white on navy or navy on white, with comfortable line spacing.</p>
+    </div>
+    <div class="spec">
+      <div class="lab">Video title scale (1080p)</div>
+      <div class="scale">
+        <div><span>Title 96</span><p style="font-weight:600;font-size:clamp(28px,4vw,40px)">Big idea</p></div>
+        <div><span>Heading 64</span><p style="font-weight:600;font-size:clamp(22px,3vw,28px)">Section heading</p></div>
+        <div><span>Subtitle 40</span><p style="font-weight:500;font-size:19px">Supporting line</p></div>
+        <div><span>Caption 32</span><p style="font-size:15px">On-screen caption text</p></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">05</span><h2>Do and don't</h2></div>
+  <div class="dd">
+    <figure><div class="tile on-navy light"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark yes">DO</span>Original colors on navy</figcaption></figure>
+    <figure><div class="tile on-red mono-w"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark yes">DO</span>All-white on red, when needed</figcaption></figure>
+    <figure><div class="tile on-navy light"><svg class="lg" style="transform:scaleX(1.35)"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Stretch or squash</figcaption></figure>
+    <figure><div class="tile on-navy" style="--bolt:#F2A33A;--word:#7FE0FF"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Change the colors</figcaption></figure>
+    <figure><div class="tile on-navy light"><svg class="lg" style="transform:rotate(-12deg)"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Rotate it</figcaption></figure>
+    <figure><div class="tile on-navy light"><svg class="lg" style="filter:drop-shadow(4px 6px 3px #000) blur(.3px)"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Add shadows or effects</figcaption></figure>
+    <figure><div class="tile light" style="background:repeating-linear-gradient(45deg,#E9B949 0 14px,#3FA7A0 14px 28px)"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Place on busy backgrounds</figcaption></figure>
+    <figure><div class="tile on-white" style="--bolt:#DB3445;--word:#F4F5F9"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Use low contrast</figcaption></figure>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">06</span><h2>Official outro</h2></div>
+  <p class="lead">The closing shot of every personal-brand video. 5 seconds, 60 fps. Use the 16:9 file for YouTube, the 9:16 file for Reels, TikTok and Shorts. Use the silent file when the video has its own music.</p>
+  <div class="vids">
+    <video src="outro-16x9.mp4" controls muted playsinline preload="metadata" aria-label="Official outro, 16:9"></video>
+    <video class="v916" src="outro-9x16.mp4" controls muted playsinline preload="metadata" aria-label="Official outro, 9:16"></video>
+  </div>
+  <div class="tl">
+    <div class="spec" style="border:0;padding:0"><div class="lab">Timeline, seconds</div></div>
+    <div class="tl-scroll"><div class="track" id="track"></div></div>
+  </div>
+  <div class="files">brand/outro/<br>
+  &nbsp;&nbsp;<em>MouradGhalbi_Official_Outro_16x9.mp4</em> &nbsp;1920×1080 · sound<br>
+  &nbsp;&nbsp;MouradGhalbi_Official_Outro_16x9_silent.mp4<br>
+  &nbsp;&nbsp;<em>MouradGhalbi_Official_Outro_9x16.mp4</em> &nbsp;1080×1920 · sound<br>
+  &nbsp;&nbsp;MouradGhalbi_Official_Outro_9x16_silent.mp4</div>
+</div></section>
+</main>
+<footer><div class="wrap">Mourad Ghalbi™ · Brand sheet v1.0 · Source files in brand/ on the repository</div></footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.dataset.c, t=b.textContent;
+  navigator.clipboard.writeText(v).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent=t,1200)}).catch(()=>{const r=document.createRange();r.selectNodeContents(b);const s=getSelection();s.removeAllRanges();s.addRange(r);});
+}));
+// Outro beats, drawn to scale on a 0-5 s axis
+const beats=[["Fade up from black",0,.45,"#5A5E7E"],["Light streak",.2,.8,"#DB3445"],["Bolt wipes in",.45,1.35,"#DB3445"],["Name rises",1,2.05,"#090D32"],["Tracking settles + ™",1,2.6,"#090D32"],["Shine",2.15,2.95,"#DB3445"],["Hold",2.95,4.45,"#9095B5"],["Fade out",4.45,5,"#5A5E7E"]];
+const tr=document.getElementById('track'), pct=s=>s/5*100;
+beats.forEach(([n,a,b,c],i)=>{const d=document.createElement('div');d.className='bar';d.style.cssText=`left:${pct(a)}%;width:${pct(b-a)}%;top:${18+(i%4)*34}px;background:${c}`;if(b>4)d.classList.add('end');d.innerHTML='<span></span>';d.firstChild.textContent=n;d.title=`${n}: ${a}–${b}s`;tr.appendChild(d)});
+for(let s=0;s<=5;s++){const t=document.createElement('div');t.className='tick';t.style.left=pct(s)+'%';t.textContent=s+'s';if(s==0)t.style.transform='none';if(s==5)t.style.transform='translateX(-100%)';tr.appendChild(t)}
+tr.insertAdjacentHTML('beforeend','<div class="axis"></div>');
+</script>

@@ -1,0 +1,238 @@
+<title>Mourad Ghalbi Brand Sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: navy masthead, then a single 1040px column of numbered spec sections on a cool paper ground.
+   Single deliberate light look (brand sheets are read like print); every color set explicitly. */
+:root{
+  --navy:#090D32; --red:#DB3445; --white:#FFFFFF;
+  --paper:#F4F5F9; --ink:#090D32; --muted:#5A5E7E; --line:#DCDFEA; --card:#FFFFFF;
+  --display:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --body:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast{background:var(--navy);color:var(--white)}
+.mast .wrap{padding-block:clamp(28px,6vw,64px);display:grid;gap:clamp(28px,5vw,56px)}
+.mast-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A9AED0}
+.mast svg.logo{width:min(560px,100%);height:auto;display:block}
+.mast h1{font-family:var(--display);font-weight:500;font-size:clamp(15px,2vw,18px);margin:0;color:#C9CCE4;max-width:52ch;line-height:1.5}
+.mast h1 b{color:var(--white);font-weight:600}
+section{padding-block:clamp(36px,6vw,64px);border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sh{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+.sh .n{font-family:var(--mono);font-size:12px;color:var(--red);font-weight:500;letter-spacing:.06em}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,3vw,28px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+p.lead{color:var(--muted);max-width:62ch;margin:0 0 24px}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){.g3,.g2{grid-template-columns:minmax(0,1fr)}}
+.tile{border-radius:6px;padding:28px;display:grid;place-items:center;min-height:170px}
+.cap{font-size:13px;color:var(--muted);margin-top:8px}
+.cap b{color:var(--ink);font-weight:600}
+.on-navy{background:var(--navy)} .on-white{background:var(--white);border:1px solid var(--line)} .on-red{background:var(--red)}
+svg.lg{width:100%;max-width:300px;height:auto;display:block}
+svg.ic{width:84px;height:84px;display:block}
+.dark{--bolt:var(--red);--word:var(--navy)} .light{--bolt:var(--red);--word:var(--white)} .mono-w{--bolt:var(--white);--word:var(--white)}
+/* colors */
+.sw{border-radius:6px;overflow:hidden;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.sw .chip{height:150px;padding:16px;display:flex;align-items:flex-end;font-family:var(--display);font-weight:600;font-size:18px}
+.sw dl{margin:0;padding:16px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:13px}
+.sw dt{color:var(--muted)} .sw dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.copy{all:unset;cursor:pointer;font-family:var(--mono);border-bottom:1px dashed currentColor}
+.copy:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ratio{display:flex;height:44px;border-radius:6px;overflow:hidden;margin-top:24px;border:1px solid var(--line)}
+.ratio div{display:flex;align-items:center;padding-left:12px;font-family:var(--mono);font-size:12px}
+.pairs{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.pair{font-size:13px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px 6px 6px;display:flex;align-items:center;gap:8px}
+.pair i{font-style:normal;font-weight:600;border-radius:999px;padding:2px 10px;font-size:12px}
+/* type */
+.spec{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px;min-width:0}
+.spec .lab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.scale{display:grid;gap:14px;margin-top:8px}
+.scale div{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.scale span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.scale p{margin:0;overflow-wrap:anywhere;line-height:1.15}
+/* clear space */
+.cs{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:clamp(20px,4vw,40px);display:grid;place-items:center}
+.cs svg{width:100%;max-width:620px;height:auto}
+ul.rules{margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
+ul.rules b{color:var(--ink)}
+/* do / don't */
+.dd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.dd{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dd figure{margin:0}
+.dd .tile{min-height:120px;padding:18px;position:relative;overflow:hidden}
+.dd figcaption{font-size:13px;margin-top:8px;display:flex;gap:8px;align-items:baseline}
+.mark{font-family:var(--mono);font-size:11px;font-weight:500;padding:1px 7px;border-radius:3px;flex:none}
+.yes{background:#E3F2EA;color:#17663F} .no{background:#FBE5E8;color:#A3192B}
+/* outro */
+video{width:100%;display:block;border-radius:6px;background:var(--navy)}
+.vids{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,.62fr);gap:16px;align-items:start}
+@media (max-width:760px){.vids{grid-template-columns:minmax(0,1fr)}.vids .v916{max-width:280px}}
+.tl{margin-top:28px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px}
+.tl-scroll{overflow-x:auto}
+.track{position:relative;height:170px;margin-top:12px;min-width:600px}
+.axis{position:absolute;left:0;right:0;bottom:22px;border-top:1px solid var(--line)}
+.tick{position:absolute;bottom:0;font-family:var(--mono);font-size:11px;color:var(--muted);transform:translateX(-50%)}
+.bar{position:absolute;height:6px;border-radius:3px}
+.bar span{position:absolute;left:0;bottom:9px;font-size:11.5px;font-weight:500;white-space:nowrap;color:var(--ink)}
+.bar.end span{left:auto;right:0}
+.files{font-family:var(--mono);font-size:12.5px;background:var(--navy);color:#DDE0F2;border-radius:6px;padding:18px 20px;overflow-x:auto;margin-top:16px;line-height:1.8}
+.files em{font-style:normal;color:var(--red)}
+footer{padding-block:28px;color:var(--muted);font-size:12px;font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){video{display:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="20 0 345 87">
+    <polygon points="38,70 134,14 136,32 188,14 188,70 176,70 172,53 121,73 116,51" style="fill:var(--bolt,#DB3445)"/>
+    <path d="M232.100050530571 20.368873168266802V44.0H227.36028297119756V28.629610914603337L221.02930773117737 44.0H217.44062657908034L211.0757958564932 28.629610914603337V44.0H206.33602829711975V20.368873168266802H211.7190500252653L219.23496715512886 37.93986862051541L226.75088428499242 20.368873168266802ZM235.58716523496716 34.622031328954016Q235.58716523496716 31.744315310763014 236.8567458312279 29.543708943911067Q238.12632642748864 27.34310257705912 240.32693279434056 26.141232945932288Q242.52753916119252 24.93936331480546 245.23597776654876 24.93936331480546Q247.944416371905 24.93936331480546 250.14502273875695 26.141232945932288Q252.34562910560888 27.34310257705912 253.61520970186962 29.543708943911067Q254.88479029813035 31.744315310763014 254.88479029813035 34.622031328954016Q254.88479029813035 37.499747347145025 253.58135421930268 39.70035371399697Q252.27791814047498 41.90096008084891 250.06038403233956 43.102829711975744Q247.84284992420413 44.30469934310258 245.10055583628093 44.30469934310258Q242.3921172309247 44.30469934310258 240.2253663466397 43.102829711975744Q238.0586154623547 41.90096008084891 236.82289034866093 39.70035371399697Q235.58716523496716 37.499747347145025 235.58716523496716 34.622031328954016ZM250.00960080848913 34.622031328954016Q250.00960080848913 31.94744820616473 248.6045982819606 30.50859019706923Q247.19959575543203 29.069732187973727 245.16826680141486 29.069732187973727Q243.13693784739766 29.069732187973727 241.76579080343606 30.50859019706923Q240.3946437594745 31.94744820616473 240.3946437594745 34.622031328954016Q240.3946437594745 37.2966144517433 241.73193532086913 38.73547246083881Q243.06922688226376 40.17433046993431 245.10055583628093 40.17433046993431Q246.38706417382517 40.17433046993431 247.5212228398181 39.54800404244568Q248.65538150581102 38.92167761495705 249.33249115715006 37.66902475997979Q250.00960080848913 36.41637190500253 250.00960080848913 34.622031328954016ZM276.07832238504295 25.244062657908035V44.0H271.3046993431026V41.63011622031329Q270.3906013137949 42.8489135927236 268.91788782213246 43.54295098534614Q267.44517433046997 44.23698837796867 265.7185447195553 44.23698837796867Q263.5179383527034 44.23698837796867 261.8251642243558 43.30596260737747Q260.1323900960081 42.374936836786254 259.16750884284994 40.56366851945427Q258.20262758969176 38.75240020212228 258.20262758969176 36.24709449216776V25.244062657908035H262.9423951490652V35.5699848408287Q262.9423951490652 37.8044466902476 264.05962607377467 39.00631632137443Q265.1768569984841 40.20818595250126 267.10661950480045 40.20818595250126Q269.0702374936837 40.20818595250126 270.1874684183931 39.00631632137443Q271.3046993431026 37.8044466902476 271.3046993431026 35.5699848408287V25.244062657908035ZM291.2455785750379 24.97321879737241V29.949974734714502H289.9929257200606Q287.7584638706417 29.949974734714502 286.6243052046488 30.999494694290046Q285.4901465386559 32.04901465386559 285.4901465386559 34.65588681152097V44.0H280.75037897928246V25.244062657908035H285.4901465386559V28.155634158665993Q286.4042445679636 26.66599292572006 287.8769580596261 25.819605861546236Q289.3496715512885 24.97321879737241 291.2455785750379 24.97321879737241ZM301.77463365336024 24.93936331480546Q303.87367357251134 24.93936331480546 305.44795351187463 25.785750378979284Q307.022233451238 26.63213744315311 307.97018696311267 27.91864578069732V25.244062657908035H312.74381000505304V44.0H307.97018696311267V41.25770591207681Q307.0560889338049 42.57806973218798 305.44795351187463 43.44138453764528Q303.8398180899444 44.30469934310258 301.7407781707933 44.30469934310258Q299.3708943911066 44.30469934310258 297.4242041435068 43.08590197069227Q295.477513895907 41.86710459828196 294.3433552299141 39.649570490146544Q293.2091965639212 37.43203638201112 293.2091965639212 34.55432036382011Q293.2091965639212 31.710459828196058 294.3433552299141 29.509853461344115Q295.477513895907 27.309247094492168 297.4242041435068 26.124305204648813Q299.3708943911066 24.93936331480546 301.77463365336024 24.93936331480546ZM302.9934310257706 29.103587670540676Q301.67306720565944 29.103587670540676 300.55583628094996 29.746841839312786Q299.4386053562405 30.390096008084893 298.74456796361795 31.625821121778678Q298.0505305709954 32.86154623547246 298.0505305709954 34.55432036382011Q298.0505305709954 36.24709449216776 298.74456796361795 37.5166750884285Q299.4386053562405 38.78625568468924 300.5727640222334 39.463365336028296Q301.70692268822637 40.140474987367355 302.9934310257706 40.140474987367355Q304.3137948458817 40.140474987367355 305.4648812531581 39.48029307731177Q306.61596766043453 38.82011116725619 307.2930773117736 37.584386053562405Q307.97018696311267 36.34866093986862 307.97018696311267 34.622031328954016Q307.97018696311267 32.895401718039416 307.2930773117736 31.65967660434563Q306.61596766043453 30.423951490651845 305.4648812531581 29.76376958059626Q304.3137948458817 29.103587670540676 302.9934310257706 29.103587670540676ZM324.7625063163214 24.93936331480546Q326.5907023749368 24.93936331480546 328.24962102071754 25.734967155128857Q329.9085396664982 26.53057099545225 330.8903486609399 27.850934815563416V18.946942900454776H335.6978271854472V44.0H330.8903486609399V41.22385042950985Q330.01010611419906 42.611925214754926 328.4188984335523 43.45831227892875Q326.8276907529055 44.30469934310258 324.7286508337544 44.30469934310258Q322.3587670540677 44.30469934310258 320.39514906518446 43.08590197069227Q318.43153107630116 41.86710459828196 317.29737241030824 39.649570490146544Q316.1632137443153 37.43203638201112 316.1632137443153 34.55432036382011Q316.1632137443153 31.710459828196058 317.29737241030824 29.509853461344115Q318.43153107630116 27.309247094492168 320.39514906518446 26.124305204648813Q322.3587670540677 24.93936331480546 324.7625063163214 24.93936331480546ZM325.9474482061647 29.103587670540676Q324.6270843860535 29.103587670540676 323.50985346134405 29.746841839312786Q322.39262253663463 30.390096008084893 321.6985851440121 31.625821121778678Q321.00454775138957 32.86154623547246 321.00454775138957 34.55432036382011Q321.00454775138957 36.24709449216776 321.6985851440121 37.5166750884285Q322.39262253663463 38.78625568468924 323.5267812026276 39.463365336028296Q324.6609398686205 40.140474987367355 325.9474482061647 40.140474987367355Q327.26781202627586 40.140474987367355 328.4188984335523 39.48029307731177Q329.5699848408287 38.82011116725619 330.2470944921678 37.584386053562405Q330.9242041435068 36.34866093986862 330.9242041435068 34.622031328954016Q330.9242041435068 32.895401718039416 330.2470944921678 31.65967660434563Q329.5699848408287 30.423951490651845 328.4188984335523 29.76376958059626Q327.26781202627586 29.103587670540676 325.9474482061647 29.103587670540676Z M222.78979282465892 61.47852450732694Q221.97726124305206 59.988883274381 220.55533097524003 59.21020717534108Q219.133400707428 58.43153107630116 217.23749368367862 58.43153107630116Q215.13845376452753 58.43153107630116 213.5133906013138 59.37948458817584Q211.88832743810005 60.32743810005053 210.97422940879233 62.087923193532085Q210.06013137948457 63.84840828701364 210.06013137948457 66.15058110156644Q210.06013137948457 68.52046488125316 210.9911571500758 70.28094997473471Q211.922182920667 72.04143506821627 213.5811015664477 72.98938858009095Q215.2400202122284 73.93734209196563 217.44062657908034 73.93734209196563Q220.14906518443658 73.93734209196563 221.8756947953512 72.49848408287014Q223.60232440626578 71.05962607377464 224.14401212733705 68.4866093986862H216.01869631126831V64.86407276402224H228.81606872157656V68.9944416371905Q228.3420919656392 71.46589186457807 226.78473976755936 73.56493178372915Q225.22738756947953 75.66397170288025 222.77286508337545 76.93355229914098Q220.31834259727134 78.20313289540172 217.27134916624559 78.20313289540172Q213.85194542698332 78.20313289540172 211.09272359777665 76.66270843860536Q208.33350176857 75.12228398180899 206.75922182920667 72.3799898938858Q205.18494188984334 69.63769580596261 205.18494188984334 66.15058110156644Q205.18494188984334 62.66346639717029 206.75922182920667 59.904244567963616Q208.33350176857 57.14502273875695 211.09272359777665 55.60459828196059Q213.85194542698332 54.064173825164225 217.23749368367862 54.064173825164225Q221.2324406265791 54.064173825164225 224.177867609904 56.01086407276402Q227.1232945932289 57.957554320363826 228.24052551793835 61.47852450732694ZM250.21273370389085 66.99696816574027V78.0H245.47296614451741V67.64022233451237Q245.47296614451741 65.40576048509348 244.35573521980797 64.20389085396664Q243.23850429509852 63.002021222839815 241.3087417887822 63.002021222839815Q239.34512379989894 63.002021222839815 238.21096513390603 64.20389085396664Q237.0768064679131 65.40576048509348 237.0768064679131 67.64022233451237V78.0H232.33703890853965V52.94694290045477H237.0768064679131V61.58009095502779Q237.9909044972208 60.361293582617485 239.5144012127337 59.667256189994944Q241.0378979282466 58.97321879737241 242.899949469429 58.97321879737241Q245.03284487114703 58.97321879737241 246.69176351692772 59.904244567963616Q248.35068216270844 60.83527033855483 249.28170793329963 62.646538655886815Q250.21273370389085 64.4578069732188 250.21273370389085 66.99696816574027ZM262.0621526023244 58.93936331480546Q264.16119252147547 58.93936331480546 265.73547246083876 59.78575037897929Q267.3097524002021 60.63213744315311 268.2577059120768 61.91864578069732V59.24406265790803H273.03132895401717V78.0H268.2577059120768V75.2577059120768Q267.34360788276905 76.57806973218797 265.73547246083876 77.44138453764528Q264.12733703890854 78.30469934310258 262.02829711975744 78.30469934310258Q259.65841334007075 78.30469934310258 257.71172309247095 77.08590197069228Q255.76503284487114 75.86710459828195 254.63087417887823 73.64957049014654Q253.4967155128853 71.43203638201112 253.4967155128853 68.55432036382011Q253.4967155128853 65.71045982819606 254.63087417887823 63.509853461344115Q255.76503284487114 61.309247094492164 257.71172309247095 60.12430520464881Q259.65841334007075 58.93936331480546 262.0621526023244 58.93936331480546ZM263.2809499747347 63.103587670540676Q261.96058615462357 63.103587670540676 260.8433552299141 63.746841839312786Q259.7261243052046 64.3900960080849 259.0320869125821 65.62582112177867Q258.33804951995955 66.86154623547246 258.33804951995955 68.55432036382011Q258.33804951995955 70.24709449216776 259.0320869125821 71.5166750884285Q259.7261243052046 72.78625568468924 260.86028297119753 73.46336533602829Q261.9944416371905 74.14047498736736 263.2809499747347 74.14047498736736Q264.60131379484585 74.14047498736736 265.75240020212226 73.48029307731177Q266.90348660939867 72.82011116725619 267.5805962607377 71.58438605356241Q268.2577059120768 70.34866093986862 268.2577059120768 68.62203132895402Q268.2577059120768 66.89540171803941 267.5805962607377 65.65967660434563Q266.90348660939867 64.42395149065185 265.75240020212226 63.76376958059626Q264.60131379484585 63.103587670540676 263.2809499747347 63.103587670540676ZM282.4092976250632 52.94694290045477V78.0H277.66953006568974V52.94694290045477ZM298.0166750884285 58.93936331480546Q300.42041435068217 58.93936331480546 302.36710459828197 60.12430520464881Q304.3137948458818 61.309247094492164 305.4479535118747 63.49292572006063Q306.5821121778676 65.6766043456291 306.5821121778676 68.55432036382011Q306.5821121778676 71.43203638201112 305.4479535118747 73.64957049014654Q304.3137948458818 75.86710459828195 302.36710459828197 77.08590197069228Q300.42041435068217 78.30469934310258 298.0166750884285 78.30469934310258Q295.91763516927745 78.30469934310258 294.3433552299141 77.47524002021223Q292.7690752905508 76.64578069732188 291.8211217786761 75.32541687721071V78.0H287.0813542193027V52.94694290045477H291.8211217786761V61.98635674583123Q292.7352198079838 60.63213744315311 294.3433552299141 59.78575037897929Q295.9514906518444 58.93936331480546 298.0166750884285 58.93936331480546ZM296.76402223345127 63.103587670540676Q295.477513895907 63.103587670540676 294.3433552299141 63.76376958059626Q293.2091965639212 64.42395149065185 292.51515917129865 65.6766043456291Q291.8211217786761 66.92925720060637 291.8211217786761 68.62203132895402Q291.8211217786761 70.31480545730167 292.51515917129865 71.56745831227893Q293.2091965639212 72.82011116725619 294.3433552299141 73.48029307731177Q295.477513895907 74.14047498736736 296.76402223345127 74.14047498736736Q298.0843860535624 74.14047498736736 299.2185447195553 73.46336533602829Q300.35270338554824 72.78625568468924 301.04674077817083 71.53360282971198Q301.74077817079336 70.28094997473471 301.74077817079336 68.55432036382011Q301.74077817079336 66.86154623547246 301.04674077817083 65.62582112177867Q300.35270338554824 64.3900960080849 299.2185447195553 63.746841839312786Q298.0843860535624 63.103587670540676 296.76402223345127 63.103587670540676ZM309.5275391611925 54.23345123799899Q309.5275391611925 53.04850934815563 310.35699848408285 52.25290550783224Q311.18645780697324 51.457301667508844 312.4391106619505 51.457301667508844Q313.6917635169278 51.457301667508844 314.5212228398181 52.25290550783224Q315.35068216270844 53.04850934815563 315.35068216270844 54.23345123799899Q315.35068216270844 55.41839312784235 314.5212228398181 56.213996968165745Q313.6917635169278 57.00960080848914 312.4391106619505 57.00960080848914Q311.18645780697324 57.00960080848914 310.35699848408285 56.213996968165745Q309.5275391611925 55.41839312784235 309.5275391611925 54.23345123799899ZM314.77513895907026 59.24406265790803V78.0H310.0353713996968V59.24406265790803Z M318.78616725619 52.065H320.64116725619V52.639H320.08116725619004V54.528999999999996H319.34616725619003L319.35316725619003 52.639H318.78616725619ZM324.14816725619 52.065V54.528999999999996H323.46916725619L323.45516725619 52.982L322.81816725619 54.528999999999996H322.32116725619L321.68416725619 52.926V54.528999999999996H321.02616725619004V52.065H321.99916725619L322.59416725619 53.647L323.23816725619 52.065Z" style="fill:var(--word,#fff)"/>
+  </symbol>
+  <symbol id="icon" viewBox="30 -26 166 166"><polygon points="38,70 134,14 136,32 188,14 188,70 176,70 172,53 121,73 116,51" style="fill:var(--bolt,#DB3445)"/></symbol>
+</svg>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="mast-top"><span>Brand sheet</span><span>v1.0 · November 2026</span></div>
+    <svg class="logo light" viewBox="20 0 345 87" role="img" aria-label="Mourad Ghalbi logo"><use href="#logo"/></svg>
+    <h1><b>Mourad Ghalbi</b> personal brand. Logo, colors, type and the official video outro, in one place. Use these exact values everywhere.</h1>
+  </div>
+</header>
+
+<main>
+<section><div class="wrap">
+  <div class="sh"><span class="n">01</span><h2>Logo</h2></div>
+  <p class="lead">A red bolt and the stacked wordmark. The bolt stands for speed and energy; the stacked name keeps it compact. Always use the supplied files, never retype the name.</p>
+  <div class="grid g3">
+    <div><div class="tile on-navy light"><svg class="lg"><use href="#logo"/></svg></div><div class="cap"><b>Primary.</b> On brand navy. Use this by default.</div></div>
+    <div><div class="tile on-white dark"><svg class="lg"><use href="#logo"/></svg></div><div class="cap"><b>Light backgrounds.</b> Wordmark switches to navy.</div></div>
+    <div><div class="tile on-navy"><svg class="ic"><use href="#icon"/></svg></div><div class="cap"><b>Icon.</b> The bolt alone, for avatars and favicons.</div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">02</span><h2>Clear space and size</h2></div>
+  <div class="grid g2">
+    <div class="cs">
+      <svg viewBox="-30 -35 445 157" role="img" aria-label="Clear space diagram">
+        <rect x="-30" y="-35" width="445" height="157" fill="#F4F5F9"/>
+        <rect x="8" y="-17" width="369" height="121" fill="none" stroke="#DB3445" stroke-width=".8" stroke-dasharray="3 3"/>
+        <g class="dark"><use href="#logo" x="20" y="0" width="345" height="87"/></g>
+        <rect x="20" y="0" width="345" height="87" fill="none" stroke="#5A5E7E" stroke-width=".4"/>
+        <g font-family="JetBrains Mono, monospace" font-size="8" fill="#DB3445">
+          <line x1="377" y1="40" x2="365" y2="40" stroke="#DB3445" stroke-width=".8"/><text x="383" y="43">X</text>
+          <line x1="190" y1="-17" x2="190" y2="0" stroke="#DB3445" stroke-width=".8"/><text x="195" y="-6">X</text>
+          <text x="8" y="-22">X = height of the "M"</text>
+        </g>
+      </svg>
+    </div>
+    <div class="spec">
+      <ul class="rules">
+        <li><b>Clear space:</b> keep at least X free on every side, where X is the height of the capital "M".</li>
+        <li><b>Minimum size, screen:</b> 140 px wide for the full logo, 24 px for the icon.</li>
+        <li><b>Minimum size, print:</b> 35 mm wide for the full logo.</li>
+        <li><b>Video:</b> the logo should span about 70% of the frame width in 16:9 and about 90% in 9:16.</li>
+        <li><b>Backgrounds:</b> brand navy first, white second. On photos, put the logo on a navy plate.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">03</span><h2>Colors</h2></div>
+  <p class="lead">Three colors, sampled from the original logo. Navy carries the brand, white carries the words, red is the spark. Tap a hex code to copy it.</p>
+  <div class="grid g3">
+    <div class="sw"><div class="chip" style="background:var(--navy);color:var(--white)">Midnight Navy</div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-c="#090D32">#090D32</button></dd><dt>RGB</dt><dd>9 13 50</dd><dt>CMYK</dt><dd>82 74 0 80</dd><dt>Role</dt><dd style="font-family:var(--body)">Backgrounds, dark text</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:var(--red);color:var(--white)">Bolt Red</div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-c="#DB3445">#DB3445</button></dd><dt>RGB</dt><dd>219 52 69</dd><dt>CMYK</dt><dd>0 76 68 14</dd><dt>Role</dt><dd style="font-family:var(--body)">Bolt, accents, highlights</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:var(--white);color:var(--navy);border-bottom:1px solid var(--line)">Pure White</div>
+      <dl><dt>HEX</dt><dd><button class="copy" data-c="#FFFFFF">#FFFFFF</button></dd><dt>RGB</dt><dd>255 255 255</dd><dt>CMYK</dt><dd>0 0 0 0</dd><dt>Role</dt><dd style="font-family:var(--body)">Wordmark, text on navy</dd></dl></div>
+  </div>
+  <div class="ratio" aria-label="Color proportion">
+    <div style="flex:70;background:var(--navy);color:#C9CCE4">Navy 70%</div>
+    <div style="flex:20;background:var(--white);color:var(--navy)">White 20%</div>
+    <div style="flex:10;background:var(--red);color:var(--white)">10%</div>
+  </div>
+  <div class="pairs">
+    <span class="pair"><i style="background:var(--navy);color:var(--white)">Aa</i>White on navy 18.8:1, any size</span>
+    <span class="pair"><i style="background:var(--red);color:var(--white)">Aa</i>White on red 4.6:1, any size</span>
+    <span class="pair"><i style="background:var(--navy);color:var(--red)">Aa</i>Red on navy 4.1:1, large text only</span>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">04</span><h2>Typography</h2></div>
+  <p class="lead">Poppins, the geometric sans that matches the wordmark. SemiBold for headlines, Regular for body. Free on Google Fonts.</p>
+  <div class="grid g2">
+    <div class="spec">
+      <div class="lab">Poppins SemiBold 600 · headlines</div>
+      <p style="font-family:var(--display);font-weight:600;font-size:clamp(40px,7vw,64px);line-height:1;margin:12px 0 6px;letter-spacing:-.01em">Aa Gg 123</p>
+      <p style="margin:0;color:var(--muted);overflow-wrap:anywhere">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</p>
+      <div class="lab" style="margin-top:20px">Poppins Regular 400 · body</div>
+      <p style="margin:8px 0 0">Keep sentences short and direct. Body text sits in white on navy or navy on white, with comfortable line spacing.</p>
+    </div>
+    <div class="spec">
+      <div class="lab">Video title scale (1080p)</div>
+      <div class="scale">
+        <div><span>Title 96</span><p style="font-weight:600;font-size:clamp(28px,4vw,40px)">Big idea</p></div>
+        <div><span>Heading 64</span><p style="font-weight:600;font-size:clamp(22px,3vw,28px)">Section heading</p></div>
+        <div><span>Subtitle 40</span><p style="font-weight:500;font-size:19px">Supporting line</p></div>
+        <div><span>Caption 32</span><p style="font-size:15px">On-screen caption text</p></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">05</span><h2>Do and don't</h2></div>
+  <div class="dd">
+    <figure><div class="tile on-navy light"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark yes">DO</span>Original colors on navy</figcaption></figure>
+    <figure><div class="tile on-red mono-w"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark yes">DO</span>All-white on red, when needed</figcaption></figure>
+    <figure><div class="tile on-navy light"><svg class="lg" style="transform:scaleX(1.35)"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Stretch or squash</figcaption></figure>
+    <figure><div class="tile on-navy" style="--bolt:#F2A33A;--word:#7FE0FF"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Change the colors</figcaption></figure>
+    <figure><div class="tile on-navy light"><svg class="lg" style="transform:rotate(-12deg)"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Rotate it</figcaption></figure>
+    <figure><div class="tile on-navy light"><svg class="lg" style="filter:drop-shadow(4px 6px 3px #000) blur(.3px)"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Add shadows or effects</figcaption></figure>
+    <figure><div class="tile light" style="background:repeating-linear-gradient(45deg,#E9B949 0 14px,#3FA7A0 14px 28px)"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Place on busy backgrounds</figcaption></figure>
+    <figure><div class="tile on-white" style="--bolt:#DB3445;--word:#F4F5F9"><svg class="lg"><use href="#logo"/></svg></div><figcaption><span class="mark no">DON'T</span>Use low contrast</figcaption></figure>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh"><span class="n">06</span><h2>Official outro</h2></div>
+  <p class="lead">The closing shot of every personal-brand video. 5 seconds, 60 fps. Use the 16:9 file for YouTube, the 9:16 file for Reels, TikTok and Shorts. Use the silent file when the video has its own music.</p>
+  <div class="vids">
+    <video src="outro-16x9.mp4" controls muted playsinline preload="metadata" aria-label="Official outro, 16:9"></video>
+    <video class="v916" src="outro-9x16.mp4" controls muted playsinline preload="metadata" aria-label="Official outro, 9:16"></video>
+  </div>
+  <div class="tl">
+    <div class="spec" style="border:0;padding:0"><div class="lab">Timeline, seconds</div></div>
+    <div class="tl-scroll"><div class="track" id="track"></div></div>
+  </div>
+  <div class="files">brand/outro/<br>
+  &nbsp;&nbsp;<em>MouradGhalbi_Official_Outro_16x9.mp4</em> &nbsp;1920×1080 · sound<br>
+  &nbsp;&nbsp;MouradGhalbi_Official_Outro_16x9_silent.mp4<br>
+  &nbsp;&nbsp;<em>MouradGhalbi_Official_Outro_9x16.mp4</em> &nbsp;1080×1920 · sound<br>
+  &nbsp;&nbsp;MouradGhalbi_Official_Outro_9x16_silent.mp4</div>
+</div></section>
+</main>
+<footer><div class="wrap">Mourad Ghalbi™ · Brand sheet v1.0 · Source files in brand/ on the repository</div></footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.dataset.c, t=b.textContent;
+  navigator.clipboard.writeText(v).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent=t,1200)}).catch(()=>{const r=document.createRange();r.selectNodeContents(b);const s=getSelection();s.removeAllRanges();s.addRange(r);});
+}));
+// Outro beats, drawn to scale on a 0-5 s axis
+const beats=[["Fade up from black",0,.45,"#5A5E7E"],["Light streak",.2,.8,"#DB3445"],["Bolt wipes in",.45,1.35,"#DB3445"],["Name rises",1,2.05,"#090D32"],["Tracking settles + ™",1,2.6,"#090D32"],["Shine",2.15,2.95,"#DB3445"],["Hold",2.95,4.45,"#9095B5"],["Fade out",4.45,5,"#5A5E7E"]];
+const tr=document.getElementById('track'), pct=s=>s/5*100;
+beats.forEach(([n,a,b,c],i)=>{const d=document.createElement('div');d.className='bar';d.style.cssText=`left:${pct(a)}%;width:${pct(b-a)}%;top:${18+(i%4)*34}px;background:${c}`;if(b>4)d.classList.add('end');d.innerHTML='<span></span>';d.firstChild.textContent=n;d.title=`${n}: ${a}–${b}s`;tr.appendChild(d)});
+for(let s=0;s<=5;s++){const t=document.createElement('div');t.className='tick';t.style.left=pct(s)+'%';t.textContent=s+'s';if(s==0)t.style.transform='none';if(s==5)t.style.transform='translateX(-100%)';tr.appendChild(t)}
+tr.insertAdjacentHTML('beforeend','<div class="axis"></div>');
+</script>
