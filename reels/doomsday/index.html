@@ -4,210 +4,203 @@
 <meta charset="utf-8">
 <title>Doomsday Tomorrow</title>
 <style>
-  :root { --fg:#F5F0E8; --red:#FF3B30; --mut:#A9A2B8; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { width:1080px; height:1920px; background:#0A0912; overflow:hidden; }
-  body { font-family:'Inter Display','Inter','Noto Color Emoji',sans-serif; color:var(--fg); }
+  html, body { width:1080px; height:1920px; background:#050508; overflow:hidden; }
+  body { font-family:'Inter Display','Inter',sans-serif; color:#F5F0E8; }
   canvas { position:absolute; left:0; top:0; }
-  .abs { position:absolute; }
-  .t { position:absolute; left:0; width:1000px; text-align:center; white-space:nowrap; font-weight:900; letter-spacing:-0.03em; opacity:0; text-shadow:0 6px 30px rgba(0,0,0,.5); }
-  .e { position:absolute; font-family:'Noto Color Emoji'; opacity:0; text-align:center; }
-  .bub { position:absolute; padding:24px 34px; border-radius:36px; font-size:48px; font-weight:700; opacity:0; white-space:nowrap; }
-  #clock { position:absolute; left:290px; width:420px; top:262px; padding:6px 0; border-radius:20px; background:rgba(10,9,18,.55); text-align:center; font-size:64px !important; font-family:'JetBrains Mono',monospace; font-weight:800; font-size:76px; color:var(--red); text-shadow:0 0 30px rgba(255,59,48,.5); }
-  #big { position:absolute; left:0; width:1000px; top:560px; text-align:center; font-family:'JetBrains Mono',monospace; font-weight:800; font-size:420px; color:var(--fg); opacity:0; }
-  #flash { position:absolute; inset:0; background:#fff; opacity:0; }
-  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.08; mix-blend-mode:overlay; }
-  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 48%, rgba(0,0,0,.6) 100%); }
+  .t { position:absolute; left:0; width:1000px; text-align:center; white-space:nowrap; font-weight:800; letter-spacing:-0.02em; opacity:0; text-shadow:0 0 30px rgba(0,0,0,.8); }
+  .s { font-family:'Bitstream Charter',serif; font-style:italic; font-weight:400; letter-spacing:0; }
+  .m { font-family:'JetBrains Mono',monospace; font-weight:600; letter-spacing:.08em; }
+  #clock { position:absolute; left:0; width:1000px; top:262px; text-align:center; font-family:'JetBrains Mono',monospace; font-weight:800; font-size:64px; color:#FF3B30; text-shadow:0 0 30px rgba(255,59,48,.6); opacity:0; }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.07; mix-blend-mode:overlay; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 46% 42%, rgba(0,0,0,0) 46%, rgba(0,0,0,.65) 100%); }
 </style>
 </head>
 <body>
-<canvas id="sky" width="1080" height="1920"></canvas>
-<div id="world" class="abs" style="inset:0;transform-origin:500px 900px">
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="world" style="position:absolute;inset:0">
   <div id="clock">24:00:00</div>
-  <!-- B0 -->
-  <div class="t" id="h1" style="top:640px;font-size:110px;font-weight:800">Tomorrow is</div>
-  <div class="t" id="h2" style="top:770px;font-size:158px;color:var(--red)">DOOMSDAY.</div>
-  <div class="t" id="h3" style="top:1030px;font-size:64px;font-weight:800">You have 24 hours.</div>
-  <!-- B1 -->
-  <div class="e" id="ph" style="left:380px;top:560px;font-size:240px;width:240px">📱</div>
-  <div class="abs" id="badge" style="left:580px;top:560px;min-width:120px;height:90px;padding:0 24px;border-radius:45px;background:var(--red);font-size:56px;font-weight:900;line-height:90px;text-align:center;opacity:0">99+</div>
-  <div class="t" id="b1" style="top:1000px;font-size:80px">The internet goes quiet.</div>
-  <!-- B2 -->
-  <div class="bub" id="boss1" style="left:80px;top:560px;background:#2B2838;font-size:54px">💼 Boss: "about that deadline…"</div>
-  <div class="bub" id="boss2" style="left:330px;top:730px;background:var(--fg);color:#111;font-size:84px;font-weight:900">"never mind."</div>
-  <!-- B3 -->
-  <div class="e" id="ang1" style="left:180px;top:600px;font-size:200px;width:220px">😤</div>
-  <div class="e" id="ang2" style="left:600px;top:600px;font-size:200px;width:220px">😤</div>
-  <div class="t" id="b3a" style="top:980px;font-size:64px;font-weight:800">Every argument you were having…</div>
-  <div class="t" id="b3b" style="top:1070px;font-size:64px;font-weight:800;color:var(--mut)">suddenly isn't worth it.</div>
-  <!-- B4 -->
-  <div class="abs" id="calls" style="left:500px;top:760px;width:0;height:0"></div>
-  <div class="e" id="mom" style="left:400px;top:660px;font-size:200px;width:200px">❤️</div>
-  <div class="t" id="b4a" style="top:1000px;font-size:64px;font-weight:800">Everyone calls the same person.</div>
-  <div class="t" id="b4b" style="top:1090px;font-size:110px;color:var(--red)">Mom.</div>
-  <!-- B5 -->
-  <div class="e" id="cash" style="left:380px;top:540px;font-size:240px;width:240px">💸</div>
-  <div class="abs" id="coins" style="left:500px;top:680px;width:0;height:0"></div>
-  <div class="t" id="b5a" style="top:960px;font-size:62px;font-weight:800">The richest man on Earth</div>
-  <div class="t" id="b5b" style="top:1050px;font-size:90px">is just… a man.</div>
-  <!-- B6 -->
-  <div class="e" id="door" style="left:200px;top:580px;font-size:200px;width:220px">🚪</div>
-  <div class="e" id="bread" style="left:600px;top:580px;font-size:200px;width:220px">🍞</div>
-  <div class="t" id="b6a" style="top:980px;font-size:68px;font-weight:800">Strangers hold doors.</div>
-  <div class="t" id="b6b" style="top:1070px;font-size:68px;font-weight:800">Neighbors share bread.</div>
-  <!-- B7 -->
-  <div class="abs" id="likes" style="left:330px;top:600px;width:340px;height:120px;border-radius:60px;background:#2B2838;font-size:60px;font-weight:900;text-align:center;line-height:120px;opacity:0">❤️ 1.2k</div>
-  <div class="t" id="b7" style="top:1000px;font-size:80px">Nobody checks their likes.</div>
-  <!-- B8 -->
-  <div class="t" id="w1" style="top:620px;font-size:120px">I'm sorry.</div>
-  <div class="t" id="w2" style="top:780px;font-size:120px">Thank you.</div>
-  <div class="t" id="w3" style="top:940px;font-size:140px;color:var(--red)">I love you.</div>
-  <div class="t" id="w0" style="top:440px;font-size:56px;font-weight:700;color:var(--fg)">You finally say it.</div>
-  <!-- B11/B12 -->
-  <div class="e" id="alarm" style="left:400px;top:520px;font-size:220px;width:220px">⏰</div>
-  <div class="t" id="n1" style="top:860px;font-size:110px;color:#1C1A2A;text-shadow:none">Nothing happens.</div>
-  <div class="t" id="n2" style="top:1000px;font-size:80px;color:#3A3550;text-shadow:none;font-weight:800">It's just… tomorrow.</div>
-  <div class="t" id="q1" style="top:640px;font-size:76px;color:#1C1A2A;text-shadow:none;font-weight:800">So why wait for</div>
-  <div class="t" id="q2" style="top:740px;font-size:76px;color:#1C1A2A;text-shadow:none;font-weight:800">the end of the world?</div>
-  <div class="t" id="q3" style="top:900px;font-size:160px;color:#E8322A;text-shadow:none">Say it today.</div>
-  <div class="t" id="q4" style="top:1130px;font-size:44px;color:#3A3550;text-shadow:none;font-weight:700">Send this to the person you'd call first.</div>
-  <div id="big">3</div>
+  <div class="t s" id="h1" style="top:470px;font-size:84px">Tomorrow is</div>
+  <div class="t" id="h3" style="top:1180px;font-size:62px">You have 24 hours.</div>
+  <div class="t" id="b1" style="top:1180px;font-size:74px">The internet goes quiet.</div>
+  <div class="t m" id="boss" style="top:450px;font-size:38px;color:#A9A2B8">BOSS · "ABOUT THAT DEADLINE…"</div>
+  <div class="t" id="b3a" style="top:1180px;font-size:62px">Every argument you were having…</div>
+  <div class="t s" id="b3b" style="top:1270px;font-size:64px;color:#C9C2D8">suddenly isn't worth it.</div>
+  <div class="t" id="b4a" style="top:1180px;font-size:62px">Everyone calls the same person.</div>
+  <div class="t" id="b4b" style="top:1270px;font-size:110px;color:#FF3B30;font-weight:900">Mom.</div>
+  <div class="t" id="b5a" style="top:1180px;font-size:60px">The richest man on Earth</div>
+  <div class="t s" id="b5b" style="top:1270px;font-size:84px">is just… a man.</div>
+  <div class="t" id="b6a" style="top:1180px;font-size:66px">Strangers hold doors.</div>
+  <div class="t" id="b6b" style="top:1270px;font-size:66px">Neighbors share bread.</div>
+  <div class="t m" id="likes" style="top:600px;font-size:64px;color:#FF6B8B">1.2k</div>
+  <div class="t" id="b7" style="top:1180px;font-size:74px">Nobody checks their likes.</div>
+  <div class="t s" id="w0" style="top:440px;font-size:60px;color:#C9C2D8">You finally say it.</div>
+  <div class="t" id="w1" style="top:1180px;font-size:84px">I'm sorry.</div>
+  <div class="t" id="w2" style="top:1290px;font-size:84px">Thank you.</div>
+  <div class="t" id="n1" style="top:1180px;font-size:96px">Nothing happens.</div>
+  <div class="t s" id="n2" style="top:1300px;font-size:72px;color:#FFD58A">It's just… tomorrow.</div>
+  <div class="t s" id="q1" style="top:440px;font-size:66px">So why wait for the end of the world?</div>
+  <div class="t m" id="q4" style="top:1240px;font-size:34px;color:#C9C2D8">SEND THIS TO THE PERSON YOU'D CALL FIRST</div>
 </div>
-<div id="flash"></div>
 <canvas id="grain" width="540" height="960"></canvas>
 <div id="vig"></div>
-
 <script>
 function bez(x1, y1, x2, y2) {
   const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
   return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
     for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
 }
-const OUT = bez(.16,1,.3,1), IN = bez(.6,0,.9,.35), INOUT = bez(.65,0,.35,1), SET = bez(.2,1.3,.4,1), POP = bez(.175,.885,.32,1.275);
+const OUT = bez(.16,1,.3,1), IN = bez(.6,0,.9,.35), INOUT = bez(.65,0,.35,1), SET = bez(.2,1.3,.4,1);
 const LIN = x => Math.min(1, Math.max(0, x)), F = 1 / 30, lerp = (a, b, k) => a + (b - a) * k;
 const p = (t, s, d, e = OUT) => e(LIN((t - s) / d));
 const $ = id => document.getElementById(id);
-const tf = (el, t, o) => { el.style.transform = t; if (o !== undefined) el.style.opacity = o; };
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(2412); const gauss = () => { let u = 0, v = 0; while (!u) u = R(); while (!v) v = R(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const W = 1080, H = 1920, CX = 500, CY = 800, TOTAL = 51;
+const NA = 1000, NM = 2600, N = NA + NM;
+const ctx = $('c').getContext('2d');
+const P = Array.from({ length: N }, (_, i) => ({ i, j: i - NA, r1: R(), r2: R(), r3: R(), r4: R(), g1: gauss(), g2: gauss(), dx: (R() - .5) * 1180, dy: (R() - .5) * 2000 }));
 
-// beats: [start, hoursLeft label]
-const B = [0, 4.2, 8.0, 11.6, 15.6, 19.6, 23.6, 27.4, 30.8, 36.0, 40.0, 41.6, 45.5, 51.0];
-const HRS = [24, 23, 20, 18, 15, 12, 8, 4, 1, 0, 0, 0, 0];
-const TOTAL = B[B.length - 1];
-// cues: [id, kind, in, out] absolute seconds
-const C = [
-  ['h1', 'rise', -0.15, 4.1], ['h2', 'slam', 0.5, 4.1], ['h3', 'rise', 2.2, 4.1],
-  ['ph', 'pop', 4.3, 7.9], ['badge', 'pop', 4.5, 7.9], ['b1', 'rise', 5.4, 7.9],
-  ['boss1', 'drop', 8.2, 11.5], ['boss2', 'slam', 9.8, 11.5],
-  ['ang1', 'slideL', 11.7, 15.5], ['ang2', 'slideR', 11.7, 15.5], ['b3a', 'rise', 12.2, 15.5], ['b3b', 'rise', 13.6, 15.5],
-  ['b4a', 'rise', 15.9, 19.5], ['mom', 'pop', 17.6, 19.5], ['b4b', 'slam', 17.8, 19.5],
-  ['cash', 'pop', 19.7, 23.5], ['b5a', 'rise', 20.0, 23.5], ['b5b', 'rise', 21.6, 23.5],
-  ['door', 'pop', 23.8, 27.3], ['b6a', 'rise', 24.0, 27.3], ['bread', 'pop', 25.3, 27.3], ['b6b', 'rise', 25.5, 27.3],
-  ['likes', 'pop', 27.5, 30.7], ['b7', 'rise', 28.2, 30.7],
-  ['w0', 'fade', 31.0, 35.9], ['w1', 'rise', 31.6, 35.9], ['w2', 'rise', 32.8, 35.9], ['w3', 'slam', 34.0, 35.9],
-  ['alarm', 'pop', 41.7, 45.3], ['n1', 'rise', 42.4, 45.3], ['n2', 'rise', 43.6, 45.3],
-  ['q1', 'rise', 45.7, 50.8], ['q2', 'rise', 46.1, 50.8], ['q3', 'slam', 47.6, 50.8], ['q4', 'fade', 48.8, 50.8],
+const CREAM = [245, 240, 232], RED = [255, 59, 48], EMBER = [255, 140, 60], GREY = [110, 104, 124], PINK = [255, 107, 139], GOLD = [255, 213, 138], WHITE = [255, 255, 255];
+const mix = (a, b, k) => [lerp(a[0], b[0], k), lerp(a[1], b[1], k), lerp(a[2], b[2], k)];
+
+// ---------- text → points ----------
+function textPts(lines, n, seed) {
+  const cv = document.createElement('canvas'); cv.width = 1000; cv.height = 700; const x = cv.getContext('2d');
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  for (const [txt, font, y] of lines) { x.font = font; let fs = parseInt(font.match(/(\d+)px/)[1]); while (x.measureText(txt).width > 860) { fs -= 4; x.font = font.replace(/\d+px/, fs + 'px'); } x.fillText(txt, 500, y); }
+  const d = x.getImageData(0, 0, 1000, 700).data, pts = [];
+  for (let y = 0; y < 700; y += 3) for (let xx = 0; xx < 1000; xx += 3) if (d[(y * 1000 + xx) * 4 + 3] > 140) pts.push([xx - 500, y - 350, xx / 1000]);
+  const rr = rng(seed); for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(rr() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  return Array.from({ length: n }, (_, i) => pts[i % pts.length]);
+}
+const wordShape = (pts, colFn) => (p, t) => { const w = pts[p.j]; return [w[0] + Math.sin(t * 2 + p.r1 * 30) * 1.1, w[1] + Math.cos(t * 2.3 + p.r2 * 30) * 1.1, .95, colFn(w, p), 1.5 + p.r2 * 1.0]; };
+
+// ---------- main shapes ----------
+const dust = (p, t) => [p.dx + Math.sin(t * .25 + p.r1 * 9) * 30, p.dy + Math.cos(t * .21 + p.r2 * 9) * 30, .14, GREY, 1.1 + p.r2];
+const fallDust = since => (p, t) => { const d = dust(p, t); return [d[0], d[1] + Math.min(1, (t - since) * .3) * 80, .12, GREY, d[4]]; };
+const wifi = (p, t) => { const g = p.j % 4; let x, y;
+  if (g === 0) { const a = p.r1 * 6.283, r = 26 * Math.sqrt(p.r2); x = Math.cos(a) * r; y = 170 + Math.sin(a) * r; }
+  else { const a = lerp(-2.36, -.785, p.r1), r = g * 115 + p.g1 * 5; x = Math.cos(a) * r; y = 170 + Math.sin(a) * r; }
+  const off = t > 5.5 + (3 - g) * .45 ? LIN((t - 5.5 - (3 - g) * .45) / .6) : 0;   // outer arcs die first
+  return [x + p.g2 * 3, y + off * 260 * p.r3, lerp(.95, .12, off), mix(CREAM, GREY, off), 2]; };
+const bubble = (p, t) => { const per = 2 * (620 + 260); let s = p.r1 * per, x, y; const w = 620, h = 260;
+  if (s < w) { x = -w / 2 + s; y = -h / 2; } else if (s < w + h) { x = w / 2; y = -h / 2 + s - w; } else if (s < 2 * w + h) { x = w / 2 - (s - w - h); y = h / 2; } else { x = -w / 2; y = h / 2 - (s - 2 * w - h); }
+  if (p.r3 < .3) { const k = p.j % 3; const a = p.r2 * 6.283, r = 22 * Math.sqrt(p.r4); x = (k - 1) * 90 + Math.cos(a) * r; y = Math.sin(a) * r - Math.max(0, Math.sin(t * 9 - k * .9)) * 28; }
+  return [x + p.g1 * 3, y + p.g2 * 3, .9, CREAM, 1.8]; };
+const clash = (p, t) => { const side = p.j % 2 ? 1 : -1; const a = p.r1 * 6.283, spike = 1 + .35 * Math.max(0, Math.sin(a * 9 + t * 8)); const r = 150 * Math.sqrt(p.r2) * spike;
+  const push = Math.sin(t * 14) * 10; return [side * (220 - push) + Math.cos(a) * r, Math.sin(a) * r, .85, mix(RED, EMBER, p.r3), 1.8]; };
+const ring = (p, t) => { const k = p.j % 10, a = k / 10 * 6.283 + t * .2, r = 26 * Math.sqrt(p.r1), b = p.r2 * 6.283;
+  return [Math.cos(a) * 360 + Math.cos(b) * r, Math.sin(a) * 300 + Math.sin(b) * r, .9, CREAM, 1.8]; };
+const heartXY = (u, s) => { const a = u * 6.283; return [16 * Math.pow(Math.sin(a), 3) * s, -(13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) * s]; };
+const heart = (scale, col, beatOn) => (p, t) => { const fill = Math.sqrt(p.r2); const [hx, hy] = heartXY(p.r1, scale * fill); const b = beatOn ? 1 + .07 * Math.exp(-((t % .8)) * 7) : 1;
+  return [hx * b + p.g1 * 2, hy * b - 20 + p.g2 * 2, lerp(.6, 1, fill), col, 1.6 + p.r3]; };
+const coins = (p, t) => { const k = p.j % 7, a = p.r1 * 6.283, y0 = 230 - k * 62; const rim = p.r3 < .6;
+  const r = rim ? 1 : Math.sqrt(p.r2); return [Math.cos(a) * 220 * r, y0 + Math.sin(a) * 50 * r + (rim ? 0 : 0), rim ? .95 : .4, mix(GOLD, EMBER, p.r4 * .5), 1.8]; };
+const people = (p, t) => { const k = p.j % 14, a = k / 14 * 6.283 - 1.57;
+  if (p.r3 < .55) { const b = p.r1 * 6.283, r = 20 * Math.sqrt(p.r2); return [Math.cos(a) * 330 + Math.cos(b) * r, Math.sin(a) * 300 + Math.sin(b) * r - 30, .95, CREAM, 1.8]; }
+  const a2 = a + (p.r1) * (6.283 / 14); const sag = Math.sin(p.r1 * Math.PI) * 28; return [Math.cos(a2) * (330 - sag), Math.sin(a2) * (300 - sag) - 30, .5 + .3 * Math.sin(t * 3 + k), GOLD, 1.4]; };
+const explode = (p, t) => { const a = p.r1 * 6.283, r = 1600 + p.r2 * 900; return [Math.cos(a) * r, Math.sin(a) * r, .0, WHITE, 2]; };
+const sun = (p, t) => { const rise = p_(t, 41.8, 3.6); const a = p.r1 * 6.283 + t * .05, r = 230 * Math.sqrt(p.r2);
+  return [Math.cos(a) * r, Math.sin(a) * r + lerp(420, 0, rise), lerp(1, .6, p.r2), mix([255, 250, 230], GOLD, p.r2), 1.5 + (1 - p.r2) * 1.4]; };
+function p_(t, s, d) { return OUT(LIN((t - s) / d)); }
+
+let WORDS = {};
+const STATES = () => [
+  [-2, dust, 1], [-0.7, wordShape(WORDS.doom, (w) => mix(RED, CREAM, w[2] < .5 ? 0 : .0)), .9],
+  [4.2, wifi, .9], [8.0, bubble, .9], [9.8, wordShape(WORDS.never, () => CREAM), .7],
+  [11.6, clash, .8], [13.7, fallDust(13.7), 1.0], [15.6, ring, .8], [16.7, heart(15, RED, false), 1.1],
+  [19.6, coins, .9], [21.4, fallDust(21.4), 1.2], [23.6, people, 1.0],
+  [27.4, heart(8, PINK, false), .8], [29.2, fallDust(29.2), 1.0], [30.8, heart(13, RED, true), 1.2],
+  [33.9, wordShape(WORDS.love, (w) => mix(RED, CREAM, .25)), .9],
+  [36.4, wordShape(WORDS.n3, () => CREAM), .45], [37.6, wordShape(WORDS.n2, () => CREAM), .45], [38.8, wordShape(WORDS.n1, () => CREAM), .45],
+  [39.95, explode, .35], [41.6, sun, 1.6], [47.4, wordShape(WORDS.say, (w) => mix(GOLD, [255, 250, 235], w[2] > .45 ? .6 : 0)), 1.3],
 ];
-function cue(el, kind, t, a, b) {
-  const kin = kind === 'slam' ? p(t, a, 6 * F) : kind === 'pop' ? p(t, a, 10 * F, POP) : kind === 'drop' ? p(t, a, 12 * F, SET) : (kind === 'slideL' || kind === 'slideR') ? p(t, a, 12 * F, SET) : p(t, a, 11 * F);
-  const kout = p(t, b - 0.15, 5 * F, IN); let tr = '';
-  if (kind === 'rise') tr = `translateY(${lerp(60, 0, kin) - 30 * kout}px)`;
-  else if (kind === 'slam') tr = `scale(${lerp(2.3, 1, kin)})`;
-  else if (kind === 'pop') tr = `scale(${kin})`;
-  else if (kind === 'drop') tr = `translateY(${lerp(-140, 0, kin)}px)`;
-  else if (kind === 'slideL') tr = `translateX(${lerp(-600, 0, kin)}px)`;
-  else if (kind === 'slideR') tr = `translateX(${lerp(600, 0, kin)}px)`;
-  el.style.transform = tr; el.style.opacity = (kind === 'fade' ? p(t, a, 8 * F, LIN) : LIN(kin * 2.5)) * (1 - kout);
-}
-// sound cue list for the score
-const SFX = [];
-for (const [id, kind, a] of C) SFX.push([a + (kind === 'slam' ? 4 * F : 0), kind === 'slam' ? 'hit' : kind === 'pop' ? 'pop' : kind === 'drop' ? 'ding' : 'tick']);
-window.SFX = SFX;
+let MS;
+// ---------- the asteroid: its own particles, always there, growing ----------
+const astro = (p, t) => {
+  if (t >= 41.6) { // becomes the sun's corona
+    const rise = p_(t, 41.8, 3.6); const a = p.r1 * 6.283 + t * .08, r = 250 + Math.abs(p.g1) * 120 * (1 + .2 * Math.sin(a * 6 + t));
+    return [Math.cos(a) * r, Math.sin(a) * r + lerp(420, 0, rise), .45, GOLD, 1.3]; }
+  if (t >= 39.95) { const k = LIN((t - 39.95) / .5); const a = p.r1 * 6.283, r = 300 + k * 1800 * (.5 + p.r2); return [Math.cos(a) * r, Math.sin(a) * r, 1 - k, WHITE, 2.5]; }
+  const k = Math.pow(LIN(t / 39.9), 3.2); const rad = lerp(10, 640, k), cx = lerp(330, 0, k), cy = lerp(-560, -60, k);
+  const shake = t > 35 ? Math.sin(t * 60 + p.r1 * 10) * (t - 35) * 2 : 0;
+  if (p.r3 < .62) { const a = p.r1 * 6.283 + t * .3, r = rad * Math.sqrt(p.r2); const edge = p.r2 > .8;
+    return [cx + Math.cos(a) * r + shake, cy + Math.sin(a) * r, edge ? .9 : .75, mix([255, 220, 160], RED, p.r2), 1.4 + rad / 400 * 1.6]; }
+  const s = (p.r1 + t * .35) % 1; const tail = rad * (1.2 + 3.2 * s);   // flame streaming behind it
+  return [cx + tail * .62 + p.g1 * rad * .25 * (1 - s) + shake, cy - tail * .5 + p.g2 * rad * .25 * (1 - s), (1 - s) * .7, mix(EMBER, RED, s), 1.2 + rad / 500];
+};
 
-// ---------- sky: dusk → night → doom → sunrise ----------
-const sky = $('sky').getContext('2d');
-const STARS = Array.from({ length: 160 }, (_, i) => [Math.sin(i * 91.7) * .5 + .5, Math.sin(i * 47.3) * .5 + .5, (Math.sin(i * 13.1) * .5 + .5) * 2 + .6, i]);
-function mixc(a, b, k) { return a.map((v, i) => Math.round(lerp(v, b[i], k))); }
-const DUSK = [[40, 24, 70], [160, 70, 90]], NIGHT = [[8, 10, 28], [24, 22, 52]], DOOM = [[40, 6, 10], [120, 20, 18]], DAWN = [[150, 200, 240], [255, 214, 170]];
-function drawSky(t) {
-  let top, bot;
-  const kN = p(t, 8, 6, INOUT), kD = p(t, 30.8, 6, INOUT), kS = p(t, 41.6, 2.2, INOUT);
-  top = mixc(mixc(mixc(DUSK[0], NIGHT[0], kN), DOOM[0], kD), DAWN[0], kS); bot = mixc(mixc(mixc(DUSK[1], NIGHT[1], kN), DOOM[1], kD), DAWN[1], kS);
-  if (t >= 40 && t < 41.6) { top = [0, 0, 0]; bot = [0, 0, 0]; }
-  const g = sky.createLinearGradient(0, 0, 0, 1920); g.addColorStop(0, `rgb(${top})`); g.addColorStop(1, `rgb(${bot})`); sky.fillStyle = g; sky.fillRect(0, 0, 1080, 1920);
-  if (t >= 40 && t < 41.6) return;
-  const starA = kN * (1 - kS);
-  for (const s of STARS) { sky.fillStyle = `rgba(255,255,255,${starA * (.3 + .5 * Math.abs(Math.sin(t * 1.2 + s[3])))})`; sky.fillRect(s[0] * 1080, s[1] * 1400, s[2], s[2]); }
-  // the asteroid: grows as the hours run out
-  if (t < 40) {
-    const k = Math.pow(LIN(t / 40), 3.4); const r = lerp(14, 820, k); const x = lerp(860, 520, k), y = lerp(330, 700, k);
-    const rumble = t > 36 ? Math.sin(t * 70) * 6 * (t - 36) : 0;
-    const gl = sky.createRadialGradient(x + rumble, y, r * .2, x + rumble, y, r * 2.4); gl.addColorStop(0, `rgba(255,80,40,${.55})`); gl.addColorStop(1, 'rgba(255,60,30,0)');
-    sky.fillStyle = gl; sky.fillRect(0, 0, 1080, 1920);
-    const body = sky.createRadialGradient(x - r * .3 + rumble, y - r * .3, r * .1, x + rumble, y, r);
-    body.addColorStop(0, '#FFB27A'); body.addColorStop(.35, '#E2552C'); body.addColorStop(1, '#5A1410');
-    sky.fillStyle = body; sky.beginPath(); sky.arc(x + rumble, y, r, 0, 6.283); sky.fill();
-    // fiery trail
-    for (let i = 1; i < 14; i++) { sky.fillStyle = `rgba(255,${120 - i * 6},60,${.14 * (1 - i / 14)})`; sky.beginPath(); sky.arc(x + rumble + i * r * .22, y - i * r * .18, r * (1 - i / 16), 0, 6.283); sky.fill(); }
-  }
-  // sunrise sun
-  if (kS > 0) { const y = lerp(1700, 1250, p(t, 41.6, 4, OUT)); const sg = sky.createRadialGradient(500, y, 0, 500, y, 700); sg.addColorStop(0, `rgba(255,250,230,${kS})`); sg.addColorStop(.15, `rgba(255,220,160,${.8 * kS})`); sg.addColorStop(1, 'rgba(255,200,150,0)');
-    sky.fillStyle = sg; sky.fillRect(0, 0, 1080, 1920); }
-}
+// ---------- DOM text cues [id, in, out] ----------
+const CUES = [['h1', -0.2, 4.0], ['h3', 2.2, 4.0], ['b1', 4.6, 7.8], ['boss', 8.1, 11.4], ['b3a', 12.0, 15.4], ['b3b', 13.5, 15.4], ['b4a', 15.8, 19.4], ['b4b', 17.6, 19.4],
+  ['b5a', 19.8, 23.4], ['b5b', 21.3, 23.4], ['b6a', 23.9, 27.2], ['b6b', 25.3, 27.2], ['likes', 27.6, 29.3], ['b7', 28.1, 30.6], ['w0', 31.0, 35.9], ['w1', 31.5, 33.8], ['w2', 32.5, 33.8],
+  ['n1', 42.3, 45.3], ['n2', 43.6, 45.3], ['q1', 45.7, 50.8], ['q4', 48.9, 50.8]];
+window.SFX = [[0.6, 'hit'], [4.3, 'pop'], [8.1, 'ding'], [9.95, 'hit'], [11.7, 'pop'], [16.8, 'pop'], [17.75, 'hit'], [19.7, 'pop'], [21.4, 'ding'], [23.7, 'pop'], [27.5, 'pop'], [34.0, 'hit'], [47.5, 'hit']];
+const HRS = [[0, 24], [4.2, 23], [8.0, 20], [11.6, 18], [15.6, 15], [19.6, 12], [23.6, 8], [27.4, 4], [30.8, 1]];
 
-// ---------- grain ----------
+// grain
 const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960); let lastG = -1;
 function grain(f) { f = Math.floor(f / 2); if (f === lastG) return; lastG = f; let s = (f * 2654435761 + 1) >>> 0; const d = gimg.data;
   for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i+1] = d[i+2] = s & 255; d[i+3] = 255; } gctx.putImageData(gimg, 0, 0); }
-
-// call lines + coins
-for (let i = 0; i < 8; i++) { const d = document.createElement('div'); d.className = 'e'; d.id = 'cl' + i; d.textContent = '📞'; d.style.cssText += 'font-size:84px;width:100px;margin:-50px 0 0 -50px'; $('calls').appendChild(d); }
-for (let i = 0; i < 14; i++) { const d = document.createElement('div'); d.className = 'e'; d.id = 'co' + i; d.textContent = '🪙'; d.style.cssText += 'font-size:54px;width:60px;margin:-30px 0 0 -30px'; $('coins').appendChild(d); }
-
 const pad = n => String(n).padStart(2, '0');
+
 function render(t) {
-  grain(Math.round(t * 30)); drawSky(t);
-  let bi = 0; for (let i = 0; i < B.length - 1; i++) if (t >= B[i]) bi = i;
-  // countdown: jumps between beats, ticks live within each
-  const clock = $('clock');
-  if (bi < 9) { const hrs = HRS[bi]; let secs = hrs * 3600 - Math.floor((t - B[bi]) * 1);
-    if (bi === 0) secs = t < 2.2 ? 86400 : 86400 - Math.floor((t - 2.2) * 1);
-    if (bi === 8) secs = 3600 - Math.floor(Math.pow(LIN((t - B[8]) / 5.2), 2.2) * 3590);
-    secs = Math.max(0, Math.min(86400, secs));
-    clock.textContent = `${pad(Math.floor(secs / 3600))}:${pad(Math.floor(secs / 60) % 60)}:${pad(secs % 60)}`;
-    const roll = p(t, B[bi], 7 * F, SET); tf(clock, `translateY(${bi ? lerp(-40, 0, roll) : 0}px) scale(${bi ? lerp(1.15, 1, roll) : 1})`, bi === 0 ? p(t, 2.2, 8 * F, LIN) : 1);
-  } else clock.style.opacity = 0;
-
-  // final countdown 3-2-1
-  const big = $('big');
-  if (t >= 36.4 && t < 40) { const n = 3 - Math.floor((t - 36.4) / 1.2); const lt = (t - 36.4) % 1.2; big.textContent = n > 0 ? n : '0';
-    tf(big, `scale(${lerp(1.6, 1, p(lt, 0, 6 * F))})`, LIN(lt * 8) * (1 - p(lt, 0.9, 0.3, IN))); } else big.style.opacity = 0;
-  // flash at zero → black → sunrise
-  $('flash').style.opacity = t >= 39.7 && t < 40.5 ? Math.max(0, 1 - Math.abs(t - 40) * 2.5) : 0;
-
-  // shake: impacts + the final rumble
+  grain(Math.round(t * 30));
+  ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#050508'; ctx.fillRect(0, 0, W, H);
+  if (t >= 40.1 && t < 41.6) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); }
+  ctx.globalCompositeOperation = 'lighter';
+  // shake
   let sx = 0, sy = 0;
-  for (const [h, k] of SFX) if (k === 'hit' && t >= h && t < h + .4) { const d = Math.exp(-(t - h) * 13); sx += 13 * d * Math.sin((t - h) * 95); sy += 9 * d * Math.cos((t - h) * 83); }
-  if (t > 35 && t < 40) { const a = (t - 35) * 3.5; sx += Math.sin(t * 61) * a; sy += Math.cos(t * 53) * a; }
-  tf($('world'), `translate(${sx}px, ${sy}px)`);
+  for (const [h, k] of window.SFX) if (k === 'hit' && t >= h && t < h + .4) { const d = Math.exp(-(t - h) * 13); sx += 12 * d * Math.sin((t - h) * 95); sy += 8 * d * Math.cos((t - h) * 83); }
+  if (t > 35 && t < 40) { const a = (t - 35) * 3; sx += Math.sin(t * 61) * a; sy += Math.cos(t * 53) * a; }
+  // warm floor glow from the asteroid, then the sun
+  const doom = Math.pow(LIN(t / 40), 3) * (t < 40 ? 1 : 0), dawn = p_(t, 41.8, 3);
+  const gl = ctx.createRadialGradient(CX, CY - 200, 0, CX, CY - 200, 1300);
+  gl.addColorStop(0, `rgba(${lerp(255, 255, dawn)},${lerp(60, 190, dawn)},${lerp(40, 110, dawn)},${.18 * doom + .16 * dawn})`); gl.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gl; ctx.fillRect(0, 0, W, H);
+  const silent = t >= 40.1 && t < 41.6;
+  if (!silent) {
+    let si = 0; for (let i = 0; i < MS.length; i++) if (t >= MS[i][0]) si = i;
+    const [s0, fNow, dur] = MS[si], fPrev = si > 0 ? MS[si - 1][1] : dust;
+    for (let i = 0; i < N; i++) {
+      const q = P[i]; let x, y, a, c, sz;
+      if (i < NA) [x, y, a, c, sz] = astro(q, t);
+      else { const st = s0 + q.r4 * dur * .45, k = INOUT(LIN((t - st) / (dur * .6)));
+        const B = fNow(q, t);
+        if (k < 1) { const A = fPrev(q, t); const dxv = B[0] - A[0], dyv = B[1] - A[1], dl = Math.hypot(dxv, dyv) || 1; const curl = Math.sin(k * Math.PI) * (30 + 70 * q.r2) * (q.i % 2 ? 1 : -1);
+          x = lerp(A[0], B[0], k) - dyv / dl * curl; y = lerp(A[1], B[1], k) + dxv / dl * curl; a = lerp(A[2], B[2], k); c = mix(A[3], B[3], k); sz = lerp(A[4], B[4], k); }
+        else [x, y, a, c, sz] = B; }
+      const px = CX + x + sx, py = CY + y + sy; if (px < -10 || px > W + 10 || py < -10 || py > H + 10 || a <= .01) continue;
+      ctx.fillStyle = `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${Math.min(1, a)})`; ctx.beginPath(); ctx.arc(px, py, sz, 0, 6.283); ctx.fill();
+    }
+    ctx.filter = 'blur(9px)'; ctx.globalAlpha = .65; ctx.drawImage(ctx.canvas, 0, 0); ctx.filter = 'blur(26px)'; ctx.globalAlpha = .35; ctx.drawImage(ctx.canvas, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1;
+  }
+  // flash at zero
+  const fl = t >= 39.85 && t < 40.3 ? 1 - Math.abs(t - 40) * 3 : 0; if (fl > 0) { ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = `rgba(255,255,255,${fl})`; ctx.fillRect(0, 0, W, H); }
 
-  for (const [id, kind, a, b] of C) cue($(id), kind, t, a, b);
-  // beat-specific motion
-  if (bi === 1) { const n = Math.max(0, Math.round(99 * (1 - INOUT(LIN((t - 5.0) / 1.8))))); $('badge').textContent = n >= 99 ? '99+' : n;
-    $('badge').style.background = n === 0 ? '#3A3646' : 'var(--red)'; }
-  if (bi === 3) { const k = p(t, 13.6, .6, INOUT); ['ang1', 'ang2'].forEach((id, i) => { const el = $(id); const base = el.style.transform; el.style.transform = base + ` scale(${lerp(1, .15, k)}) translateX(${(i ? -1 : 1) * 300 * k}px)`; el.style.opacity = +el.style.opacity * (1 - p(t, 14.1, .2, IN)); }); }
-  if (bi === 4) { for (let i = 0; i < 8; i++) { const a = i / 8 * 6.283, k = p(t, 16.1 + i * .08, 1.4, INOUT); const r = lerp(380, 60, k);
-      tf($('cl' + i), `translate(${Math.cos(a) * r}px, ${Math.sin(a) * r * .8}px) scale(${lerp(1, .3, k)})`, p(t, 15.8 + i * .05, .2, LIN) * (1 - p(t, 17.5, .2, IN))); } }
-  else for (let i = 0; i < 8; i++) $('cl' + i).style.opacity = 0;
-  if (bi === 5) { const kd = p(t, 21.4, 1.2, OUT); for (let i = 0; i < 14; i++) { const a = -1.57 + (i - 7) * .22, r = 600 * kd;
-      tf($('co' + i), `translate(${Math.cos(a) * r * .8}px, ${Math.sin(a) * r * .5 + 900 * kd * kd}px) rotate(${i * 40 * kd}deg)`, t > 21.4 ? 1 - kd * .8 : 0); }
-    $('cash').style.opacity = +$('cash').style.opacity * (1 - p(t, 21.4, .4, IN)); }
-  else for (let i = 0; i < 14; i++) $('co' + i).style.opacity = 0;
-  if (bi === 7) { const fl = p(t, 29.2, .4, INOUT); $('likes').style.transform += ` rotateX(${fl * 180}deg)`; $('likes').style.opacity = +$('likes').style.opacity * (fl < .5 ? 1 : .25); }
-  if (bi === 8) { const kd = p(t, 32.8, .4); $('w1').style.opacity = +$('w1').style.opacity * lerp(1, .55, kd); const ke = p(t, 34.0, .4); $('w2').style.opacity = +$('w2').style.opacity * lerp(1, .55, ke); }
-  if (bi === 11) { $('alarm').style.transform += ` rotate(${Math.sin(t * 60) * 12 * (1 - p(t, 43.2, .3))}deg)`; }
+  // countdown
+  const clock = $('clock');
+  if (t < 39.9) { let hi = 0; for (let i = 0; i < HRS.length; i++) if (t >= HRS[i][0]) hi = i;
+    let secs = HRS[hi][1] * 3600 - Math.floor(t - HRS[hi][0]);
+    if (hi === 0) secs = t < 2.2 ? 86400 : 86400 - Math.floor(t - 2.2);
+    if (hi === HRS.length - 1) secs = Math.max(0, 3600 - Math.floor(Math.pow(LIN((t - 30.8) / 5.4), 2.2) * 3600));
+    if (t >= 36.4) secs = Math.max(0, 3 - Math.floor((t - 36.4) / 1.2));
+    clock.textContent = `${pad(Math.floor(secs / 3600))}:${pad(Math.floor(secs / 60) % 60)}:${pad(secs % 60)}`;
+    const roll = p(t, HRS[hi][0], 7 * F, SET); clock.style.opacity = hi === 0 ? p(t, 2.2, .3, LIN) : 1;
+    clock.style.transform = `translate(${sx}px, ${sy}px) scale(${hi ? lerp(1.18, 1, roll) : 1})`; } else clock.style.opacity = 0;
+  // DOM text
+  for (const [id, a, b] of CUES) { const el = $(id); const ki = p(t, a, .55), ko = p(t, b - .3, .3, IN);
+    el.style.opacity = ki * (1 - ko); el.style.transform = `translate(${sx * .6}px, ${lerp(40, 0, ki) - 20 * ko + sy * .6}px)`; el.style.filter = `blur(${lerp(8, 0, ki) + 6 * ko}px)`; }
 }
 window.render = render; window.TOTAL = TOTAL;
-window.ready = Promise.all([document.fonts.load('900 100px "Inter Display"'), document.fonts.load('100px "Noto Color Emoji"', '📱😤❤️💸🚪🍞⏰📞🪙')]).then(() => { render(0); return true; });
+window.ready = Promise.all([document.fonts.load('900 200px "Inter Display"'), document.fonts.load('italic 700 160px "Bitstream Charter"'), document.fonts.load('italic 60px "Bitstream Charter"')]).then(() => {
+  const BIG = '900 200px "Inter Display"';
+  WORDS.doom = textPts([['DOOMSDAY.', BIG, 350]], NM, 1);
+  WORDS.never = textPts([['"never mind."', 'italic 700 150px "Bitstream Charter"', 350]], NM, 2);
+  WORDS.love = textPts([['I love you.', 'italic 700 170px "Bitstream Charter"', 350]], NM, 3);
+  WORDS.n3 = textPts([['3', '900 520px "Inter Display"', 350]], NM, 4); WORDS.n2 = textPts([['2', '900 520px "Inter Display"', 350]], NM, 5); WORDS.n1 = textPts([['1', '900 520px "Inter Display"', 350]], NM, 6);
+  WORDS.say = textPts([['Say it', 'italic 700 170px "Bitstream Charter"', 250], ['today.', 'italic 700 200px "Bitstream Charter"', 470]], NM, 7);
+  MS = STATES(); render(0); return true; });
 </script>
 </body>
 </html>
