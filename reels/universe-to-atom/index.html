@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Universe To Atom</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1920px; background:#04050A; overflow:hidden; }
+  canvas { position:absolute; left:0; top:0; }
+  #label { position:absolute; left:0; width:1000px; top:1330px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:40px; font-weight:600; letter-spacing:.12em; color:rgba(220,228,255,.7); }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 46% 46%, rgba(0,0,0,0) 48%, rgba(0,0,0,.6) 100%); }
+</style>
+</head>
+<body>
+<canvas id="bg" width="1080" height="1920"></canvas>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="label"></div>
+<div id="vig"></div>
+<script>
+// ---------- utils ----------
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
+    for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
+}
+const OUT = bez(.16,1,.3,1), IN = bez(.7,0,.84,0), INOUT = bez(.65,0,.35,1), SET = bez(.2,1.25,.4,1);
+const LIN = x => Math.min(1, Math.max(0, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(42);
+const gauss = () => { let u = 0, v = 0; while (!u) u = R(); while (!v) v = R(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+
+const N = 3200, CX = 500, CY = 860, W = 1080, H = 1920;
+
+// ---------- levels ----------
+const LEVELS = [
+  { word: 'UNIVERSE', label: '10²⁶ m', pal: ['#8A7CFF', '#FF6BD5'] },
+  { word: 'GALAXY',   label: '10²¹ m', pal: ['#9FD3FF', '#FFE2B0'] },
+  { word: 'STAR',     label: '10⁹ m',  pal: ['#FFB347', '#FF5E2B'] },
+  { word: 'EARTH',    label: '10⁷ m',  pal: ['#2A6BFF', '#8BF07A'] },
+  { word: 'YOU',      label: '10⁰ m',  pal: ['#FFD3A8', '#FF8A5C'] },
+  { word: 'CELL',     label: '10⁻⁵ m', pal: ['#4CF2C0', '#B6FF6B'] },
+  { word: 'DNA',      label: '10⁻⁹ m', pal: ['#4CE0FF', '#FF5CAA'] },
+  { word: 'ATOM',     label: '10⁻¹⁰ m', pal: ['#7FD4FF', '#FFFFFF'] },
+];
+const LEN = 5.0, TOTAL = LEVELS.length * LEN;
+// phases inside each 5 s level
+const ARR = [0, 0.9], MORPH = [2.0, 3.25], DEP = [4.25, 5.0];
+
+// per-particle constants
+const P = Array.from({ length: N }, (_, i) => ({ r1: R(), r2: R(), r3: R(), g1: gauss(), g2: gauss(), g3: gauss(), i }));
+
+// ---------- word targets: sample filled pixels of the word ----------
+function wordPoints(word) {
+  const cv = document.createElement('canvas'); cv.width = 1000; cv.height = 500; const x = cv.getContext('2d');
+  let fs = 300; x.font = `900 ${fs}px "Inter Display"`;
+  while (x.measureText(word).width > 820) { fs -= 4; x.font = `900 ${fs}px "Inter Display"`; }
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(word, 500, 250);
+  const d = x.getImageData(0, 0, 1000, 500).data, pts = [];
+  for (let y = 0; y < 500; y += 3) for (let xx = 0; xx < 1000; xx += 3) if (d[(y * 1000 + xx) * 4 + 3] > 140) pts.push([xx - 500, y - 250]);
+  const rr = rng(word.length * 99); for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(rr() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  let minX = 1e9, maxX = -1e9; pts.forEach(q => { minX = Math.min(minX, q[0]); maxX = Math.max(maxX, q[0]); });
+  return Array.from({ length: N }, (_, i) => { const q = pts[i % pts.length]; return [q[0] + (rr() - .5) * 2.5, q[1] + (rr() - .5) * 2.5, (q[0] - minX) / (maxX - minX)]; });
+}
+// silhouette of a person from the emoji glyph
+function personPoints() {
+  const cv = document.createElement('canvas'); cv.width = 800; cv.height = 900; const x = cv.getContext('2d');
+  x.font = '760px "Noto Color Emoji"'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('🧍', 400, 470);
+  const d = x.getImageData(0, 0, 800, 900).data, pts = [];
+  for (let y = 0; y < 900; y += 4) for (let xx = 0; xx < 800; xx += 4) if (d[(y * 800 + xx) * 4 + 3] > 120) pts.push([xx - 400, y - 450]);
+  const rr = rng(7); return Array.from({ length: N }, (_, i) => { const q = pts[Math.floor(rr() * pts.length)] || [0, 0]; return [q[0] + (rr() - .5) * 3, q[1] + (rr() - .5) * 3]; });
+}
+
+// ---------- object shapes: position of particle p at time t (returns [x, y, alpha, mix]) ----------
+const NODES = Array.from({ length: 24 }, () => [(R() - .5) * 880, (R() - .5) * 1150]);
+const EDGES = []; NODES.forEach((a, i) => NODES.forEach((b, j) => { if (j > i && Math.hypot(a[0] - b[0], a[1] - b[1]) < 330) EDGES.push([i, j]); }));
+const ORGS = Array.from({ length: 6 }, () => { const a = R() * 6.28, r = 170 + R() * 110; return [Math.cos(a) * r, Math.sin(a) * r, R() * 3.14]; });
+let PERSON;
+
+const SHAPES = [
+  // universe: cosmic web — filaments between clusters, slow drift
+  (p, t) => { const e = EDGES[p.i % EDGES.length]; const a = NODES[e[0]], b = NODES[e[1]];
+    const onNode = p.r3 < 0.28; const k = onNode ? 0 : p.r1;
+    let x = lerp(a[0], b[0], k) + p.g1 * (onNode ? 28 : 12), y = lerp(a[1], b[1], k) + p.g2 * (onNode ? 28 : 12);
+    x += Math.sin(t * .3 + p.r2 * 6) * 6; y += Math.cos(t * .27 + p.r1 * 6) * 6;
+    return [x, y, onNode ? 1 : .7, p.r2]; },
+  // galaxy: two log-spiral arms + bulge, differential rotation, inclined
+  (p, t) => { let x, y, m;
+    if (p.r3 < 0.2) { x = p.g1 * 55; y = p.g2 * 55; m = 1; }
+    else { const r = 40 + 420 * Math.sqrt(p.r1); const arm = p.i % 2 ? Math.PI : 0; const th = arm + Math.log(r / 40) * 2.2 + p.g3 * 0.28 - t * (0.9 * 60 / r + 0.08);
+      x = Math.cos(th) * r + p.g1 * 10; y = Math.sin(th) * r + p.g2 * 10; m = r < 160 ? 1 : p.r2 * .6; }
+    const c = Math.cos(-0.35), s = Math.sin(-0.35); y *= 0.62; return [x * c - y * s, x * s + y * c, .9, m]; },
+  // star: dense disc + flickering corona
+  (p, t) => { if (p.r3 < 0.72) { const r = 250 * Math.sqrt(p.r1), a = p.i * 2.39996 + t * 0.15; const boil = Math.sin(t * 3 + p.r1 * 40) * 3;
+      return [Math.cos(a) * (r + boil), Math.sin(a) * (r + boil), lerp(1, .6, p.r1), Math.sqrt(p.r1)]; }
+    const a = p.r2 * 6.283, flare = 1 + 0.25 * Math.sin(a * 5 + t * 1.5) + 0.15 * Math.sin(a * 11 - t * 2.3);
+    const r = 255 + Math.abs(p.g1) * 70 * flare; return [Math.cos(a) * r, Math.sin(a) * r, .55, 1]; },
+  // earth: rotating sphere (oceans/land) + orbiting moon
+  (p, t) => { if (p.i % 33 === 0) { const a = t * 0.8 + 1, rr = 34 * Math.sqrt(p.r1), b = p.r2 * 6.28;
+      return [Math.cos(a) * 440 + Math.cos(b) * rr, Math.sin(a) * 90 - 380 + Math.sin(b) * rr, .9, 0.5]; }
+    const k = p.i + 0.5, phi = Math.acos(1 - 2 * k / N), th = Math.PI * (1 + Math.sqrt(5)) * k + t * 0.45;
+    let x = Math.sin(phi) * Math.cos(th), y = Math.cos(phi), z = Math.sin(phi) * Math.sin(th);
+    const lat = Math.cos(phi), lon = th - t * 0.45; const land = Math.sin(lon * 3 + lat * 2) + Math.sin(lon * 1.3 - lat * 4) * .8 + Math.cos(lat * 5 + lon) * .6 > 0.55;
+    const tilt = 0.4, yy = y * Math.cos(tilt) - x * Math.sin(tilt), xx = x * Math.cos(tilt) + y * Math.sin(tilt);
+    return [xx * 300, yy * 300, z > 0 ? (land ? 1 : .6) : .1, land ? 1 : 0]; },
+  // you: a person silhouette, breathing
+  (p, t) => { const q = PERSON[p.i]; const br = 1 + 0.012 * Math.sin(t * 2.2); return [q[0] * br, q[1] * br - 10, .9, p.r2 < .2 ? 1 : 0]; },
+  // cell: membrane, nucleus, organelles, drifting cytoplasm
+  (p, t) => { if (p.r3 < 0.32) { const a = p.r1 * 6.283, r = 330 + Math.sin(a * 5 + t * 1.2) * 12 + Math.sin(a * 3 - t) * 8 + p.g1 * 5; return [Math.cos(a) * r, Math.sin(a) * r * 1.08, .9, 0]; }
+    if (p.r3 < 0.55) { const a = p.r1 * 6.283, r = 115 * Math.sqrt(p.r2); return [Math.cos(a) * r - 30, Math.sin(a) * r + 10, 1, 1]; }
+    if (p.r3 < 0.75) { const o = ORGS[p.i % 6], a = p.r1 * 6.283; const ex = Math.cos(a) * 56, ey = Math.sin(a) * 22; const c = Math.cos(o[2] + t * .1), s = Math.sin(o[2] + t * .1);
+      return [o[0] + ex * c - ey * s, o[1] + ex * s + ey * c, .8, .6]; }
+    const a = p.r1 * 6.283 + t * 0.05 * (p.r2 - .5), r = 300 * Math.sqrt(p.r2); return [Math.cos(a) * r, Math.sin(a) * r, .35, .3]; },
+  // dna: rotating double helix with base-pair rungs
+  (p, t) => { const ph = t * 1.6; if (p.r3 < 0.72) { const s = p.i % 2, y = (p.r1 - .5) * 1150; const a = y * 0.011 + ph + s * Math.PI;
+      const z = Math.cos(a); return [Math.sin(a) * 170 + p.g1 * 4, y + p.g2 * 4, z > 0 ? 1 : .35, s]; }
+    const y = Math.round((p.r1 - .5) * 1150 / 38) * 38; const a = y * 0.011 + ph; const x1 = Math.sin(a) * 170, x2 = Math.sin(a + Math.PI) * 170;
+    return [lerp(x1, x2, p.r2), y + p.g1 * 2, .5, p.r2 < .5 ? 0 : 1]; },
+  // atom: nucleus + three orbital planes with electrons
+  (p, t) => { if (p.r3 < 0.22) { const a = p.r1 * 6.283, r = 62 * Math.cbrt(p.r2); const j = Math.sin(t * 8 + p.r1 * 50) * 2; return [Math.cos(a) * r + j, Math.sin(a) * r * .95 + j, 1, p.i % 2]; }
+    const o = p.i % 3, rot = o * Math.PI / 3 + 0.3; let a, alpha = .45, m = 0;
+    if (p.r3 > 0.9) { a = t * 2.4 * (o === 1 ? -1 : 1) + o * 2.1 + p.g1 * 0.06; alpha = 1; m = 1; } else a = p.r1 * 6.283;
+    const ex = Math.cos(a) * 380, ey = Math.sin(a) * 120; return [ex * Math.cos(rot) - ey * Math.sin(rot), ex * Math.sin(rot) + ey * Math.cos(rot), alpha, m]; },
+];
+
+// ---------- background stars ----------
+function drawBg() { const b = document.getElementById('bg').getContext('2d'); b.fillStyle = '#04050A'; b.fillRect(0, 0, W, H);
+  const g = b.createRadialGradient(CX, CY, 0, CX, CY, 1100); g.addColorStop(0, 'rgba(40,36,90,.35)'); g.addColorStop(1, 'rgba(0,0,0,0)'); b.fillStyle = g; b.fillRect(0, 0, W, H); }
+const BGS = Array.from({ length: 260 }, () => [R() * W, R() * H, R() * 1.6 + .4, R() * 6]);
+
+// ---------- render ----------
+const ctx = document.getElementById('c').getContext('2d');
+let WORDS;
+function setup() { WORDS = LEVELS.map(l => wordPoints(l.word)); PERSON = personPoints(); drawBg(); }
+
+function render(t) {
+  ctx.globalCompositeOperation = 'source-over'; ctx.clearRect(0, 0, W, H);
+  const li = Math.max(0, Math.min(LEVELS.length - 1, Math.floor(t / LEN))), lt = t - li * LEN;
+  const L = LEVELS[li], shape = SHAPES[li], word = WORDS[li];
+  const c1 = hex(L.pal[0]), c2 = hex(L.pal[1]);
+  const last = li === LEVELS.length - 1;
+
+  // camera: arrive from a dot, slow push, then dive through the word
+  let cam = 1, fade = 1;
+  if (li === 0 && lt < ARR[1]) cam = Math.max(0.001, SET(LIN((lt + 0.3) / 1.2)));           // big bang
+  else if (lt < ARR[1]) cam = Math.exp(lerp(Math.log(0.03), 0, OUT(LIN(lt / ARR[1]))));
+  cam *= 1 + 0.1 * LIN((lt - ARR[1]) / (DEP[0] - ARR[1]));
+  if (!last && lt > DEP[0]) { const k = LIN((lt - DEP[0]) / (DEP[1] - DEP[0])); cam *= Math.exp(lerp(0, Math.log(16), IN(k))); fade = 1 - LIN((k - .6) / .4); }
+  if (last && lt > 4.1) { const k = LIN((lt - 4.1) / 0.9); cam *= lerp(1, 0.002, INOUT(k)); }
+
+  // background stars twinkle, drift with the camera a little
+  ctx.globalCompositeOperation = 'lighter';
+  for (const s of BGS) { const z = 1 + 0.05 * Math.log(cam + 1); const x = CX + (s[0] - CX) * z, y = CY + (s[1] - CY) * z;
+    ctx.fillStyle = `rgba(200,210,255,${0.25 + 0.25 * Math.sin(t * 1.5 + s[3])})`; ctx.fillRect(x, y, s[2], s[2]); }
+
+  const flash = li === 0 ? Math.exp(-Math.max(0, lt + 0.25) * 4) : 0;
+  for (let i = 0; i < N; i++) {
+    const p = P[i];
+    const [ox, oy, oa, om] = shape(p, t);
+    const [wx, wy, wn] = word[i];
+    // morph: sweeps left → right like handwriting, on a curved path
+    const st = MORPH[0] + wn * 0.55 + p.r1 * 0.18, k = INOUT(LIN((lt - st) / 0.62));
+    const curl = Math.sin(k * Math.PI) * (60 + 90 * p.r2) * (p.i % 2 ? 1 : -1);
+    const dx = wx - ox, dy = wy - oy, dl = Math.hypot(dx, dy) || 1;
+    let x = lerp(ox, wx, k) - dy / dl * curl, y = lerp(oy, wy, k) + dx / dl * curl;
+    // hold: the word breathes and shimmers
+    if (k >= 1) { x += Math.sin(t * 2 + p.r1 * 30) * 1.2; y += Math.cos(t * 2.3 + p.r2 * 30) * 1.2; }
+    const a = lerp(oa, 1, k);
+    const sx = CX + x * cam, sy = CY + y * cam;
+    if (sx < -20 || sx > W + 20 || sy < -20 || sy > H + 20) continue;
+    const base = [lerp(c1[0], c2[0], om), lerp(c1[1], c2[1], om), lerp(c1[2], c2[2], om)];
+    const wcol = [lerp(base[0], 255, 0.55), lerp(base[1], 255, 0.55), lerp(base[2], 255, 0.55)];
+    const col = [lerp(base[0], wcol[0], k), lerp(base[1], wcol[1], k), lerp(base[2], wcol[2], k)];
+    const tw = 0.75 + 0.25 * Math.sin(t * 3 + p.r3 * 40);
+    const al = Math.min(1, a * tw * fade * (0.55 + 0.45 * Math.min(1, cam)) + flash);
+    const sz = (1.4 + p.r2 * 1.6) * Math.min(2.2, Math.max(0.6, Math.sqrt(cam)));
+    ctx.fillStyle = `rgba(${col[0] | 0},${col[1] | 0},${col[2] | 0},${al})`;
+    ctx.beginPath(); ctx.arc(sx, sy, sz, 0, 6.283); ctx.fill();
+  }
+  // bloom
+  ctx.globalCompositeOperation = 'lighter'; ctx.filter = 'blur(10px)'; ctx.globalAlpha = 0.7; ctx.drawImage(ctx.canvas, 0, 0);
+  ctx.filter = 'blur(28px)'; ctx.globalAlpha = 0.35; ctx.drawImage(ctx.canvas, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1;
+  if (flash > 0.01) { ctx.fillStyle = `rgba(255,255,255,${flash * 0.6})`; ctx.globalCompositeOperation = 'lighter';
+    const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, 600); g.addColorStop(0, `rgba(255,240,255,${flash})`); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+
+  // scale label fades in with the word
+  const lab = document.getElementById('label'); lab.textContent = L.label;
+  lab.style.opacity = LIN((lt - 3.0) / 0.4) * (1 - LIN((lt - DEP[0]) / 0.3)) * (last ? 1 - LIN((lt - 4.1) / .3) : 1);
+  lab.style.transform = `translateY(${lerp(20, 0, OUT(LIN((lt - 3.0) / 0.5)))}px)`;
+}
+window.render = render; window.TOTAL = TOTAL; window.LEVELS = LEVELS;
+window.ready = document.fonts.load('900 300px "Inter Display"').then(() => document.fonts.load('760px "Noto Color Emoji"', '🧍')).then(() => { setup(); render(0); return true; });
+</script>
+</body>
+</html>
