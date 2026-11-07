@@ -67,10 +67,21 @@ Palette anchors: gold `#F6C453` (the path, keywords, stars), ink `#15151B`, scar
   for the shock, whip/thump on map lurches, rain bed, heartbeat in the lowest moment, thunder with the lightning, a glassy
   "tear" ping, birds at dawn, a warm "reveal" chord bloom.
 
-## 7. Pitfalls already hit (don't repeat)
+## 7. Fables and animals
+- When the speaker tells a parable, act it out with animal characters in the same ink style (ink body, big white acting
+  eyes, ONE accent colour: gold beak, gold-brown mane, cream belly), then bring it home to the hero's own life
+  (match the beat: "when you wake up" → the hero in bed at dawn) and end with the hero AND the animals together.
+- Chase scenes: tracking camera, speed lines, galloping sound, tribal toms; lock targets with a reticle (gold = prey,
+  red = danger). Violence is implied only (a shadow falls, the music drops out under a heartbeat).
+- Opening hook: a seal/stamp title for the rule or proverb (e.g. "قاعدة / A RULE") over a huge red sun.
+
+## 8. Pitfalls already hit (don't repeat)
 - Nested colour mixing: `mix()` returns `rgb()`; `hex()` accepts both forms now — keep it that way.
 - Zoom transition must push the incoming shot in from >1 scale, or the frame edge shows.
 - Debris must be dark angular rocks, not round coloured dots (reads as confetti).
 - Bright scenes + bloom wash out gold text → dark halo / lower bloom (≤ .45 where text sits on sky).
 - Every helper that animates needs `t` passed in explicitly (closures inside buildShots don't have it).
+- Gold hero/glow titles on bright sky: they now get a dark outline + halo automatically; keep it.
+- A dark flat ellipse reads as a blob: canopies are rows of overlapping leaf ellipses; shadows take the caster's shape.
+- Standing quadrupeds need slightly angled, thick legs or they look like tables.
 - Long Arabic lines wrap at 80 px; keep lines short or let them wrap into two balanced rows (automatic).

@@ -6,7 +6,7 @@ import { T } from './timing.js';
 const GOLD = '#F6C453';
 let lines = [];
 export function buildType() {
-  lines = T.lines.map((l, i) => ({ ...l, show: l.start - 0.06, hide: T.lines[i + 1] ? T.lines[i + 1].start - 0.06 : l.end + 0.35,
+  lines = T.lines.map((l, i) => ({ ...l, show: l.start - 0.06, hide: T.lines[i + 1] ? Math.min(T.lines[i + 1].start - 0.06, l.end + 0.7) : l.end + 0.35,
     words: l.ar.split(/\s+/).filter(Boolean).map((w, k) => ({ txt: w.replace('*', ''), hi: w.startsWith('*'), t: l.wt[k] })) }));
 }
 export const typeList = () => lines;
@@ -43,7 +43,8 @@ export function drawType(t) {
           ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = '#FF2E3E'; ctx.fillText(w.txt, x - 9, 0); ctx.fillStyle = '#2EE6FF'; ctx.fillText(w.txt, x + 9, 0); ctx.globalCompositeOperation = 'source-over';
           ctx.shadowColor = 'rgba(255,40,40,0.9)'; ctx.shadowBlur = 50; ctx.fillStyle = '#FFFFFF'; ctx.fillText(w.txt, x, 0);
         } else {
-          ctx.shadowColor = style === 'glow' ? 'rgba(60,20,30,0.85)' : 'rgba(0,0,0,0.65)'; ctx.shadowBlur = size * (style === 'glow' ? 0.35 : 0.25); ctx.shadowOffsetY = size * 0.05;
+          const big = style === 'glow' || style === 'hero'; ctx.shadowColor = big ? 'rgba(45,15,25,0.9)' : 'rgba(0,0,0,0.65)'; ctx.shadowBlur = size * (big ? 0.38 : 0.25); ctx.shadowOffsetY = size * 0.05;
+          if (big) { ctx.save(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.lineJoin = 'round'; ctx.lineWidth = size * 0.09; ctx.strokeStyle = 'rgba(45,15,25,0.8)'; ctx.strokeText(w.txt, x, 0); ctx.restore(); }
           ctx.fillStyle = w.hi || style === 'glow' ? GOLD : '#FFFFFF'; ctx.fillText(w.txt, x, 0);
           if (w.hi || style === 'glow') { ctx.shadowColor = 'rgba(255,196,80,0.85)'; ctx.shadowBlur = size * 0.4; ctx.shadowOffsetY = 0; ctx.fillText(w.txt, x, 0); }
           if (style === 'glow') { const sw = ((t - l.show) * 900) % 2200 - 600; const g = ctx.createLinearGradient(sw - 160, 0, sw + 160, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,240,0.95)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.shadowBlur = 0; ctx.fillStyle = g; ctx.save(); ctx.setTransform(ctx.getTransform().translate(-W / 2 + 0, 0)); ctx.restore(); ctx.fillText(w.txt, x, 0); }
@@ -58,6 +59,6 @@ export function drawType(t) {
   if (l.en) {
     const ea = clamp((t - l.show - 0.12) / 0.3) * out, ey = y0 + (rows.length * lh) / 2 * fit + (style === 'default' ? 30 : 36);
     ctx.save(); ctx.globalAlpha = ea * 0.9; ctx.direction = 'ltr'; ctx.font = `800 ${style === 'default' ? 38 : 42}px Inter`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.letterSpacing = '1px';
-    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 14; ctx.fillStyle = '#EDE6D6'; ctx.fillText(l.en, W / 2, ey + (1 - ea) * 10, 960); ctx.restore();
+    ctx.lineJoin = 'round'; ctx.lineWidth = 7; ctx.strokeStyle = 'rgba(25,10,20,0.55)'; ctx.strokeText(l.en, W / 2, ey + (1 - ea) * 10, 960); ctx.shadowColor = 'rgba(20,8,16,0.95)'; ctx.shadowBlur = 18; ctx.fillStyle = '#EDE6D6'; ctx.fillText(l.en, W / 2, ey + (1 - ea) * 10, 960); ctx.restore();
   }
 }

@@ -7,8 +7,13 @@ description: Turn a short talking clip (motivational / spiritual speech, usually
 
 The user approved this style ("I liked the style and everything") on the video **ليه يا رب؟ / Why, Lord?**. Every new
 video should look and feel like that one: same character, same colour logic, same typography, same sound design,
-same level of polish. **Read `STYLE.md` in full before planning.** `example/why-lord/` is the reference: a complete
-project that renders as-is.
+same level of polish. **Read `STYLE.md` in full before planning.** Two complete reference projects render as-is:
+- `example/why-lord/` — ليه يا رب؟ (26 s): life as a path, map reveal, rain/night/sunrise worlds.
+- `example/lion-gazelle/` — قاعدة الغزالة والأسد (44 s): a fable told with animals, then the hero's own life. Its shots.js
+  holds reusable characters and sets: `birdie` (bird, flap/worm/sweat), `worm`, `nest`, `lion` (run/roar/lying/thin),
+  `gazelle` (run), `reticle`, `speedLines`, `wallShadow` (gazelle/lion shadow), `savanna` (red-sun dawn → bright
+  day → grey), `acacia`, `bedroom` + `bed` + `blanket` + `clock`, `city` + `billboard`, `miniCloud` (rain over a head).
+  To start from it: `cp example/lion-gazelle/{shots.js} <project>/src/` and its script/score.
 
 Everything is code: canvas drawing in headless Chrome, ffmpeg, numpy/scipy audio. No AI images, no stock assets.
 Output: 1080×1920, 30 fps, H.264 + AAC, the speaker's original voice, original synthesized score.
@@ -49,7 +54,9 @@ If the user said "just do it" or asked for the same style, build without waiting
   shots.js (dayLand, mountainMap, nightSky, sunriseLand, pinHere, star…). Add new set pieces in the same flat look.
   Place every beat on the voice: `L(i)` line start, `Wt(i, k)` word k of line i.
 - `score.py`: rewrite the score for the new emotional arc with `arp / bass / chordpad / piano / put` (see example).
-- Sound cues in shots.js with `cue(t, type, {gain, dur, n})`; types listed in `tools/mix.py` FX.
+- Sound cues in shots.js with `cue(t, type, {gain, dur, n, rate})`; types listed in `tools/mix.py` FX (incl. roar, gallop,
+  flap, alarm, growl, pop, tock). Drums go in score.py with `kick / tom / shaker` (dry bus, no reverb).
+- Wordless stretches (the speaker gestures, no subtitle) still get a shot; captions hide 0.7 s after a line ends.
 - Commands (from the project dir):
   `node tools/capture.mjs check` (must say CHECK OK) → `node tools/capture.mjs cues` → `python3 tools/mix.py .`
   → QA (step 5) → `node tools/capture.mjs video renders/<name>.mp4` (~7 min for 26 s on the cloud CPU: run it in the

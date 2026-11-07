@@ -62,8 +62,8 @@ def reverb(x, secs=3.2, wet=0.35, damp=3500, seed=1):
 
 # ───────── the score: composed per video in <project>/score.py ─────────
 # score.py runs with everything above in scope. It must fill mus (piano) and padb (pads) using put / piano / pad /
-# arp / bass / chordpad, and may define post(score) to carve silences (e.g. a hard stop before an impact).
-mus = np.zeros(N); padb = np.zeros(N)
+# arp / bass / chordpad (+ drums into dry with kick / tom / shaker), and may define post(score) to carve silences (e.g. a hard stop before an impact).
+mus = np.zeros(N); padb = np.zeros(N); dry = np.zeros(N)   # dry = drums / percussion (no reverb)
 CH = { 'Fmaj7': [53, 57, 60, 64], 'C': [48, 55, 60, 64], 'Am': [45, 57, 60, 64], 'G': [43, 55, 59, 62], 'E': [40, 56, 59, 64], 'F': [41, 57, 60, 65], 'Cadd9': [48, 55, 62, 64, 67] }
 def arp(t0, t1, ch, step, vel, up=12, pat=(0, 1, 2, 3, 2, 1), mute=False, cres=0):
     notes = CH[ch]; t = t0; k = 0
@@ -74,9 +74,15 @@ def arp(t0, t1, ch, step, vel, up=12, pat=(0, 1, 2, 3, 2, 1), mute=False, cres=0
 def bass(t, ch, vel=0.45, dur=3.5): put(mus, t, piano(CH[ch][0] - 12 if CH[ch][0] > 44 else CH[ch][0], vel, dur))
 def chordpad(t0, t1, ch, gain, bright=1400, oct=0): put(padb, t0, pad([m + oct for m in CH[ch]], t1 - t0 + 0.8, gain, bright, rel=0.8))
 
+def kick(t, vel=0.8):
+    d = 0.45; x = tt(d); put(dry, t, np.sin(2 * np.pi * np.cumsum(48 + 110 * np.exp(-x * 28)) / SR) * env(len(x), 0.002, 7) * vel)
+def tom(t, m=45, vel=0.6):
+    d = 0.6; x = tt(d); f = m2f(m); put(dry, t, (np.sin(2 * np.pi * np.cumsum(f * (1 + 0.5 * np.exp(-x * 20))) / SR) + lp(noise(d), 900) * 0.25 * np.exp(-x * 30)) * env(len(x), 0.002, 6) * vel)
+def shaker(t, vel=0.25):
+    d = 0.09; put(dry, t, bp(noise(d), 2500, 4800) * env(int(d * SR), 0.01, 6) * vel)
 post = None
 exec(compile((P / 'score.py').read_text(), str(P / 'score.py'), 'exec'))
-score = reverb(mus, 3.4, 0.42) + reverb(padb, 3.4, 0.5, seed=2)
+score = reverb(mus, 3.4, 0.42) + reverb(padb, 3.4, 0.5, seed=2) + reverb(dry, 1.2, 0.12, seed=4)
 if post: score = post(score)
 fo = int(1.2 * SR); score[N - fo:] *= np.linspace(1, 0, fo)
 
@@ -129,9 +135,31 @@ def tick(d=1.0, **_):
     for st in np.arange(0, d, 0.14): put(x, st, (np.sin(2 * np.pi * 900 * tt(0.05)) * env(int(0.05 * SR), 0.001, 12)) * (0.6 if k % 2 else 1)); k += 1
     return lp(x, 2500)
 
-FX = dict(whoosh=whoosh, whip=whip, thump=thump, swell=swell, riser=riser, boom=boom, crack=crack, cut=cut, drone=drone, rain=rain_, rain_out=rain_out,
+def alarm(d=1.2, **_):
+    x = np.zeros(int(d * SR) + SR // 4)
+    for st in np.arange(0, d, 0.3):
+        for k in range(2): put(x, st + k * 0.1, np.sin(2 * np.pi * 1320 * tt(0.07)) * env(int(0.07 * SR), 0.004, 4))
+    return lp(x, 2600)
+def roar(d=1.4, **_):
+    t = tt(d); n = lp(noise(d), 700) * (1 + 0.8 * np.sin(2 * np.pi * 28 * t)); g = signal.sawtooth(2 * np.pi * (95 - 25 * t / d) * t) * 0.5
+    e = np.minimum(1, t / 0.15) * np.exp(-np.maximum(0, t - 0.5) * 3); return np.tanh(lp(n + g, 1200) * e * 1.6)
+def gallop(d=2.0, rate=0.11, **_):
+    x = np.zeros(int(d * SR) + SR // 4); k = 0
+    for st in np.arange(0, d, rate): put(x, st, lp(noise(0.05), 400) * env(int(0.05 * SR), 0.001, 9) * (1 if k % 4 < 2 else 0.6)); k += 1
+    return x
+def flap(d=1.0, **_):
+    x = np.zeros(int(d * SR) + SR // 4)
+    for st in np.arange(0, d, 0.16): put(x, st, bp(noise(0.1), 300, 1800) * np.sin(np.pi * np.linspace(0, 1, int(0.1 * SR))) ** 2)
+    return x
+def growl(**_):
+    d = 1.1; t = tt(d); return lp(noise(d), 180) * (0.6 + 0.4 * np.sin(2 * np.pi * 9 * t)) * np.sin(np.pi * t / d)
+def pop(**_): t = tt(0.12); return lp(np.sin(2 * np.pi * np.cumsum(600 * np.exp(-t * 18) + 220) / SR) * env(len(t), 0.002, 6), 3000)
+
+def tock(**_): t = tt(0.12); return lp((np.sin(2 * np.pi * 520 * t) + 0.4 * np.sin(2 * np.pi * 1040 * t)) * env(len(t), 0.001, 10), 2500)
+
+FX = dict(tock=tock, alarm=alarm, roar=roar, gallop=gallop, flap=flap, growl=growl, pop=pop, whoosh=whoosh, whip=whip, thump=thump, swell=swell, riser=riser, boom=boom, crack=crack, cut=cut, drone=drone, rain=rain_, rain_out=rain_out,
           heart=heart, thunder=thunder, tear=tear, chime=chime, shimmer=shimmer, birds=birds, reveal=reveal, tick=tick)
-LEVEL = dict(whoosh=-20, whip=-17, thump=-16, swell=-22, riser=-19, boom=-6, crack=-15, cut=-99, drone=-20, rain=-25, rain_out=-25, heart=-9, thunder=-10,
+LEVEL = dict(tock=-20, alarm=-24, roar=-12, gallop=-17, flap=-22, growl=-16, pop=-18, whoosh=-20, whip=-17, thump=-16, swell=-22, riser=-19, boom=-6, crack=-15, cut=-99, drone=-20, rain=-25, rain_out=-25, heart=-9, thunder=-10,
              tear=-26, chime=-19, shimmer=-23, birds=-28, reveal=-21, tick=-28)
 REVERB_SEND = {'chime', 'shimmer', 'tear', 'reveal', 'whip', 'thump'}
 
@@ -142,6 +170,7 @@ for c in cj['cues']:
     kw = {}
     if c.get('dur'): kw['d'] = c['dur']
     if 'n' in c: kw['n'] = c['n']
+    if 'rate' in c: kw['rate'] = c['rate']
     x = fn(**kw); x = x / (np.abs(x).max() + 1e-9) * db(LEVEL[c['type']]) * c.get('gain', 1.0)
     put(sfx, c['t'], x);
     if c['type'] in REVERB_SEND: put(send, c['t'], x * 0.8)
