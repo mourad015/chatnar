@@ -1,0 +1,8 @@
+{
+  "name": "chatnar-video",
+  "private": true,
+  "type": "module",
+  "description": "Code-animated military news videos (Paper Desk + Sat-Map styles)",
+  "scripts": { "render": "node engine/render.mjs" },
+  "dependencies": { "gsap": "3.12.5", "@fontsource/cairo": "5.1.0" }
+}
