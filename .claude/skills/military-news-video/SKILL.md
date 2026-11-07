@@ -13,6 +13,11 @@ styles, the script structure, and the rules for mixing them in Tunisian.
 - `reference/style_B.jpg`, `reference/style_B_sequence.jpg` — Style B, Sat-Map
 - `reference/script_A.md`, `reference/script_B.md` — the two scripts, rebuilt from the captions, with timings
 
+## Channel
+
+- Name: **ثقافة عامة** — logo at `video/engine/logo.jpg` (rounded square, white border, top-right on every frame, 150 px; big on the 2.5 s end card with "تابعنا").
+- Production code: `video/` (GSAP timeline + Playwright renderer). Episode = `video/episodes/epNN/` with `scenes.js`, `timeline.js` (caption rows synced to the VO), `assets/`. Render: `cd video && node engine/render.mjs --ep episodes/epNN` (≈4 min for 2:30).
+
 ## 0. Shared format (both videos)
 
 | Item | Value |

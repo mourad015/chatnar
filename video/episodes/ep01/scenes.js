@@ -332,8 +332,11 @@
   const fadeOut = deskEl('<div style="position:absolute;inset:0;background:#000"></div>', 'captions');
   ft(fadeOut, TL.duration + 0.1, 0.6, { autoAlpha: 0 }, { autoAlpha: 1 }, 'none');
 
+  const endc = deskEl(`<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:50px"><img src="../../engine/logo.jpg" style="width:640px;border-radius:40px;border:6px solid #fff;box-shadow:0 20px 60px rgba(246,205,64,.25)"><div class="tag y big" style="position:static;font-size:64px">تابعنا</div></div>`, 'captions');
+  ft(endc, TL.duration + 0.6, 0.6, { autoAlpha: 0, scale: 0.85 }, { autoAlpha: 1, scale: 1 }, 'back.out(1.6)');
+  sfx(TL.duration + 0.6, 'whoosh', 0.7);
   captions(rows);
   gsap.set([layer('desk'), layer('dark')], { autoAlpha: 0 });
-  window.DURATION = TL.duration + 0.7;
+  window.DURATION = TL.duration + 3.2;
   window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))]).then(() => { window.seek(0); return true; });
 })();
