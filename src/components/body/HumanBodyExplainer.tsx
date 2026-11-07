@@ -154,9 +154,9 @@ export default function HumanBodyExplainer() {
         camera.setViewOffset(w * 1.35, h, 0, 0, w, h);
         camera.zoom = 1;
       } else {
-        camera.aspect = w / (h * 1.45);
-        camera.setViewOffset(w, h * 1.45, 0, h * 0.45, w, h);
-        camera.zoom = Math.min(1, (w / h) * 0.7);
+        camera.aspect = w / (h * 1.4);
+        camera.setViewOffset(w, h * 1.4, 0, h * 0.4, w, h);
+        camera.zoom = Math.min(1, (w / h) * 0.66);
       }
       camera.updateProjectionMatrix();
     };
