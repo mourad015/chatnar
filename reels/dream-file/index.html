@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>Dream File</title>
+<style>
+  @font-face { font-family:'Kufi'; src:url(fonts/noto-kufi-arabic-arabic-400-normal.woff2) format('woff2'); font-weight:400; }
+  @font-face { font-family:'Kufi'; src:url(fonts/noto-kufi-arabic-arabic-700-normal.woff2) format('woff2'); font-weight:700; }
+  @font-face { font-family:'Kufi'; src:url(fonts/noto-kufi-arabic-arabic-900-normal.woff2) format('woff2'); font-weight:900; }
+  @font-face { font-family:'Amiri'; src:url(fonts/amiri-arabic-700-normal.woff2) format('woff2'); font-weight:700; }
+  :root { --bg:#060606; --fg:#F2EEE6; --red:#CE1126; --gold:#D9B26A; --mut:#8A857C; --grn:#7DFFB0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1920px; background:var(--bg); overflow:hidden; }
+  body { color:var(--fg); font-family:'Kufi',sans-serif; }
+  canvas { position:absolute; left:0; top:0; }
+  #cap { position:absolute; left:80px; width:840px; top:1080px; height:360px; display:flex; align-items:center; justify-content:center; text-align:center; direction:rtl; }
+  #capIn { font-weight:900; font-size:66px; line-height:1.55; }
+  #capIn.q { font-family:'Amiri',serif; font-weight:700; font-size:76px; color:var(--gold); line-height:1.7; text-shadow:0 0 40px rgba(217,178,106,.35); }
+  .w { display:inline-block; margin:0 .13em; white-space:nowrap; }
+  #ref { position:absolute; left:0; width:1000px; top:1450px; text-align:center; font-family:'Kufi'; font-weight:700; font-size:30px; color:var(--gold); opacity:0; direction:rtl; }
+  .m { font-family:'JetBrains Mono',monospace; }
+  #chap { position:absolute; left:0; width:1000px; top:300px; text-align:center; direction:rtl; font-weight:700; font-size:34px; color:var(--fg); opacity:.9; }
+  #chap b { color:var(--red); font-family:'JetBrains Mono',monospace; font-weight:700; letter-spacing:.1em; margin-left:14px; font-size:28px; }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.09; mix-blend-mode:overlay; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 46%, rgba(0,0,0,.72) 100%); }
+</style>
+</head>
+<body>
+<script src="captions.js"></script>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="chap"></div>
+<div id="cap"><div id="capIn"></div></div>
+<div id="ref"></div>
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="vig"></div>
+<script>
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
+    for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
+}
+const OUT = bez(.16,1,.3,1), IN = bez(.6,0,.9,.35), INOUT = bez(.65,0,.35,1), SET = bez(.2,1.3,.4,1);
+const LIN = x => Math.min(1, Math.max(0, x)), F = 1 / 30, lerp = (a, b, k) => a + (b - a) * k;
+const p = (t, s, d, e = OUT) => e(LIN((t - s) / d));
+const $ = id => document.getElementById(id);
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const W = 1080, H = 1920, ctx = $('c').getContext('2d');
+const FG = '242,238,230', RED = '206,17,38', GOLD = '217,178,106', MUT = '138,133,124';
+let CAP = [], TOTAL = 521.4;
+
+// ---------- chapters ----------
+const CH = [[0, 'FILE 01', 'المستقبل موجود'], [59.8, 'FILE 02', 'أضغاث ورؤى'], [115, 'FILE 03', 'طرفا الحديث'], [222, 'FILE 04', 'أحلام التنبؤ'],
+  [270, 'FILE 05', 'السبب والنتيجة'], [349.7, 'FILE 06', 'بين النهرين'], [419.7, 'FILE 07', 'الترددات'], [482.3, 'FILE 08', 'الخلاصة'], [TOTAL + 1]];
+const chapAt = t => { let i = 0; for (let k = 0; k < CH.length - 1; k++) if (t >= CH[k][0]) i = k; return i; };
+
+// ---------- caption: words reveal with the voice ----------
+const KEY_RED = /(الماركسية|ماركس|المادية|المادي|فرويد|الفرويدية|العلمانيين|الشياطين|الشيطان|شيطانية|الشهوات|الشهوانية|الشهوانية|شهوانية|غريزة|تتقلب|تهد|يتهد|تكذّب|بتكذّب)/;
+const KEY_GOLD = /(الإلهي|الملائكة|ملائكية|الملَك|الملأ|الأعلى|الله|ربنا|عليا|الغيب|الرؤى|رؤيا|«أحاديث»|أحاديث|المطهرة|الشفافة)/;
+const REFS = { 85.94: 'سورة يوسف · ٦', 91.98: 'سورة يوسف · ٦', 102.94: 'سورة يوسف · ١٠١', 106.6: 'سورة يوسف · ١٠١', 212.19: 'سورة الصافات · ١٠٢' };
+let capIdx = -2;
+function captions(t) {
+  let i = -1; for (let k = 0; k < CAP.length; k++) if (t >= CAP[k][0] - .12) i = k;
+  const box = $('capIn'), ref = $('ref');
+  if (i < 0) { box.innerHTML = ''; ref.style.opacity = 0; return; }
+  const [s, e, txt, fl] = CAP[i];
+  const next = CAP[i + 1] ? CAP[i + 1][0] : TOTAL;
+  if (i !== capIdx) { capIdx = i; box.className = fl === 'q' ? 'q' : '';
+    box.innerHTML = txt.split(' ').map(w => { const c = fl === 'q' ? '' : KEY_RED.test(w) ? 'color:var(--red)' : KEY_GOLD.test(w) ? 'color:var(--gold)' : ''; return `<span class="w" style="${c}">${w}</span>`; }).join(' '); }
+  const ws = [...box.children]; const tot = ws.reduce((n, w) => n + w.textContent.length + 2, 0); let acc = 0;
+  const hold = Math.min(next, e + 1.6);
+  const fade = 1 - p(t, Math.min(next - .12, hold), .25, IN);
+  ws.forEach(w => { const st = s + (e - s) * .92 * (acc / tot); acc += w.textContent.length + 2;
+    const k = p(t, st - .05, .32); w.style.opacity = k * fade; w.style.transform = `translateY(${lerp(26, 0, k)}px)`; w.style.filter = `blur(${lerp(8, 0, k)}px)`; });
+  const r = REFS[s]; ref.textContent = r || ''; ref.style.opacity = r ? p(t, s + .3, .4) * fade : 0;
+}
+
+// ---------- helpers ----------
+function txt(s, x, y, size, col, a = 1, weight = 700, align = 'center', font = 'Kufi') {
+  ctx.globalAlpha = a; ctx.fillStyle = `rgb(${col})`; ctx.font = `${weight} ${size}px "${font}"`; ctx.textAlign = align; ctx.direction = font === 'Kufi' || font === 'Amiri' ? 'rtl' : 'ltr'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); ctx.globalAlpha = 1; }
+function mono(s, x, y, size, col, a = 1, align = 'center') { txt(s, x, y, size, col, a, 600, align, 'JetBrains Mono'); }
+function box(x, y, w, h, col, a, lw = 3) { ctx.globalAlpha = a; ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = lw; ctx.strokeRect(x, y, w, h); ctx.globalAlpha = 1; }
+function stamp(s, x, y, size, col, k, rot = -.12) { if (k <= 0) return; ctx.save(); ctx.translate(x, y); ctx.rotate(rot); const sc = lerp(2.6, 1, OUT(LIN(k * 1.6))); ctx.scale(sc, sc);
+  ctx.globalAlpha = LIN(k * 3); ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = 7; ctx.font = `900 ${size}px "Kufi"`; ctx.direction = 'rtl'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(s).width + size * .9; ctx.strokeRect(-w / 2, -size * .8, w, size * 1.6); ctx.fillStyle = `rgb(${col})`; ctx.fillText(s, 0, 0); ctx.restore(); ctx.globalAlpha = 1; }
+function node(x, y, r, col, a, label, lcol = FG, ly = 70) { ctx.globalAlpha = a; ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.stroke();
+  ctx.fillStyle = `rgba(${col},.18)`; ctx.fill(); ctx.globalAlpha = 1; if (label) txt(label, x, y + ly, 34, lcol, a); }
+function link(x1, y1, x2, y2, col, a, t, dashed = true, packets = 2, speed = .6) {
+  ctx.globalAlpha = a; ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = 2.5; ctx.setLineDash(dashed ? [10, 10] : []); ctx.lineDashOffset = -t * 40; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]);
+  for (let i = 0; i < packets; i++) { const k = (t * speed + i / packets) % 1; ctx.fillStyle = `rgb(${col})`; ctx.beginPath(); ctx.arc(lerp(x1, x2, k), lerp(y1, y2, k), 7, 0, 6.283); ctx.fill(); } ctx.globalAlpha = 1; }
+const R1 = rng(9); const DOTS = Array.from({ length: 400 }, () => [R1(), R1(), R1()]);
+
+// ---------- HUD ----------
+function hud(t) {
+  // grid
+  ctx.strokeStyle = 'rgba(242,238,230,.035)'; ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += 90) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = (t * 6) % 90; y <= H; y += 90) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  // scanline
+  const sy = (t * 140) % (H + 200) - 100; const g = ctx.createLinearGradient(0, sy - 60, 0, sy); g.addColorStop(0, 'rgba(242,238,230,0)'); g.addColorStop(1, 'rgba(242,238,230,.05)'); ctx.fillStyle = g; ctx.fillRect(0, sy - 60, W, 60);
+  // corner brackets (safe area)
+  ctx.strokeStyle = 'rgba(242,238,230,.55)'; ctx.lineWidth = 4; const L = 60;
+  [[70, 240, 1, 1], [930, 240, -1, 1], [70, 1530, 1, -1], [930, 1530, -1, -1]].forEach(([x, y, dx, dy]) => { ctx.beginPath(); ctx.moveTo(x, y + dy * L); ctx.lineTo(x, y); ctx.lineTo(x + dx * L, y); ctx.stroke(); });
+  // labels
+  const hh = Math.floor(t / 3600), mm = Math.floor(t / 60) % 60, ss = Math.floor(t) % 60, ff = Math.floor((t % 1) * 30);
+  mono('CLASSIFIED // DREAM-FILE', 90, 262, 24, MUT, .9, 'left');
+  mono(`T+${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}:${String(ff).padStart(2, '0')}`, 910, 262, 24, MUT, .9, 'right');
+  if (Math.floor(t * 2) % 2 === 0) { ctx.fillStyle = `rgb(${RED})`; ctx.beginPath(); ctx.arc(752, 262, 8, 0, 6.283); ctx.fill(); }
+  mono(`LAT 30.0${(4 + Math.floor(t * 3) % 6)}  LON 31.2${(3 + Math.floor(t * 2) % 7)}  //  SIG ${(62 + Math.floor(Math.sin(t) * 9))}%`, 90, 1508, 22, MUT, .7, 'left');
+  // mini radar
+  const rx = 885, ry = 1470, rr = 34; ctx.strokeStyle = 'rgba(125,255,176,.45)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(rx, ry, rr, 0, 6.283); ctx.stroke(); ctx.beginPath(); ctx.arc(rx, ry, rr / 2, 0, 6.283); ctx.stroke();
+  const a = t * 2.4; ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx + Math.cos(a) * rr, ry + Math.sin(a) * rr); ctx.stroke();
+}
+
+// ---------- chapter visuals (upper zone, centred on 500, ~640) ----------
+const CX = 500, VY = 680;
+function chapterCard(t) {
+  const ci = chapAt(t), st = CH[ci][0];
+  $('chap').innerHTML = `<b>${CH[ci][1]}</b>${CH[ci][2]}`;
+  const k = p(t, st, .5); $('chap').style.opacity = .92 * k; $('chap').style.transform = `translateY(${lerp(-20, 0, k)}px)`;
+  // full-frame intercept flash on chapter change
+  const g = t - st; if (ci > 0 && g < .5) { ctx.fillStyle = `rgba(242,238,230,${.12 * (1 - g / .5)})`; ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 6; i++) { const y = (Math.sin(t * 90 + i * 7) * .5 + .5) * H; ctx.fillStyle = `rgba(206,17,38,${.25 * (1 - g / .5)})`; ctx.fillRect(0, y, W, 4 + i * 2); } }
+}
+// FILE 01 / 05: the dossier, cause → effect, materialism stamped
+function dossierFile(t, o) {  // o = time offset for the recap (0 or 271.3)
+  const T = t - o;
+  // timeline: الآن ———— بكرة, future already lit
+  const k0 = p(T, .2, .8), kNow = p(T, 6.6, .8);
+  ctx.globalAlpha = k0; ctx.strokeStyle = `rgba(${FG},.5)`; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(200, 470); ctx.lineTo(800, 470); ctx.stroke(); ctx.globalAlpha = 1;
+  node(800, 470, 14, FG, k0, 'النهارده', FG, -48); node(200, 470, 14, GOLD, k0, 'بكرة', GOLD, -48);
+  if (kNow > 0) { ctx.globalAlpha = kNow; ctx.strokeStyle = `rgb(${GOLD})`; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(800, 470); ctx.lineTo(lerp(800, 200, kNow), 470); ctx.stroke(); ctx.globalAlpha = 1;
+    mono('FUTURE: ALREADY WRITTEN', CX, 525, 24, GOLD, kNow * (1 - p(T, 18, .4))); }
+  // divine knowledge: a beam from above
+  const kb = p(T, 13.4, 1) * (1 - p(T, 18.0, .6));
+  if (kb > 0) { const g = ctx.createLinearGradient(0, 330, 0, 1000); g.addColorStop(0, `rgba(${GOLD},${.35 * kb})`); g.addColorStop(1, `rgba(${GOLD},0)`); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(470, 330); ctx.lineTo(530, 330); ctx.lineTo(700, 1000); ctx.lineTo(300, 1000); ctx.fill(); }
+  // materialism card + causality chain
+  const km = p(T, 18.2, .6) * (1 - p(T, 49.5, .5, IN));
+  if (km > 0) {
+    ctx.globalAlpha = km; ctx.fillStyle = 'rgba(242,238,230,.06)'; ctx.fillRect(170, 580, 660, 400); box(170, 580, 660, 400, FG, km * .6, 2);
+    mono('DOC-1848 // MATERIALISM', 190, 605, 22, MUT, km, 'left');
+    txt('المادة ← الفكرة', CX, 670, 54, FG, km, 900);
+    const swap = p(T, 34.4, .9, INOUT);   // effect before cause
+    const xa = lerp(680, 320, swap), xb = lerp(320, 680, swap), arc = Math.sin(swap * Math.PI) * 70;
+    node(xa, 800 - arc, 46, FG, km * p(T, 25.3, .5), 'سبب', FG, 82); node(xb, 800 + arc, 46, swap > .5 ? RED : FG, km * p(T, 29.2, .5), 'نتيجة', swap > .5 ? RED : FG, 82);
+    ctx.globalAlpha = km * p(T, 29.2, .5); ctx.strokeStyle = `rgb(${swap > .5 ? RED : FG})`; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(620, 800); ctx.lineTo(380, 800); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(390, 785); ctx.lineTo(370, 800); ctx.lineTo(390, 815); ctx.stroke(); ctx.globalAlpha = 1;
+    stamp('مُلغى', 640, 640, 58, RED, p(T, 37.6, .35));
+  }
+  // the dossier opens, one line is read
+  const kd = p(T, 50.9, .6);
+  if (kd > 0 && T < 60) {
+    const open = p(T, 51.2, .7, INOUT);
+    ctx.globalAlpha = kd; ctx.fillStyle = '#B8A27A'; ctx.fillRect(250, 560, 500, 420);   // folder back
+    ctx.fillStyle = '#EDE6D6'; ctx.fillRect(275, 585, 450, 380);   // paper
+    for (let i = 0; i < 9; i++) { const y = 625 + i * 38; const hi = i === 4; const w = 380 - (i * 37 % 120);
+      ctx.fillStyle = hi && T > 53.2 ? `rgba(${RED},${.25 + .2 * Math.sin(T * 6)})` : 'rgba(20,20,20,.85)'; ctx.fillRect(310, y, hi ? 380 : w, 18); }
+    if (T > 53.2) { const sx = lerp(310, 690, LIN((T - 53.2) / 2)); ctx.fillStyle = `rgb(${GOLD})`; ctx.fillRect(sx, 620 + 4 * 38 - 6, 4, 30); }
+    ctx.save(); ctx.translate(250, 560); ctx.transform(1, 0, 0, 1 - open * 1.18, 0, 0); ctx.fillStyle = '#C9B48C'; ctx.fillRect(0, 0, 500, 420); ctx.restore();   // cover flips up
+    mono('TOP SECRET // FUTURE', CX, 545, 24, GOLD, kd); ctx.globalAlpha = 1;
+    stamp('بالنص وبالحرف', 560, 900, 44, RED, p(T, 57.2, .3), -.08);
+  }
+}
+// FILE 02: two kinds of dreams become one word
+function dreamTypes(t) {
+  const ka = p(t, 61.9, .6), kr = p(t, 67.1, .6), merge = p(t, 72.3, 1.2, INOUT), out = 1 - p(t, 84.5, .6, IN);
+  const xa = lerp(300, CX, merge), xr = lerp(700, CX, merge);
+  // أضغاث: scrambled dots, رؤى: clear ring of dots
+  DOTS.slice(0, 160).forEach((d, i) => { const a = d[0] * 6.283, r = 110 * Math.sqrt(d[1]); const jit = (1 - merge) * Math.sin(t * 7 + i) * 14;
+    ctx.fillStyle = `rgba(${MUT},${.8 * ka * out})`; ctx.fillRect(xa + Math.cos(a) * r + jit, 620 + Math.sin(a) * r + jit, 5, 5); });
+  DOTS.slice(160, 320).forEach((d, i) => { const a = i / 160 * 6.283 + t * .3, r = 110; ctx.fillStyle = `rgba(${GOLD},${.9 * kr * out})`; ctx.beginPath(); ctx.arc(xr + Math.cos(a) * r, 620 + Math.sin(a) * r, 3.5, 0, 6.283); ctx.fill(); });
+  txt('أضغاث', 300, 790, 46, MUT, ka * (1 - merge) * out); txt('رؤى', 700, 790, 46, GOLD, kr * (1 - merge) * out);
+  const kw = p(t, 76.9, .4); if (kw > 0) { txt('أحاديث', CX, 620, 110, FG, kw * out, 900); stamp('اسم واحد', CX, 820, 40, RED, p(t, 77.4, .3) * out, -.06); }
+  // the Qur'an verses: an ornamental frame
+  const kq = p(t, 85.5, .8) * (1 - p(t, 113.5, .6, IN));
+  if (kq > 0) { ctx.globalAlpha = kq; ctx.strokeStyle = `rgb(${GOLD})`; ctx.lineWidth = 2; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(CX, 640, 150 + i * 46 + Math.sin(t + i) * 6, 0, 6.283); ctx.stroke(); }
+    for (let i = 0; i < 16; i++) { const a = i / 16 * 6.283 + t * .1; ctx.beginPath(); ctx.moveTo(CX + Math.cos(a) * 120, 640 + Math.sin(a) * 120); ctx.lineTo(CX + Math.cos(a) * 280, 640 + Math.sin(a) * 280); ctx.globalAlpha = kq * .25; ctx.stroke(); }
+    ctx.globalAlpha = 1; txt('يوسف', CX, 640, 64, GOLD, kq, 700, 'center', 'Amiri'); }
+}
+// FILE 03: the parties of the conversation
+const PARTIES = [  // [time, x, y, colour, label, type]
+  [135.9, 230, 760, FG, 'الجسم'], [151.6, 770, 760, FG, 'النفس'], [161.5, 260, 980, RED, 'الشياطين'],
+  [196.2, 230, 480, GOLD, 'الملائكة'], [198.4, 770, 480, GOLD, 'الملأ الأعلى']];
+function parties(t) {
+  const k0 = p(t, 115.5, .6);
+  node(CX, 700, 70, FG, k0, 'النفس', FG, 110);
+  mono('INTERCEPT: 2-WAY TRANSMISSION', CX, 400, 24, MUT, k0 * (1 - p(t, 196, .4)));
+  PARTIES.forEach(([ts, x, y, col, lab]) => { const k = p(t, ts, .5, SET); if (k <= 0) return; const hot = col === RED && t > 173 && t < 191 ? 1 : 0;
+    link(x, y, CX, 700, col, k * .9, t, true, hot ? 4 : 2, hot ? 1.3 : .6); node(x, y, lerp(10, 44, k) + hot * Math.sin(t * 10) * 4, col, k, lab, col); });
+  // the divine: a beam from the top
+  const kg = p(t, 201.8, .9) * (1 - p(t, 221.5, .5, IN));
+  if (kg > 0) { const g = ctx.createLinearGradient(0, 330, 0, 700); g.addColorStop(0, `rgba(${GOLD},${.55 * kg})`); g.addColorStop(1, `rgba(${GOLD},0)`); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(480, 330); ctx.lineTo(520, 330); ctx.lineTo(570, 700); ctx.lineTo(430, 700); ctx.fill();
+    mono('SOURCE: ABOVE', CX, 360, 24, GOLD, kg); }
+}
+// FILE 04: the theories that can't explain it
+const THEORIES = [[245.4, 'فرويد', 'FREUD'], [247.2, 'برجسون', 'BERGSON'], [249.0, 'أدلر', 'ADLER'], [266.9, 'ماركس', 'MARX']];
+function prophetic(t) {
+  const kt = p(t, 222.8, .6) * (1 - p(t, 244.5, .5, IN));
+  if (kt > 0) { txt('رؤيا صادقة', CX, 600, 96, GOLD, kt, 900); const fill = p(t, 232.7, 3, INOUT); ctx.globalAlpha = kt; ctx.strokeStyle = `rgba(${FG},.4)`; ctx.lineWidth = 3; ctx.strokeRect(250, 720, 500, 30);
+    ctx.fillStyle = `rgb(${GOLD})`; ctx.fillRect(252, 722, 496 * fill, 26); ctx.globalAlpha = 1; mono(`MATCH ${Math.round(fill * 100)}%`, CX, 790, 26, GOLD, kt); }
+  THEORIES.forEach(([ts, ar, en], i) => { const k = p(t, ts, .5, SET) * (1 - p(t, 269.6, .4, IN)); if (k <= 0) return;
+    const x = i < 3 ? 230 + i * 270 : CX, y = i < 3 ? 560 : 860;
+    ctx.globalAlpha = k; ctx.fillStyle = 'rgba(242,238,230,.07)'; ctx.fillRect(x - 115, y - 110, 230, 230); box(x - 115, y - 110, 230, 230, FG, k * .6, 2); ctx.globalAlpha = 1;
+    mono(en, x, y - 80, 22, MUT, k); txt(ar, x, y, 50, FG, k, 900);
+    const kx = p(t, i < 3 ? 258.8 + i * .25 : 268.2, .3); if (kx > 0) { ctx.globalAlpha = kx; ctx.strokeStyle = `rgb(${RED})`; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(x - 90, y - 90); ctx.lineTo(x - 90 + 180 * kx, y - 90 + 180 * kx); ctx.moveTo(x + 90, y - 90); ctx.lineTo(x + 90 - 180 * kx, y - 90 + 180 * kx); ctx.stroke(); ctx.globalAlpha = 1; } });
+}
+// FILE 06: between the two rivers
+const RIV = Array.from({ length: 220 }, (_, i) => [rng(i + 5)(), i]);
+function rivers(t) {
+  const k = p(t, 350, 1) * (1 - p(t, 419.2, .5, IN)), kr = p(t, 370.5, 1), kg = p(t, 373.5, 1);
+  RIV.forEach(([r, i]) => { const left = i % 2 === 0; const sp = left ? 160 : -120; const y = ((r * 900 + t * sp) % 900 + 900) % 900 + 380; const x = (left ? 240 : 760) + Math.sin(y * .02 + i) * 40;
+    ctx.fillStyle = left ? `rgba(${FG},${.7 * k * kr})` : `rgba(${GOLD},${.8 * k * kg})`; ctx.beginPath(); ctx.arc(x, y, left ? 3.5 : 3, 0, 6.283); ctx.fill(); });
+  txt('نهر الواقع المشهود', 240, 1010, 34, FG, k * kr); txt('نهر الغيب المستور', 760, 1010, 34, GOLD, k * kg);
+  // the soul on the line between them
+  const ks = p(t, 365.9, .8); ctx.globalAlpha = k * ks; ctx.setLineDash([8, 10]); ctx.strokeStyle = `rgba(${FG},.5)`; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(CX, 380); ctx.lineTo(CX, 980); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  node(CX, 680, 54 + Math.sin(t * 2) * 3, FG, k * ks, 'النفس', FG, 90); mono('POSITION: BARZAKH', CX, 400, 22, MUT, k * ks);
+  const kl = p(t, 394.8, .5); if (kl > 0) { link(300, 600, CX - 50, 680, FG, k * kl, t, true, 2, .8); link(700, 600, CX + 50, 680, GOLD, k * kl, t, true, 2, .8); }
+}
+// FILE 07: frequencies — what a soul can hear
+function tuner(t) {
+  const k = p(t, 420, .7) * (1 - p(t, 482, .4, IN));
+  if (k <= 0) return;
+  // dial
+  ctx.globalAlpha = k; ctx.strokeStyle = `rgba(${FG},.5)`; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(170, 900); ctx.lineTo(830, 900); ctx.stroke();
+  for (let i = 0; i <= 30; i++) { const x = 170 + i * 22; ctx.beginPath(); ctx.moveTo(x, 900); ctx.lineTo(x, 900 - (i % 5 ? 14 : 30)); ctx.stroke(); } ctx.globalAlpha = 1;
+  mono('LOW', 170, 950, 22, RED, k); mono('HIGH', 830, 950, 22, GOLD, k);
+  // the needle: heavy soul (low) → pure soul (high)
+  const pos = lerp(.15, .88, p(t, 466.6, 1.4, INOUT)); const nx = lerp(170, 830, pos) + Math.sin(t * 9) * 2;
+  ctx.globalAlpha = k; ctx.strokeStyle = `rgb(${pos > .5 ? GOLD : RED})`; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(nx, 920); ctx.lineTo(nx, 830); ctx.stroke(); ctx.globalAlpha = 1;
+  node(nx, 680, 52, pos > .5 ? GOLD : FG, k, pos > .5 ? 'النفس الشفافة' : 'النفس الشهوانية', pos > .5 ? GOLD : FG, -88);
+  // the angels' "demonstration": many gold signals hit a wall
+  const kd = p(t, 457.1, .4) * (1 - p(t, 466.3, .4, IN));
+  if (kd > 0) { ctx.globalAlpha = kd; ctx.fillStyle = `rgba(${RED},.6)`; ctx.fillRect(nx + 75, 560, 10, 240); ctx.globalAlpha = 1;
+    for (let i = 0; i < 18; i++) { const ph = (t * 1.6 + i / 18) % 1; ctx.fillStyle = `rgba(${GOLD},${kd})`; ctx.beginPath(); ctx.arc(lerp(860, nx + 95, ph), 580 + (i * 37) % 200, 7, 0, 6.283); ctx.fill(); }
+    mono('SIGNAL BLOCKED', nx + 220, 530, 22, RED, kd); }
+  // a devil's whisper gets through to the heavy soul
+  const kw = p(t, 461.7, .3) * (1 - p(t, 466.3, .4, IN)); if (kw > 0) link(170, 560, nx - 40, 660, RED, kw, t, false, 3, 1.4);
+  // the pure soul: red is blocked, a gold whisper gets through
+  const kb = p(t, 472.8, .4); if (kb > 0) { ctx.fillStyle = `rgba(${GOLD},${.5 * kb * k})`; ctx.fillRect(nx - 85, 560, 10, 240);
+    for (let i = 0; i < 6; i++) { const ph = (t * 1.6 + i / 6) % 1; ctx.fillStyle = `rgba(${RED},${kb * k})`; ctx.beginPath(); ctx.arc(lerp(150, nx - 95, ph), 600 + i * 30, 7, 0, 6.283); ctx.fill(); } }
+  const ka = p(t, 474.6, .4); if (ka > 0) link(860, 520, nx + 40, 660, GOLD, ka * k, t, false, 3, 1.1);
+}
+// FILE 08: the conclusion — the soul's level decides the other party
+const LEVELS = [[506.2, 'الجسم', RED, 0], [508.0, 'الشهوات', RED, 1], [510.7, 'الشياطين', RED, 2], [515.9, 'الملائكة', GOLD, 4], [517.7, 'الملأ الأعلى', GOLD, 5], [519.7, 'الله سبحانه', GOLD, 6]];
+function verdict(t) {
+  const k = p(t, 482.5, .7);
+  ctx.globalAlpha = k; const g = ctx.createLinearGradient(0, 980, 0, 400); g.addColorStop(0, `rgba(${RED},.6)`); g.addColorStop(.5, `rgba(${FG},.25)`); g.addColorStop(1, `rgba(${GOLD},.8)`);
+  ctx.fillStyle = g; ctx.fillRect(CX - 4, 400, 8, 580); ctx.globalAlpha = 1;
+  const lvl = p(t, 511.7, 1.6, INOUT); const sy = lerp(900, 470, lvl);
+  node(CX, sy, 40 + Math.sin(t * 3) * 3, lvl > .5 ? GOLD : FG, k * p(t, 496, .5), 'النفس', lvl > .5 ? GOLD : FG, 0);
+  LEVELS.forEach(([ts, lab, col, i]) => { const kk = p(t, ts, .4, SET); if (kk <= 0) return; const y = 960 - i * 82, left = i % 2 === 0; const x = left ? 300 : 700;
+    ctx.globalAlpha = kk * .6; ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(CX, y); ctx.lineTo(x, y); ctx.stroke(); ctx.globalAlpha = 1; txt(lab, x + (left ? -20 : 20), y, 36, col, kk); });
+  mono('DREAM = DIALOGUE (2 PARTIES)', CX, 400, 24, MUT, k * p(t, 491.4, .5));
+  const fin = p(t, 519.9, .8); if (fin > 0) { const gg = ctx.createRadialGradient(CX, 470, 0, CX, 470, 500); gg.addColorStop(0, `rgba(${GOLD},${.5 * fin})`); gg.addColorStop(1, `rgba(${GOLD},0)`); ctx.fillStyle = gg; ctx.fillRect(0, 0, W, H); }
+}
+
+// ---------- grain ----------
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960); let lastG = -1;
+function grain(f) { f = Math.floor(f / 2); if (f === lastG) return; lastG = f; let s = (f * 2654435761 + 1) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i+1] = d[i+2] = s & 255; d[i+3] = 255; } gctx.putImageData(gimg, 0, 0); }
+
+function render(t) {
+  grain(Math.round(t * 30));
+  ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#060606'; ctx.fillRect(0, 0, W, H);
+  hud(t);
+  const ci = chapAt(t);
+  if (ci === 0) dossierFile(t, 0);
+  if (ci === 1) dreamTypes(t);
+  if (ci === 2) parties(t);
+  if (ci === 3) prophetic(t);
+  if (ci === 4) dossierFile(t, 271.3);
+  if (ci === 5) rivers(t);
+  if (ci === 6) tuner(t);
+  if (ci === 7) verdict(t);
+  // FILE 05 coda: "a higher Being" beam
+  if (t > 341.4 && t < 349.7) { const kb = p(t, 341.4, .8) * (1 - p(t, 349.2, .4, IN)); const g = ctx.createLinearGradient(0, 330, 0, 1000); g.addColorStop(0, `rgba(${GOLD},${.45 * kb})`); g.addColorStop(1, `rgba(${GOLD},0)`); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(470, 330); ctx.lineTo(530, 330); ctx.lineTo(720, 1000); ctx.lineTo(280, 1000); ctx.fill(); txt('ذاتٌ عليا', CX, 470, 64, GOLD, kb, 900); }
+  chapterCard(t);
+  captions(t);
+  // fade out at the very end
+  if (t > TOTAL - .6) { ctx.fillStyle = `rgba(0,0,0,${p(t, TOTAL - .6, .6, LIN)})`; ctx.fillRect(0, 0, W, H); }
+}
+window.render = render;
+window.ready = Promise.resolve(window.CAPTIONS).then(c => { CAP = c; window.TOTAL = TOTAL; return Promise.all([document.fonts.load('900 66px Kufi', 'ا'), document.fonts.load('700 34px Kufi', 'ا'), document.fonts.load('400 30px Kufi', 'ا'), document.fonts.load('700 76px Amiri', 'ا')]); }).then(() => { render(0); return true; });
+</script>
+</body>
+</html>
