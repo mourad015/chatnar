@@ -1,7 +1,7 @@
-export const T = { dur: 0, lines: [] };
+export const T = { dur: 0, lines: [], lead: 0 };
 export async function loadTiming() {
   const s = await (await fetch('script.json', { cache: 'no-store' })).json();
-  T.lines = s.lines.map((l, i) => ({ i, start: l.s, end: l.e, ...l })); T.dur = s.duration; return T;
+  const lead = (T.lead = s.lead || 0); T.lines = s.lines.map((l, i) => ({ i, ...l, start: l.s + lead, end: l.e + lead, wt: (l.wt || []).map((w) => w + lead) })); T.dur = s.duration; return T;
 }
 export const L = (i) => T.lines[i].start;
 export const Le = (i) => T.lines[i].end;

@@ -15,6 +15,19 @@ same level of polish. **Read `STYLE.md` in full before planning.** Two complete 
   day → grey), `acacia`, `bedroom` + `bed` + `blanket` + `clock`, `city` + `billboard`, `miniCloud` (rain over a head).
   To start from it: `cp example/lion-gazelle/{shots.js} <project>/src/` and its script/score.
 
+## The series: «قاعدة في الحياة» (A Rule in Life)
+The user publishes these as a series named **قاعدة في الحياة**. Every episode MUST carry the series branding:
+- `script.json`: `"lead": 1.8`, `"series": {"ar": "قاعدة في الحياة", "en": "A RULE IN LIFE"}`, `"episode": {"ar": <the clip's
+  title or the question it answers>, "en": ...}`, `"endline": {"ar": <one-line takeaway>, "en": ...}`. The speaker's voice
+  starts after the lead; all `L()` / `Wt()` times include it automatically (score.py times are absolute: add the lead).
+- Shot 0 = `seriesIntro` (gold seal + episode title, from `src/series.js`); the first story shot enters with
+  `tin: { type: 'zoom' }`. The badge at the top is drawn automatically during the episode. The last shot calls
+  `seriesEnd(...)` ~0.4 s after the final line, holding ~2.5 s. score.py opens with the same gold sting
+  (see `example/triangle/score.py`).
+- Newest reference episode: `example/triangle/` — أين تجد الراحة النفسية؟ (triangle explainer on a blueprint, valley that
+  blooms, gloom creatures, shield, sprout, sun emblem, medallions). Start new episodes from it.
+- If the source has its own room noise / faint music, set `"voice_gate": -34` (quiets the pauses by up to 10 dB).
+
 Everything is code: canvas drawing in headless Chrome, ffmpeg, numpy/scipy audio. No AI images, no stock assets.
 Output: 1080×1920, 30 fps, H.264 + AAC, the speaker's original voice, original synthesized score.
 

@@ -4,6 +4,7 @@ import { W, H, setCtx, clamp, lerp, eo, eio, rnd } from './lib.js';
 import { T, loadTiming } from './timing.js';
 import { buildType, drawType, typeList } from './type.js';
 import { buildShots } from './shots.js';
+import { seriesBadge } from './series.js';
 
 const cv = document.getElementById('cv'), M = cv.getContext('2d');
 const mk = (w = W, h = H) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d')]; };
@@ -61,6 +62,7 @@ function draw(t) {
   const sc = M.createLinearGradient(0, 1200, 0, H); sc.addColorStop(0, 'rgba(0,0,0,0)'); sc.addColorStop(1, 'rgba(0,0,0,0.62)'); M.fillStyle = sc; M.fillRect(0, 1200, W, H - 1200);
   if (g.bars > 0) { M.fillStyle = '#000'; const bh = 150 * g.bars; M.fillRect(0, 0, W, bh); M.fillRect(0, H - bh, W, bh); }
   setCtx(M); drawType(t);
+  if (OP.script.series && T.lines.length) { const e0 = T.lead + 0.4, e1 = T.lines[T.lines.length - 1].end + 0.3; seriesBadge(Math.min(clamp((t - e0) / 0.4), clamp((e1 - t) / 0.3)), OP.script); }
   M.globalCompositeOperation = 'overlay'; M.globalAlpha = 0.09; const gi = Math.floor(t * 24) % 3; M.drawImage(grains[gi], -((t * 997) % 60), -((t * 613) % 60), W + 120, H + 120); M.globalCompositeOperation = 'source-over'; M.globalAlpha = 1;
   const fade = Math.min(clamp(t / 0.35), clamp((T.dur - t) / 0.6)); if (fade < 1) { M.fillStyle = '#000'; M.globalAlpha = 1 - fade; M.fillRect(0, 0, W, H); M.globalAlpha = 1; }
 }

@@ -180,7 +180,11 @@ sfx = sfx + reverb(send, 2.6, 1.0, seed=3) * 0.6
 def load(f):
     out = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(f), '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True, check=True).stdout
     return np.frombuffer(out, dtype=np.float32).astype(np.float64)
-v = load(P / 'data/narration.wav'); voice = np.zeros(N); voice[:min(N, len(v))] = v[:N]
+SCRIPT = json.loads((P / 'script.json').read_text()); LEAD = int(SCRIPT.get('lead', 0) * SR)
+v = load(P / 'data/narration.wav'); voice = np.zeros(N); n_ = max(0, min(N - LEAD, len(v))); voice[LEAD:LEAD + n_] = v[:n_]
+if SCRIPT.get('voice_gate'):   # downward expander: pauses (room noise / faint music in the source) drop by up to 10 dB
+    thr = db(SCRIPT['voice_gate']); lv_ = signal.lfilter([1 - 0.998], [1, -0.998], np.abs(voice)); g_ = np.clip(lv_ / thr, db(-10), 1) ** 1.0
+    voice *= signal.lfilter([1 - 0.999], [1, -0.999], g_)
 voice = hp(voice, 85)
 # gentle compression for presence
 lev = signal.lfilter([1 - 0.995], [1, -0.995], np.abs(voice)); gr = np.minimum(1, (db(-26) / (lev + 1e-6)) ** 0.35); voice *= gr
