@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Still Here</title>
+<style>
+  :root { --bg:#060606; --fg:#F2EEE6; --red:#CE1126; --green:#159A50; --mut:#8A857C; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1920px; background:var(--bg); overflow:hidden; }
+  body { font-family:'Inter Display','Inter',sans-serif; color:var(--fg); }
+  canvas { position:absolute; left:0; top:0; }
+  .t { position:absolute; left:0; width:1000px; text-align:center; white-space:nowrap; font-weight:900; letter-spacing:-0.03em; opacity:0; }
+  .m { font-family:'JetBrains Mono',monospace; font-weight:600; letter-spacing:.06em; }
+  .card { position:absolute; left:110px; width:780px; padding:30px 40px; border-radius:22px; background:#F2EEE6; color:#111; opacity:0; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+  .card .h { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:700; letter-spacing:.12em; color:#777; }
+  .card .b { font-size:54px; font-weight:800; letter-spacing:-0.02em; margin-top:8px; line-height:1.1; white-space:normal; }
+  .stamp { position:absolute; padding:10px 28px; border:9px solid var(--red); border-radius:16px; color:var(--red); font-weight:900; font-size:64px; letter-spacing:.02em; opacity:0; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,.7) 100%); }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.09; mix-blend-mode:overlay; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+
+<!-- S1 key -->
+<div class="t" id="k1" style="top:1150px;font-size:76px">This key is 78 years old.</div>
+<div class="t" id="k2" style="top:1250px;font-size:50px;font-weight:700;color:var(--mut)">The house it opens isn't there anymore.</div>
+<!-- S2 1948 -->
+<div class="t" id="n1" style="top:420px;font-size:200px">1948.</div>
+<div class="t" id="n2" style="top:1100px;font-size:60px;font-weight:800;line-height:1.15">≈700,000 Palestinians<br>forced from their homes.</div>
+<div class="t m" id="n2s" style="top:1250px;font-size:30px;color:var(--mut)">THE NAKBA</div>
+<div class="card" id="n3" style="top:1020px"><div class="h">UN RESOLUTION 194 · DEC 1948</div><div class="b">Refugees should be allowed to return home.</div></div>
+<div class="t m" id="n4" style="top:1330px;font-size:44px;color:var(--fg)">STATUS: <span style="color:var(--red)">PENDING</span> <span id="spin1" style="display:inline-block">◌</span></div>
+<div class="t m" id="n4b" style="top:1395px;font-size:30px;color:var(--mut)">since 1948</div>
+<!-- S3 gaza -->
+<div class="t" id="g1" style="top:300px;font-size:150px">Gaza.</div>
+<div class="t" id="g2" style="top:1290px;font-size:64px;font-weight:800">365 km². 2.1 million people.</div>
+<div class="t m" id="g3" style="top:1380px;font-size:30px;color:var(--mut)">1 DOT = 1,000 PEOPLE</div>
+<!-- S4 the world responds -->
+<div class="t m" id="w0" style="top:300px;font-size:38px;color:var(--mut)">MEANWHILE, THE WORLD:</div>
+<div class="card" id="w1" style="top:380px"><div class="h">PRESS STATEMENT</div><div class="b">We are deeply concerned.</div></div>
+<div class="card" id="w2" style="top:600px"><div class="h">PRESS STATEMENT</div><div class="b">We are <i>deeply, deeply</i> concerned.</div></div>
+<div class="card" id="w3" style="top:820px"><div class="h">PRESS STATEMENT</div><div class="b">We urge all parties to show restraint.</div></div>
+<div class="t" id="w4" style="top:1090px;font-size:64px;font-weight:800">Thoughts <span style="color:var(--green)">✓</span></div>
+<div class="t" id="w5" style="top:1170px;font-size:64px;font-weight:800">Prayers <span style="color:var(--green)">✓</span></div>
+<div class="t" id="w6" style="top:1250px;font-size:64px;font-weight:800">Action <span id="spin2" style="display:inline-block;color:var(--red)">◌</span></div>
+<div class="t m" id="w7" style="top:1360px;font-size:32px;color:var(--mut)">STATEMENTS ISSUED: <span id="stc">0</span></div>
+<!-- S5 the toll -->
+<div class="t" id="d1" style="top:240px;font-size:150px;color:var(--red)">0</div>
+<div class="t" id="d2" style="top:410px;font-size:42px;font-weight:700">killed in Gaza since Oct 2023</div>
+<div class="t m" id="d2s" style="top:466px;font-size:26px;color:var(--mut)">GAZA HEALTH MINISTRY · NOV 2026</div>
+<div class="t" id="d3" style="top:1300px;font-size:52px;font-weight:800">≈70% of verified victims: <span style="color:var(--red)">women & children</span></div>
+<div class="t m" id="d3s" style="top:1375px;font-size:26px;color:var(--mut)">UN HUMAN RIGHTS OFFICE ANALYSIS</div>
+<!-- S6 famine / aid / ceasefire -->
+<div class="t" id="f1" style="top:360px;font-size:110px">Famine confirmed.</div>
+<div class="t m" id="f1s" style="top:500px;font-size:28px;color:var(--mut)">IPC · GAZA GOVERNORATE · AUG 2025</div>
+<div class="t" id="f2" style="top:1000px;font-size:56px;font-weight:800">Aid trucks: waiting at the border.</div>
+<div class="t" id="f3" style="top:1080px;font-size:46px;font-weight:700;color:var(--mut)">Estimated delivery: after the next statement.</div>
+<div class="stamp" id="f4" style="left:250px;top:1190px">CEASEFIRE ✓</div>
+<div class="t" id="f5" style="top:1330px;font-size:50px;font-weight:800">+<span id="f5n">0</span> killed since.</div>
+<div class="t m" id="f5s" style="top:1400px;font-size:26px;color:var(--mut)">GAZA HEALTH MINISTRY</div>
+<!-- S7 still here -->
+<div class="t" id="s1" style="top:1180px;font-size:120px">Still here.</div>
+<div class="t" id="s2" style="top:1320px;font-size:56px;font-weight:800;color:var(--mut)">Still flying kites.</div>
+<!-- S8 -->
+<div class="t" id="e1" style="top:1240px;font-size:60px;font-weight:800">Don't look away.</div>
+
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="vig"></div>
+
+<script>
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
+    for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
+}
+const OUT = bez(.16,1,.3,1), IN = bez(.6,0,.9,.35), INOUT = bez(.65,0,.35,1), SET = bez(.2,1.3,.4,1);
+const LIN = x => Math.min(1, Math.max(0, x)), F = 1 / 30;
+const p = (t, s, d, e = OUT) => e(LIN((t - s) / d));
+const lerp = (a, b, k) => a + (b - a) * k;
+const $ = id => document.getElementById(id);
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(1948);
+const W = 1080, H = 1920, ctx = $('c').getContext('2d');
+
+// ---------- scenes ----------
+const S = [0, 5.5, 12, 17, 26, 34, 41, 46, 53];
+const TOTAL = S[S.length - 1];
+const TOLL = 74618, SINCE = 1602;
+
+// text cues: [id, kind, in, out]  (absolute seconds)
+const CUES = [
+  ['k1', 'rise', 0.7, 5.3], ['k2', 'rise', 2.5, 5.3],
+  ['n1', 'slam', 5.6, 8.8], ['n2', 'rise', 6.5, 8.8], ['n2s', 'fade', 7.0, 8.8],
+  ['n3', 'rise', 9.0, 11.8], ['n4', 'rise', 10.2, 11.8], ['n4b', 'fade', 10.6, 11.8],
+  ['g1', 'rise', 12.2, 16.8], ['g2', 'rise', 13.2, 16.8], ['g3', 'fade', 14.0, 16.8],
+  ['w0', 'rise', 17.1, 25.9], ['w1', 'drop', 17.6, 25.9], ['w2', 'drop', 19.2, 25.9], ['w3', 'drop', 20.8, 25.9],
+  ['w4', 'rise', 22.4, 25.9], ['w5', 'rise', 22.9, 25.9], ['w6', 'slam', 23.6, 25.9], ['w7', 'fade', 17.8, 25.9],
+  ['d1', 'rise', 26.4, 33.8], ['d2', 'rise', 26.7, 33.8], ['d2s', 'fade', 27.0, 33.8], ['d3', 'rise', 30.6, 33.8], ['d3s', 'fade', 31.0, 33.8],
+  ['f1', 'slam', 34.2, 40.8], ['f1s', 'fade', 34.7, 40.8], ['f2', 'rise', 35.6, 40.8], ['f3', 'rise', 37.0, 40.8],
+  ['f4', 'stamp', 38.6, 40.8], ['f5', 'rise', 39.2, 40.8], ['f5s', 'fade', 39.5, 40.8],
+  ['s1', 'rise', 42.0, 45.8], ['s2', 'rise', 43.4, 45.8],
+  ['e1', 'rise', 49.3, 52.7],
+];
+function cue(el, kind, t, a, b) {
+  const kin = kind === 'slam' ? p(t, a, 6 * F) : kind === 'stamp' ? p(t, a, 5 * F) : kind === 'drop' ? p(t, a, 12 * F, SET) : p(t, a, 11 * F);
+  const kout = p(t, b - 0.18, 6 * F, IN);
+  let tr = '';
+  if (kind === 'rise') tr = `translateY(${lerp(60, 0, kin) - 30 * kout}px)`;
+  else if (kind === 'slam') tr = `scale(${lerp(2.2, 1, kin)})`;
+  else if (kind === 'drop') tr = `translateY(${lerp(-120, 0, kin)}px) rotate(${lerp(-3, (el.id.charCodeAt(1) % 2 ? 1 : -1) * 1.2, kin)}deg)`;
+  else if (kind === 'stamp') tr = `scale(${lerp(3, 1, kin)}) rotate(${lerp(-2, -6, kin)}deg)`;
+  el.style.transform = tr;
+  el.style.opacity = (kind === 'fade' ? p(t, a, 8 * F, LIN) : LIN(kin * 2.5)) * (1 - kout);
+}
+
+// ---------- Gaza strip: polygon + 2,100 dots (1 dot = 1,000 people) ----------
+const GC = [500, 880], GROT = -0.5;
+function stripPt(u, v) { // u along the strip 0..1 (north→south), v across -1..1
+  const len = 760, w = lerp(66, 108, u); const x = v * w, y = (u - .5) * len;
+  return [GC[0] + x * Math.cos(GROT) - y * Math.sin(GROT), GC[1] + x * Math.sin(GROT) + y * Math.cos(GROT)];
+}
+const DOTS = [];
+for (let i = 0; i < 2100; i++) { const u = R(), v = (R() * 2 - 1) * 0.94; const [x, y] = stripPt(u, v); DOTS.push({ x, y, r: R(), dead: false, dt: 0 }); }
+// 75 dots ≈ 74,600 people
+const order = DOTS.map((_, i) => i).sort(() => R() - .5);
+order.slice(0, 75).forEach((i, k) => { DOTS[i].dead = true; DOTS[i].dt = 26.5 + (k / 75) * 4.0 + R() * 0.15; });
+// the final word targets for living dots
+function wordPts(lines, n) {
+  const cv = document.createElement('canvas'); cv.width = 1000; cv.height = 700; const x = cv.getContext('2d');
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  lines.forEach(([txt, size, y]) => { x.font = `900 ${size}px "Inter Display"`; x.fillText(txt, 500, y); });
+  const d = x.getImageData(0, 0, 1000, 700).data, pts = [];
+  for (let y = 0; y < 700; y += 3) for (let xx = 0; xx < 1000; xx += 3) if (d[(y * 1000 + xx) * 4 + 3] > 140) pts.push([xx, y]);
+  const rr = rng(77); for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(rr() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  return Array.from({ length: n }, (_, i) => pts[Math.floor(i * pts.length / n)]);
+}
+let WORD;
+
+// ---------- drawings ----------
+function key(x, y, s, rot, a, col = '#C9A86A') {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.globalAlpha = a;
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 16; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(-150, 0, 52, 0, 6.283); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-150, 0, 18, 0, 6.283); ctx.stroke();
+  ctx.fillRect(-100, -9, 260, 18);
+  ctx.fillRect(110, 0, 18, 56); ctx.fillRect(140, 0, 18, 40); ctx.fillRect(84, 0, 14, 30);
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+function truck(x, y, s, a) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.globalAlpha = a;
+  ctx.fillStyle = '#E8E3D8'; ctx.fillRect(-60, -40, 86, 56); ctx.fillStyle = '#B9B3A6'; ctx.fillRect(28, -26, 34, 42);
+  ctx.fillStyle = '#111'; [[-40, 18], [0, 18], [44, 18]].forEach(([wx, wy]) => { ctx.beginPath(); ctx.arc(wx, wy, 11, 0, 6.283); ctx.fill(); });
+  ctx.fillStyle = '#CE1126'; ctx.fillRect(-26, -26, 18, 6); ctx.fillRect(-20, -32, 6, 18);
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+function kite(x, y, s, rot, a) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.globalAlpha = a;
+  const P = [[0, -90], [62, 0], [0, 120], [-62, 0]];
+  ctx.fillStyle = '#111'; ctx.beginPath(); ctx.moveTo(0, -90); ctx.lineTo(62, 0); ctx.lineTo(-62, 0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#F2EEE6'; ctx.beginPath(); ctx.moveTo(62, 0); ctx.lineTo(-62, 0); ctx.lineTo(-31, 60); ctx.lineTo(31, 60); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#159A50'; ctx.beginPath(); ctx.moveTo(-31, 60); ctx.lineTo(31, 60); ctx.lineTo(0, 120); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#CE1126'; ctx.beginPath(); ctx.moveTo(0, -90); ctx.lineTo(-62, 0); ctx.lineTo(0, 0); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(242,238,230,.6)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-62, 0); ctx.lineTo(62, 0); ctx.moveTo(0, -90); ctx.lineTo(0, 120); ctx.stroke();
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+// ---------- grain ----------
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960); let lastG = -1;
+function grain(f) { f = Math.floor(f / 2); if (f === lastG) return; lastG = f; let s = (f * 2654435761 + 1) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i+1] = d[i+2] = s & 255; d[i+3] = 255; } gctx.putImageData(gimg, 0, 0); }
+
+// ---------- render ----------
+function render(t) {
+  grain(Math.round(t * 30));
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#060606'; ctx.fillRect(0, 0, W, H);
+  // camera shake on hard moments
+  let sx = 0, sy = 0;
+  for (const h of [5.62, 23.62, 26.0, 34.22, 38.62, 46.0]) if (t >= h && t < h + 0.4) { const d = Math.exp(-(t - h) * 13); sx += 12 * d * Math.sin((t - h) * 90); sy += 8 * d * Math.cos((t - h) * 77); }
+  ctx.setTransform(1, 0, 0, 1, sx, sy);
+
+  // S1/S8: the key
+  if (t < S[1] + 0.3) {
+    const k = p(t, -0.4, 1.6, OUT); const glint = 0.5 + 0.5 * Math.sin(t * 1.4);
+    const g = ctx.createRadialGradient(500, 820, 0, 500, 820, 420); g.addColorStop(0, `rgba(201,168,106,${0.12 + 0.06 * glint})`); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    key(500, 820, lerp(1.6, 1.25, k) , -0.25 + t * 0.04, LIN(k * 1.4) * (1 - p(t, S[1] - 0.2, 0.4, IN)));
+  }
+  // S2: one key becomes a river of keys leaving home
+  if (t >= S[1] - 0.2 && t < S[2]) {
+    const lt = t - S[1];
+    for (let i = 0; i < 140; i++) { const st = 0.6 + i * 0.03, k = LIN((lt - st) / 3.2);
+      if (k <= 0) continue; const lane = (i * 37 % 11) / 10;
+      const x = lerp(1180, -180, INOUT(k)) + Math.sin(i) * 40, y = 640 + lane * 360 + Math.sin(lt * 2 + i) * 10;
+      key(x, y, 0.26 + (i % 3) * 0.05, -0.2 + Math.sin(i * 1.7) * 0.3, 0.75 * Math.sin(k * Math.PI) * (1 - p(t, S[2] - 0.3, 0.3, IN))); }
+  }
+  // Gaza strip: persistent from S3 to S8
+  if (t >= S[2]) {
+    const lt = t - S[2];
+    let base = p(t, S[2], 1.2, OUT);
+    if (t > S[3] && t < S[4]) base *= lerp(1, 0.22, p(t, S[3], 0.6));          // dims behind the press statements
+    if (t >= S[4] && t < S[5]) base *= lerp(0.22, 1, p(t, S[4], 0.3));
+    if (t >= S[5] && t < S[6]) base *= lerp(1, 0.18, p(t, S[5], 0.5));
+    if (t >= S[6]) base *= lerp(0.18, 0.8, p(t, S[6], 0.6));
+    // outline
+    ctx.strokeStyle = `rgba(242,238,230,${0.18 * base * (1 - p(t, S[7], 1.0))})`; ctx.lineWidth = 3; ctx.beginPath();
+    for (let u = 0; u <= 1.001; u += 0.05) { const [x, y] = stripPt(u, 1); u ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    for (let u = 1; u >= -0.001; u -= 0.05) { const [x, y] = stripPt(u, -1); ctx.lineTo(x, y); } ctx.closePath(); ctx.stroke();
+    const toWord = p(t, S[7], 2.0, INOUT);
+    DOTS.forEach((d, i) => {
+      const appear = p(t, S[2] + 0.3 + d.r * 1.4, 0.4, OUT);
+      if (appear <= 0) return;
+      const jit = Math.sin(t * 2 + i) * 1.2;
+      let x = d.x + jit, y = d.y + Math.cos(t * 1.7 + i) * 1.2, a = appear * base, col = '242,238,230', r = 3.2;
+      if (d.dead && t > d.dt) {
+        const kd = LIN((t - d.dt) / 0.6);
+        col = '206,17,38'; r = lerp(11, 5.5, kd); a = appear * Math.max(base, 0.6) * lerp(1, 0.9, kd) * (1 - 0.6 * p(t, S[7], 1.0));
+        if (kd < 1) { ctx.fillStyle = `rgba(206,17,38,${0.25 * (1 - kd)})`; ctx.beginPath(); ctx.arc(x, y, 30 * kd + 6, 0, 6.283); ctx.fill(); }
+      }
+      if (!d.dead && toWord > 0 && WORD) { // the living rise into the words
+        const w = WORD[i]; const k = INOUT(LIN((t - (S[7] + (w[0] / 1000) * 0.9 + d.r * 0.3)) / 1.2));
+        x = lerp(x, w[0], k); y = lerp(y, w[1] + 520, k) - Math.sin(k * Math.PI) * 120;
+        const fx = w[0] < 260 && w[1] > 0 ? 1 : 0;
+        col = w[1] < 260 ? '242,238,230' : '21,154,80'; if (w[0] < 150) col = '206,17,38';
+        a = lerp(a, 1, k); r = lerp(3.2, 3.6, k);
+      }
+      ctx.fillStyle = `rgba(${col},${a})`; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+    });
+  }
+  // S6: aid trucks frozen at a closed gate
+  if (t >= S[5] && t < S[6]) {
+    const lt = t - S[5], fa = p(t, S[5] + 0.8, 0.5) * (1 - p(t, S[6] - 0.3, 0.3, IN));
+    for (let i = 0; i < 6; i++) { const k = p(lt, 0.9 + i * 0.12, 0.5, SET); truck(lerp(-200, 150 + i * 135, k), 870, 0.95, fa); }
+    ctx.globalAlpha = fa; ctx.fillStyle = '#555'; ctx.fillRect(940, 760, 16, 170);
+    for (let j = 0; j < 6; j++) { ctx.fillStyle = j % 2 ? '#F2EEE6' : '#CE1126'; ctx.fillRect(900 - j * 0, 780 + j * 0, 0, 0); }
+    ctx.save(); ctx.translate(948, 800); ctx.rotate(0); for (let j = 0; j < 5; j++) { ctx.fillStyle = j % 2 ? '#F2EEE6' : '#CE1126'; ctx.fillRect(-150 + j * 30, -10, 30, 20); } ctx.restore();
+    ctx.globalAlpha = 1;
+    // idle exhaust puffs: nothing else moves
+    for (let i = 0; i < 6; i++) { const ph = (lt * 0.8 + i * 0.37) % 1; ctx.fillStyle = `rgba(200,200,200,${0.25 * (1 - ph) * fa})`; ctx.beginPath(); ctx.arc(150 + i * 135 - 70 - ph * 30, 890 - ph * 40, 6 + ph * 14, 0, 6.283); ctx.fill(); }
+  }
+  // S7: a kite rises from the strip
+  if (t >= S[6] && t < S[7] + 0.6) {
+    const lt = t - S[6], k = p(lt, 0.2, 3.0, INOUT), fa = 1 - p(t, S[7], 0.5, IN);
+    const kx = 520 + Math.sin(lt * 1.3) * 50, ky = lerp(900, 430, k) + Math.sin(lt * 2.1) * 14;
+    ctx.strokeStyle = `rgba(242,238,230,${0.55 * fa})`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(470, 1000);
+    ctx.quadraticCurveTo(lerp(470, kx, .5) - 60, lerp(1000, ky, .5) + 40, kx, ky + 110); ctx.stroke();
+    for (let j = 0; j < 6; j++) { const tx = kx + Math.sin(lt * 3 + j * .8) * 14 * j * 0.4, ty = ky + 130 + j * 26; ctx.fillStyle = j % 2 ? `rgba(206,17,38,${fa})` : `rgba(21,154,80,${fa})`; ctx.save(); ctx.translate(tx, ty); ctx.rotate(Math.sin(lt * 4 + j)); ctx.fillRect(-9, -5, 18, 10); ctx.restore(); }
+    kite(kx, ky, lerp(0.6, 1.15, k), Math.sin(lt * 1.6) * 0.18, LIN(lt * 2) * fa);
+  }
+  // S8 ending: the key turns — the door is still waiting
+  if (t > S[7] + 4.6) { const k = p(t, S[7] + 4.6, 0.6, SET), turn = p(t, S[7] + 5.4, 0.35, INOUT);
+    key(500, 1450, 0.55, lerp(0, Math.PI / 2, turn), k * (1 - p(t, TOTAL - 0.25, 0.25, IN))); }
+
+  // DOM text
+  for (const [id, kind, a, b] of CUES) cue($(id), kind, t, a, b);
+  $('spin1').style.transform = `rotate(${t * 360}deg)`; $('spin2').style.transform = `rotate(${t * 360}deg)`;
+  $('stc').textContent = Math.floor(Math.pow(LIN((t - 17.8) / 7.5), 2) * 1204).toLocaleString('en-US');
+  $('d1').textContent = Math.round(TOLL * INOUT(LIN((t - 26.5) / 4.2))).toLocaleString('en-US');
+  $('f5n').textContent = Math.round(SINCE * OUT(LIN((t - 39.3) / 1.0))).toLocaleString('en-US');
+}
+window.render = render; window.TOTAL = TOTAL;
+window.ready = document.fonts.load('900 200px "Inter Display"').then(() => {
+  WORD = wordPts([['FREE', 230, 170], ['PALESTINE', 150, 400]], DOTS.length); render(0); return true; });
+</script>
+</body>
+</html>
