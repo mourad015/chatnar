@@ -188,8 +188,9 @@ vv = voice[np.abs(voice) > 1e-6]; voice *= (db(-17) / (np.sqrt(np.mean(vv ** 2))
 
 # music ducks under the voice
 vl = signal.lfilter([1 - 0.9993], [1, -0.9993], np.abs(voice)); vl /= vl.max() + 1e-9
-score_n = score / (np.abs(score).max() + 1e-9) * db(-13)
-score_n *= (1 - 0.45 * np.clip(vl * 3.5, 0, 1))
+MUSIC_DB = -21   # music peak level; the user asked for the music well under the voice (was -13)
+score_n = score / (np.abs(score).max() + 1e-9) * db(MUSIC_DB)
+score_n *= (1 - 0.6 * np.clip(vl * 3.5, 0, 1))
 
 mix = voice + score_n + sfx
 L = mix + np.concatenate([np.zeros(int(0.011 * SR)), score_n[:-int(0.011 * SR)]]) * 0.12   # a touch of stereo width on the music
