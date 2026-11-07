@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>The Real Law</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1920px; background:#0B0A1F; overflow:hidden; }
+  canvas { position:absolute; left:0; top:0; }
+  .t { position:absolute; left:0; width:1000px; text-align:center; white-space:nowrap; font-family:'Bitstream Charter',serif; font-style:italic; color:#FFF4E0; opacity:0; text-shadow:0 0 40px rgba(255,200,120,.35); }
+  .t b { font-style:normal; font-weight:700; color:#FFD58A; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse at 46% 44%, rgba(0,0,0,0) 46%, rgba(0,0,0,.6) 100%); }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.06; mix-blend-mode:overlay; }
+</style>
+</head>
+<body>
+<canvas id="bg" width="1080" height="1920"></canvas>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div class="t" id="a1" style="top:1180px;font-size:74px">The law of attraction is real.</div>
+<div class="t" id="a2" style="top:1290px;font-size:54px;color:#CFC4E8">Just not the way you were told.</div>
+<div class="t" id="b1" style="top:1240px;font-size:68px">It starts with <b>one thought.</b></div>
+<div class="t" id="c1" style="top:1240px;font-size:60px">What you focus on…</div>
+<div class="t" id="c2" style="top:1240px;font-size:60px">…you start to <b>notice.</b></div>
+<div class="t" id="c3" style="top:1240px;font-size:60px">Suddenly, it's <b>everywhere.</b></div>
+<div class="t" id="d1" style="top:1240px;font-size:64px">Noticing becomes <b>choosing.</b></div>
+<div class="t" id="e1" style="top:1240px;font-size:64px">Choosing becomes <b>action.</b></div>
+<div class="t" id="e2" style="top:1240px;font-size:64px">Action becomes <b>momentum.</b></div>
+<div class="t" id="f1" style="top:1240px;font-size:64px">Momentum becomes <b>a life.</b></div>
+<div class="t" id="g1" style="top:400px;font-size:60px;color:#CFC4E8">You don't attract what you want.</div>
+<div class="t" id="h1" style="top:1330px;font-size:40px;color:#B9AEDA;font-style:normal;font-family:'JetBrains Mono',monospace;letter-spacing:.12em">SAVE THIS FOR THE DAY YOU FORGET</div>
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="vig"></div>
+<script>
+function bez(x1, y1, x2, y2) {
+  const bx = t => 3*x1*t*(1-t)*(1-t) + 3*x2*t*t*(1-t) + t*t*t, by = t => 3*y1*t*(1-t)*(1-t) + 3*y2*t*t*(1-t) + t*t*t;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let lo = 0, hi = 1;
+    for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; } return by((lo + hi) / 2); };
+}
+const OUT = bez(.16,1,.3,1), IN = bez(.6,0,.9,.35), INOUT = bez(.65,0,.35,1), SET = bez(.2,1.25,.4,1);
+const LIN = x => Math.min(1, Math.max(0, x)), lerp = (a, b, k) => a + (b - a) * k;
+const p = (t, s, d, e = OUT) => e(LIN((t - s) / d));
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(777); const gauss = () => { let u = 0, v = 0; while (!u) u = R(); while (!v) v = R(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const W = 1080, H = 1920, CX = 500, CY = 820, N = 3600, TOTAL = 41;
+const ctx = document.getElementById('c').getContext('2d');
+const P = Array.from({ length: N }, (_, i) => ({ i, r1: R(), r2: R(), r3: R(), r4: R(), g1: gauss(), g2: gauss(), dx: (R() - .5) * 1180, dy: (R() - .5) * 2000 }));
+
+// palette
+const GOLD = [255, 213, 138], WARM = [255, 244, 224], ROSE = [255, 143, 163], VIOL = [155, 140, 255], DIM = [150, 140, 190];
+const mix = (a, b, k) => [lerp(a[0], b[0], k), lerp(a[1], b[1], k), lerp(a[2], b[2], k)];
+
+// ---------- shapes: return [x, y, alpha, color, size] relative to centre ----------
+const dust = (p, t) => [p.dx + Math.sin(t * .25 + p.r1 * 9) * 30, p.dy + Math.cos(t * .21 + p.r2 * 9) * 30 - t * 6 % 40, .28 + .25 * Math.sin(t * 1.3 + p.r3 * 20), mix(DIM, WARM, p.r4 * .5), 1.3 + p.r2 * 1.4];
+const orbit = (p, t) => { const r = 50 + 400 * Math.sqrt(p.r1); const w = 2.2 * Math.pow(60 / r, 1.2) + .12; const a = p.r2 * 6.283 + t * w;
+  return [Math.cos(a) * r, Math.sin(a) * r * .86, lerp(1, .45, p.r1), mix(GOLD, VIOL, p.r1 * .8), 1.4 + (1 - p.r1) * 1.8]; };
+const notice = (p, t) => { const d = dust(p, t); const lit = p.r3 < 0.14; const pulse = .5 + .5 * Math.sin(t * 3 + p.r1 * 30);
+  return [d[0], d[1], lit ? .8 + .2 * pulse : .14, lit ? GOLD : DIM, lit ? 2.6 + pulse * 1.4 : 1.2]; };
+// paths: rays fanning upward from a point below; the middle one is chosen
+const NB = 9;
+const paths = (p, t) => { const b = p.i % NB, s = p.r1, ang = lerp(-1.0, 1.0, b / (NB - 1));
+  const len = 880, x = Math.sin(ang) * s * len * .62 + Math.sin(s * 6 + b) * 30 * s, y = 330 - Math.cos(ang) * s * len;
+  const chosen = b === 4; return [x + p.g1 * 5, y + p.g2 * 5, chosen ? .95 : .22, chosen ? GOLD : DIM, chosen ? 2.4 : 1.4]; };
+// action: a stream climbing the chosen path in steps
+const stream = (p, t) => { const s = (p.r1 + t * .18) % 1; const step = Math.floor(s * 7), f = s * 7 - step;
+  const x = (step % 2 ? 1 : -1) * lerp(-180, 180, INOUT(f)) * (1 - s * .4), y = 330 - s * 880;
+  return [x + p.g1 * 9, y + p.g2 * 9, .55 + .45 * (1 - Math.abs(f - .5) * 2), mix(GOLD, WARM, p.r3), 1.5 + p.r2 * 1.8]; };
+// momentum: a fast spiral vortex
+const vortex = (p, t) => { const r = 30 + 430 * Math.pow(p.r1, .7), arm = (p.i % 3) * 2.094; const a = arm + Math.log(r / 30) * 1.9 - t * (1.8 * 120 / (r + 60) + .4) + p.g1 * .18;
+  return [Math.cos(a) * r, Math.sin(a) * r, lerp(1, .5, p.r1), mix(WARM, GOLD, p.r1), 1.3 + (1 - p.r1) * 2]; };
+// a life: an eight-petal bloom, slowly opening
+const bloom = (p, t) => { const th = p.r1 * 6.283 + t * .12; const petal = Math.pow(Math.abs(Math.cos(4 * (p.r1 * 6.283))), .55);
+  const open = .82 + .18 * Math.sin(t * .8) ** 2; const r = (40 + 410 * petal * Math.sqrt(p.r2)) * open;
+  return [Math.cos(th) * r, Math.sin(th) * r, lerp(1, .55, p.r2), mix(ROSE, GOLD, petal * (1 - p.r2 * .5)), 1.4 + (1 - p.r2) * 1.7]; };
+let WORD;
+const word = (p, t) => { const w = WORD[p.i]; return [w[0] + Math.sin(t * 2 + p.r1 * 30) * 1.1, w[1] + Math.cos(t * 2.3 + p.r2 * 30) * 1.1, w[3] ? 1 : .85, w[3] ? GOLD : WARM, 1.5 + p.r2 * .9]; };
+const spark = (p, t) => { const a = p.r1 * 6.283, r = 6 * Math.sqrt(p.r2); return [Math.cos(a) * r, Math.sin(a) * r, .5, WARM, 1.2]; };
+
+// state timeline: [start, shape, morph duration]
+const ST = [[-1, dust, 1], [8.0, orbit, 1.9], [11.0, notice, 1.2], [14.0, paths, 1.6], [19.0, stream, 1.4], [22.0, vortex, 1.4], [25.0, bloom, 1.8], [31.0, word, 1.9], [37.6, spark, 1.4], [40.2, dust, 0.9]];
+
+function wordPts() {
+  const cv = document.createElement('canvas'); cv.width = 1000; cv.height = 800; const x = cv.getContext('2d');
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.font = 'italic 400 110px "Bitstream Charter"'; x.fillText('You attract', 500, 240);
+  x.font = 'italic 700 170px "Bitstream Charter"'; x.fillText('who you are.', 500, 470);
+  const d = x.getImageData(0, 0, 1000, 800).data, pts = [];
+  for (let y = 0; y < 800; y += 3) for (let xx = 0; xx < 1000; xx += 3) if (d[(y * 1000 + xx) * 4 + 3] > 140) pts.push([xx - 500, y - 400, xx / 1000, y > 330 ? 1 : 0]);
+  const rr = rng(5); for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(rr() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  return Array.from({ length: N }, (_, i) => pts[i % pts.length]);
+}
+
+// text cues [id, in, out]
+const CUES = [['a1', -0.3, 3.9], ['a2', 1.6, 3.9], ['b1', 4.6, 7.8], ['c1', 8.2, 9.7], ['c2', 9.7, 11.1], ['c3', 11.4, 13.8], ['d1', 14.6, 18.8],
+  ['e1', 19.2, 21.8], ['e2', 22.2, 24.8], ['f1', 25.6, 30.4], ['g1', 30.9, 37.3], ['h1', 34.2, 37.3]];
+
+// background gradient + bokeh
+const BOK = Array.from({ length: 26 }, () => [R() * W, R() * H, 30 + R() * 90, R() * 6.28, R()]);
+function bg(t) { const b = document.getElementById('bg').getContext('2d');
+  const warm = p(t, 25, 3, INOUT) * (1 - p(t, 37.5, 2, INOUT));
+  const g = b.createLinearGradient(0, 0, 0, H); g.addColorStop(0, `rgb(${lerp(11, 30, warm)},${lerp(10, 14, warm)},${lerp(31, 40, warm)})`); g.addColorStop(1, `rgb(${lerp(26, 52, warm)},${lerp(16, 20, warm)},${lerp(53, 48, warm)})`);
+  b.fillStyle = g; b.fillRect(0, 0, W, H);
+  for (const k of BOK) { const x = k[0] + Math.sin(t * .1 + k[3]) * 40, y = (k[1] - t * 12 * (0.5 + k[4])) % H; const yy = y < -100 ? y + H + 200 : y;
+    const rg = b.createRadialGradient(x, yy, 0, x, yy, k[2]); rg.addColorStop(0, `rgba(255,200,140,${0.05 + 0.04 * k[4]})`); rg.addColorStop(1, 'rgba(255,200,140,0)'); b.fillStyle = rg; b.fillRect(x - k[2], yy - k[2], k[2] * 2, k[2] * 2); } }
+
+// grain
+const gctx = document.getElementById('grain').getContext('2d'), gimg = gctx.createImageData(540, 960); let lastG = -1;
+function grain(f) { f = Math.floor(f / 2); if (f === lastG) return; lastG = f; let s = (f * 2654435761 + 1) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i+1] = d[i+2] = s & 255; d[i+3] = 255; } gctx.putImageData(gimg, 0, 0); }
+
+function render(t) {
+  grain(Math.round(t * 30)); bg(t);
+  ctx.globalCompositeOperation = 'source-over'; ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+  let si = 0; for (let i = 0; i < ST.length; i++) if (t >= ST[i][0]) si = i;
+  const [s0, fNow, dur] = ST[si], fPrev = si > 0 ? ST[si - 1][1] : dust;
+  // gentle camera breathing
+  const cam = 1 + 0.025 * Math.sin(t * .5);
+  for (let i = 0; i < N; i++) {
+    const q = P[i];
+    // stagger by angle around the centre so shapes "draw" themselves
+    const st = s0 + (q.r4 * .55) * dur * .6, k = INOUT(LIN((t - st) / (dur * .7)));
+    const A = k < 1 ? fPrev(q, t) : null, B = fNow(q, t);
+    let x, y, a, c, sz;
+    if (A) { const dxv = B[0] - A[0], dyv = B[1] - A[1], dl = Math.hypot(dxv, dyv) || 1; const curl = Math.sin(k * Math.PI) * (40 + 80 * q.r2) * (q.i % 2 ? 1 : -1);
+      x = lerp(A[0], B[0], k) - dyv / dl * curl; y = lerp(A[1], B[1], k) + dxv / dl * curl; a = lerp(A[2], B[2], k); c = mix(A[3], B[3], k); sz = lerp(A[4], B[4], k);
+    } else [x, y, a, c, sz] = B;
+    const sx = CX + x * cam, sy = CY + y * cam; if (sx < -10 || sx > W + 10 || sy < -10 || sy > H + 10) continue;
+    ctx.fillStyle = `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${Math.min(1, a)})`; ctx.beginPath(); ctx.arc(sx, sy, sz, 0, 6.283); ctx.fill();
+  }
+  // the spark: one thought
+  const sp = p(t, 4.3, .9, SET) * (1 - p(t, 31.5, 1.2, IN)) + p(t, 38.0, 1.0, OUT) * (1 - p(t, 40.2, .7, IN));
+  if (sp > 0.01) { const pulse = 1 + .15 * Math.sin(t * 3.2); const r = 34 * sp * pulse; const dim = t > 14 && t < 31 ? .45 : 1;
+    const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, r * 3); g.addColorStop(0, `rgba(255,250,235,${sp * dim})`); g.addColorStop(.18, `rgba(255,220,150,${.7 * sp * dim})`); g.addColorStop(1, 'rgba(255,180,100,0)');
+    ctx.fillStyle = g; ctx.fillRect(CX - r * 3, CY - r * 3, r * 6, r * 6); }
+  // bloom
+  ctx.filter = 'blur(9px)'; ctx.globalAlpha = .65; ctx.drawImage(ctx.canvas, 0, 0); ctx.filter = 'blur(26px)'; ctx.globalAlpha = .35; ctx.drawImage(ctx.canvas, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1;
+  // text: soft rise + blur-in, exits fade up
+  for (const [id, a, b] of CUES) { const el = document.getElementById(id); const ki = p(t, a, .7), ko = p(t, b - .35, .35, IN);
+    el.style.opacity = ki * (1 - ko); el.style.transform = `translateY(${lerp(30, 0, ki) - 20 * ko}px)`; el.style.filter = `blur(${lerp(10, 0, ki) + 8 * ko}px)`; }
+}
+window.render = render; window.TOTAL = TOTAL;
+window.ready = Promise.all([document.fonts.load('italic 700 170px "Bitstream Charter"'), document.fonts.load('italic 400 110px "Bitstream Charter"'), document.fonts.load('italic 74px "Bitstream Charter"')])
+  .then(() => { WORD = wordPts(); render(0); return true; });
+</script>
+</body>
+</html>
