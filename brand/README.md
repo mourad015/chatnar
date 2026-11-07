@@ -26,3 +26,10 @@ Poppins SemiBold (600) for headlines, Poppins Regular (400) for body.
 ## Files
 - `logo/` — SVG + PNG: on navy, transparent (white text), transparent (navy text), icon
 - `sheet/brand-sheet.html` — full brand sheet (logo rules, colors, type, do/don't, outro specs)
+
+## Novary promo (40s)
+`promo/` holds the Novary × Mourad Ghalbi service promo: graphic design, video editing, AI generative content, digital marketing.
+- `Novary_Promo_40s_9x16.mp4` (Reels/TikTok/Shorts) and `Novary_Promo_40s_16x9.mp4` (YouTube/LinkedIn), each with a `_silent` version
+- Source: `promo.html` (animation), `music.py` (soundtrack), `render.js` (frame renderer)
+- Re-render: `node promo/render.js <frames-dir> 1080 1920`, `python3 promo/music.py music.wav`, then encode with ffmpeg at 60 fps
+- The Novary star mark and wordmark are a placeholder until the official Novary logo is supplied
