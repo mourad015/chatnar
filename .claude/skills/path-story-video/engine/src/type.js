@@ -24,7 +24,7 @@ function layout(words, size, maxW) {
 export function drawType(t) {
   const l = lines.find((l) => t >= l.show && t < l.hide); if (!l) return;
   const style = l.style || 'default', out = clamp((l.hide - t) / 0.16);
-  const size = style === 'impact' ? 270 : style === 'hero' || style === 'glow' ? 140 : 80;
+  const size = l.size ? l.size : style === 'impact' ? 270 : style === 'hero' || style === 'glow' ? 140 : 80;
   const y0 = l.y ?? 1520, lh = size * 1.25;
   const { rows, sp, fit } = layout(l.words, size, style === 'default' ? 990 : 1000);
   ctx.save(); ctx.translate(W / 2, y0); ctx.scale(fit, fit);

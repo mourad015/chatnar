@@ -26,6 +26,12 @@ The user publishes these as a series named **قاعدة في الحياة**. Eve
   (see `example/triangle/score.py`).
 - Newest reference episode: `example/triangle/` — أين تجد الراحة النفسية؟ (triangle explainer on a blueprint, valley that
   blooms, gloom creatures, shield, sprout, sun emblem, medallions). Start new episodes from it.
+- **The speaker as a character**: the user asked for the speaker, Dr. Ibrahim El-Fiky, to appear as a cartoon likeness.
+  Use `hero({ ...LOOK.fiky, ... })` from `fig.js` (salt-and-pepper swept silver hair, charcoal suit, light-blue shirt,
+  dark green patterned tie; no scarf — the red scarf stays the everyman hero's signature). Good moods for him: `grin`,
+  `calm`, `determined`. `example/lemon/` (اللي جواك… هيطلع) shows him lecturing on a stage with an audience, plus
+  x-ray people, pressure arrows, hearts, doves, a stamp-on-the-face punchline. Other rig options: `outfit` (any suit
+  colours, `tie: false`), `hair`, `glasses: true`, moods `angry` / `grin`. A line can override text size with `"size"`.
 - If the source has its own room noise / faint music, set `"voice_gate": -34` (quiets the pauses by up to 10 dB).
 
 Everything is code: canvas drawing in headless Chrome, ffmpeg, numpy/scipy audio. No AI images, no stock assets.

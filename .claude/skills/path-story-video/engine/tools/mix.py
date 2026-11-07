@@ -157,9 +157,16 @@ def pop(**_): t = tt(0.12); return lp(np.sin(2 * np.pi * np.cumsum(600 * np.exp(
 
 def tock(**_): t = tt(0.12); return lp((np.sin(2 * np.pi * 520 * t) + 0.4 * np.sin(2 * np.pi * 1040 * t)) * env(len(t), 0.001, 10), 2500)
 
-FX = dict(tock=tock, alarm=alarm, roar=roar, gallop=gallop, flap=flap, growl=growl, pop=pop, whoosh=whoosh, whip=whip, thump=thump, swell=swell, riser=riser, boom=boom, crack=crack, cut=cut, drone=drone, rain=rain_, rain_out=rain_out,
+def boing(**_):
+    d = 0.42; t = tt(d); f = 200 * (1 + 0.6 * t / d) * (1 + 0.08 * np.sin(2 * np.pi * 18 * t))
+    return lp(np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(t), 0.004, 4), 2000)
+def zip_(**_):
+    d = 0.32; n = bp(noise(d), 400, 3000); k = np.linspace(0, 1, len(n)); s_ = np.sin(2 * np.pi * np.cumsum(300 * (3.6 ** (k))) / SR)
+    return (n / (np.abs(n).max() + 1e-9) * 0.35 + s_ * 0.12) * np.sin(np.pi * k) ** 1.2
+
+FX = dict(boing=boing, zip=zip_, tock=tock, alarm=alarm, roar=roar, gallop=gallop, flap=flap, growl=growl, pop=pop, whoosh=whoosh, whip=whip, thump=thump, swell=swell, riser=riser, boom=boom, crack=crack, cut=cut, drone=drone, rain=rain_, rain_out=rain_out,
           heart=heart, thunder=thunder, tear=tear, chime=chime, shimmer=shimmer, birds=birds, reveal=reveal, tick=tick)
-LEVEL = dict(tock=-20, alarm=-24, roar=-12, gallop=-17, flap=-22, growl=-16, pop=-18, whoosh=-20, whip=-17, thump=-16, swell=-22, riser=-19, boom=-6, crack=-15, cut=-99, drone=-20, rain=-25, rain_out=-25, heart=-9, thunder=-10,
+LEVEL = dict(boing=-18, zip=-17, tock=-20, alarm=-24, roar=-12, gallop=-17, flap=-22, growl=-16, pop=-18, whoosh=-20, whip=-17, thump=-16, swell=-22, riser=-19, boom=-6, crack=-15, cut=-99, drone=-20, rain=-25, rain_out=-25, heart=-9, thunder=-10,
              tear=-26, chime=-19, shimmer=-23, birds=-28, reveal=-21, tick=-28)
 REVERB_SEND = {'chime', 'shimmer', 'tear', 'reveal', 'whip', 'thump'}
 
