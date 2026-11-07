@@ -48,7 +48,7 @@ function panelWipe(t,t0,dir=1){ // two skewed panels sweep across; scene swaps u
 function iris(t,t0,cx,cy){ // red circle closes in, then opens into the next scene
   const d=.9,p=prog(t,t0-d/2,t0+d/2);if(p<=0||p>=1)return;const R=Math.hypot(W,H);
   X.fillStyle=C.red;if(p<.5){const r=R*ioCub(p*2);X.beginPath();X.arc(cx,cy,r,0,7);X.fill()}
-  else{const r=R*ioCub((p-.5)*2);X.beginPath();X.rect(0,0,W,H);X.arc(W/2,H/2,r,0,7,true);X.fill('evenodd')}}
+  else{const r=R*ioCub((p-.5)*2);X.beginPath();X.rect(0,0,W,H);X.moveTo(W/2+r,H/2);X.arc(W/2,H/2,r,0,Math.PI*2,true);X.fill('evenodd')}}
 // ---------- layout ----------
 const L=LAND?{tx:150,ty:430,ts:112,vx:1310,vy:560,vs:1.22}:{tx:90,ty:500,ts:110,vx:540,vy:1190,vs:1.2};
 function vis(fn,lt,out){X.save();X.translate(L.vx,L.vy);const s=L.vs*(1+.04*out);X.scale(s,s);fn(lt);X.restore()}
