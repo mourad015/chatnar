@@ -1,0 +1,95 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>@font-face{font-family:Poppins;font-weight:600;src:url(fonts/Poppins-600.ttf)}</style>
+<style>html,body{margin:0;background:#000;overflow:hidden}svg{display:block}</style>
+</head><body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="48%" r="75%">
+    <stop offset="0" stop-color="#090D32"/><stop offset=".6" stop-color="#090D32"/><stop offset="1" stop-color="#05071F"/>
+  </radialGradient>
+  <linearGradient id="bolt" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#DB3445"/><stop offset="1" stop-color="#DB3445"/>
+  </linearGradient>
+  <linearGradient id="glintG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="streakG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#DB3445" stop-opacity="0"/><stop offset=".85" stop-color="#DB3445" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="1"/>
+  </linearGradient>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  <clipPath id="boltReveal"><rect id="revealRect" x="0" y="-200" width="0" height="400"/></clipPath>
+  <clipPath id="boltShape"><polygon id="boltPolyClip"/></clipPath>
+  <clipPath id="l1"><rect x="200" y="0" width="200" height="47"/></clipPath>
+  <clipPath id="l2"><rect x="200" y="49" width="200" height="40"/></clipPath>
+</defs>
+<rect id="bgR" width="1920" height="1080" fill="url(#bg)"/>
+<g id="cam">
+ <g id="logo">
+  <!-- light streak leading the bolt -->
+  <g id="streakWrap"><rect id="streak" x="0" y="-0.7" width="90" height="1.4" rx=".7" fill="url(#streakG)"/></g>
+  <g id="boltG">
+    <g clip-path="url(#boltReveal)">
+      <polygon id="boltPoly" fill="url(#bolt)"/>
+      <g clip-path="url(#boltShape)"><rect id="glint" x="-60" y="-40" width="34" height="200" fill="url(#glintG)" transform="skewX(-30)"/></g>
+    </g>
+  </g>
+  <g clip-path="url(#l1)"><text id="t1" x="204" y="44" fill="#fff" font-family="Poppins" font-weight="600">Mourad</text></g>
+  <g clip-path="url(#l2)"><text id="t2" x="204" y="78" fill="#fff" font-family="Poppins" font-weight="600">Ghalbi</text></g>
+  <text id="tm" fill="#fff" font-family="Poppins" font-weight="600" font-size="7">™</text>
+ </g>
+</g>
+<rect id="fade" width="1920" height="1080" fill="#000" opacity="1"/>
+</svg>
+<script>
+// Brand colors: red #DB3445, navy #090D32, white #FFFFFF
+// ?w=1080&h=1920 for vertical; default 1920x1080
+const Q=new URLSearchParams(location.search), W=+(Q.get('w')||1920), H=+(Q.get('h')||1080);
+const BASE=W>=H?4.3:3.15; // logo scale per format
+for(const el of [s,bgR,fade]){el.setAttribute('width',W);el.setAttribute('height',H);} s.setAttribute('viewBox',`0 0 ${W} ${H}`);
+// Bolt traced from the original logo (source-image px coordinates)
+const P=[[38,70],[134,14],[136,32],[188,14],[188,70],[176,70],[172,53],[121,73],[116,51]];
+const pts=P.map(p=>p.join(',')).join(' ');
+boltPoly.setAttribute('points',pts); boltPolyClip.setAttribute('points',pts);
+const ANG=-Math.atan2(56,96)*180/Math.PI; // bolt's rising angle
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const prog=(t,a,b)=>clamp((t-a)/(b-a));
+const oQuart=x=>1-Math.pow(1-x,4), oExpo=x=>x>=1?1:1-Math.pow(2,-10*x), oCub=x=>1-Math.pow(1-x,3);
+const ioCub=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, ioSine=x=>-(Math.cos(Math.PI*x)-1)/2;
+let FS=40;
+function fit(){ // size the type so "Mourad" matches the original width
+  t1.setAttribute('font-size',40); const w=t1.getBBox().width; FS=40*134/w;
+  t1.setAttribute('font-size',FS); t2.setAttribute('font-size',FS);
+}
+window.render=function(t){
+  // camera: slow, almost imperceptible push-in
+  const s=BASE*(0.965+0.035*oCub(prog(t,0,4.6)));
+  cam.setAttribute('transform',`translate(${W/2},${H/2}) scale(${s}) translate(-192,-47)`);
+  // fade in / out
+  const fin=1-oCub(prog(t,0,.45)), fout=ioSine(prog(t,4.45,5));
+  fade.setAttribute('opacity',Math.max(fin,fout));
+  // light streak travels along the bolt angle, ahead of the reveal
+  const sp=prog(t,.2,.8), se=ioCub(sp);
+  streakWrap.setAttribute('transform',`translate(38,70) rotate(${ANG})`);
+  streak.setAttribute('x',-260+se*300);
+  streak.setAttribute('opacity',sp<=0?0:Math.sin(Math.PI*sp)*.9);
+  // bolt: directional wipe + small settle
+  const bp=ioCub(prog(t,.45,1.35));
+  revealRect.setAttribute('transform','translate(0,42) skewX(-18)');
+  revealRect.setAttribute('x',-40); revealRect.setAttribute('width',bp*260);
+  boltG.setAttribute('transform',`translate(${-14*(1-oExpo(prog(t,.5,1.6)))},${8*(1-oExpo(prog(t,.5,1.6)))})`);
+  // glint passes once across the bolt
+  const gp=ioCub(prog(t,2.15,2.95));
+  glint.setAttribute('x',-40+gp*260);
+  // type: masked rise + tracking that tightens into place
+  const r1=oExpo(prog(t,1.0,1.9)), r2=oExpo(prog(t,1.15,2.05));
+  const tr=oCub(prog(t,1.0,2.6));
+  t1.setAttribute('y',44+44*(1-r1)); t2.setAttribute('y',78+40*(1-r2));
+  t1.setAttribute('letter-spacing',(1-tr)*FS*.14); t2.setAttribute('letter-spacing',(1-tr)*FS*.14);
+  const bb=t2.getBBox();
+  tm.setAttribute('x',bb.x+bb.width+1.5); tm.setAttribute('y',57);
+  tm.setAttribute('opacity',oCub(prog(t,2.0,2.6)));
+};
+window.ready=document.fonts.ready.then(()=>document.fonts.load('600 40px Poppins')).then(()=>{fit();render(0);return document.fonts.check('600 40px Poppins');});
+</script>
+</body></html>

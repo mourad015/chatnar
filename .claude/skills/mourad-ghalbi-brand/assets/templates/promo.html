@@ -1,0 +1,239 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+// Novary × Mourad Ghalbi — 40s promo. render(t) draws frame at time t (seconds).
+// ?w=1080&h=1920 vertical, default 1920x1080. 120 BPM: 1 bar = 2s; scenes cut on downbeats.
+const Q=new URLSearchParams(location.search), W=+(Q.get('w')||1920), H=+(Q.get('h')||1080), LAND=W>H;
+const cv=document.getElementById('c'); cv.width=W; cv.height=H; const X=cv.getContext('2d');
+const C={navy:'#090D32',navy2:'#10154A',card:'#131A52',line:'#2A3172',red:'#DB3445',white:'#FFFFFF',muted:'#9BA0C8',lilac:'#8A8FB8'};
+const DUR=40;
+// ---------- math ----------
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), lerp=(a,b,p)=>a+(b-a)*p;
+const prog=(t,a,b)=>clamp((t-a)/(b-a));
+const oCub=x=>1-Math.pow(1-x,3), oQuart=x=>1-Math.pow(1-x,4), oExpo=x=>x>=1?1:1-Math.pow(2,-10*x);
+const ioCub=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const ioExpo=x=>x<=0?0:x>=1?1:x<.5?Math.pow(2,20*x-10)/2:(2-Math.pow(2,-20*x+10))/2;
+const oBack=(x,s=1.7)=>1+(s+1)*Math.pow(x-1,3)+s*Math.pow(x-1,2);
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+// ---------- drawing helpers ----------
+function font(s,w=600){X.font=`${w} ${s}px Poppins`}
+function txt(s,x,y,o={}){X.save();font(o.size||40,o.weight||600);X.fillStyle=o.color||C.white;X.textAlign=o.align||'left';X.textBaseline='alphabetic';
+  X.letterSpacing=(o.ls||0)+'px';X.globalAlpha*=o.alpha??1;X.fillText(s,x,y);X.restore()}
+function tw(s,size,w=600,ls=0){X.save();font(size,w);X.letterSpacing=ls+'px';const m=X.measureText(s).width;X.restore();return m}
+// text rising out of an invisible line (mask reveal)
+function rise(s,x,y,p,o={}){const size=o.size||40,w=tw(s,size,o.weight||600,o.ls||0);
+  let x0=o.align==='center'?x-w/2:o.align==='right'?x-w:x;
+  X.save();X.beginPath();X.rect(x0-40,y-size*1.08,w+80,size*1.42);X.clip();
+  txt(s,x,y+(1-p)*size*1.25,o);X.restore()}
+function rrect(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r)}
+function star(cx,cy,R,k=.22){ // four-point "nova" star: the Novary mark
+  X.beginPath();for(let i=0;i<4;i++){const a=i*Math.PI/2-Math.PI/2,b=a+Math.PI/4,c=a+Math.PI/2;
+  const px=cx+Math.cos(a)*R,py=cy+Math.sin(a)*R; if(i==0)X.moveTo(px,py);
+  X.quadraticCurveTo(cx+Math.cos(b)*R*k,cy+Math.sin(b)*R*k,cx+Math.cos(c)*R,cy+Math.sin(c)*R);}X.closePath()}
+const BOLT=[[38,70],[134,14],[136,32],[188,14],[188,70],[176,70],[172,53],[121,73],[116,51]];
+function bolt(x,y,s){X.beginPath();BOLT.forEach(([a,b],i)=>{const px=x+(a-38)*s,py=y+(b-14)*s;i?X.lineTo(px,py):X.moveTo(px,py)});X.closePath()}
+// ---------- background ----------
+function bg(t){X.fillStyle=C.navy;X.fillRect(0,0,W,H);
+  const g=X.createRadialGradient(W/2,H*.45,0,W/2,H*.45,Math.max(W,H)*.7);g.addColorStop(0,'rgba(30,38,110,.35)');g.addColorStop(1,'rgba(9,13,50,0)');X.fillStyle=g;X.fillRect(0,0,W,H);
+  const sp=56,off=(t*6)%sp;X.fillStyle='rgba(155,160,200,.07)';
+  for(let y=-sp;y<H+sp;y+=sp)for(let x=-sp;x<W+sp;x+=sp){X.beginPath();X.arc(x+off,y+off*.5,1.6,0,7);X.fill()}}
+// ---------- transitions ----------
+function panelWipe(t,t0,dir=1){ // two skewed panels sweep across; scene swaps under full cover at t0
+  const d=.8,p=prog(t,t0-d/2,t0+d/2); if(p<=0||p>=1)return;
+  for(const [col,lag] of [[C.navy2,.08],[C.red,0]]){const q=ioExpo(clamp((p-lag)/(1-lag*1.2)));
+    const sk=H*.35,w=W+sk*2+200,x=dir>0?lerp(-w-sk,W+sk,q):lerp(W+sk,-w-sk,q);
+    X.fillStyle=col;X.beginPath();X.moveTo(x+sk,0);X.lineTo(x+w+sk,0);X.lineTo(x+w-sk,H);X.lineTo(x-sk,H);X.closePath();X.fill()}}
+function iris(t,t0,cx,cy){ // red circle closes in, then opens into the next scene
+  const d=.9,p=prog(t,t0-d/2,t0+d/2);if(p<=0||p>=1)return;const R=Math.hypot(W,H);
+  X.fillStyle=C.red;if(p<.5){const r=R*ioCub(p*2);X.beginPath();X.arc(cx,cy,r,0,7);X.fill()}
+  else{const r=R*ioCub((p-.5)*2);X.beginPath();X.rect(0,0,W,H);X.moveTo(W/2+r,H/2);X.arc(W/2,H/2,r,0,Math.PI*2,true);X.fill('evenodd')}}
+// ---------- layout ----------
+const L=LAND?{tx:150,ty:430,ts:112,vx:1310,vy:560,vs:1.22}:{tx:90,ty:500,ts:110,vx:540,vy:1190,vs:1.2};
+function vis(fn,lt,out){X.save();X.translate(L.vx,L.vy);const s=L.vs*(1+.04*out);X.scale(s,s);fn(lt);X.restore()}
+function serviceTitle(n,lines,sub,lt,out){
+  X.save();X.globalAlpha=1-out*.6;
+  const p0=oExpo(prog(lt,.15,.9));txt(`0${n}`,L.tx,L.ty-L.ts*.95,{size:26,weight:500,color:C.red,ls:4,alpha:p0});
+  X.fillStyle=C.red;X.fillRect(L.tx+58,L.ty-L.ts*.95-9,70*p0,2);
+  lines.forEach((s,i)=>rise(s,L.tx,L.ty+i*L.ts*1.08,oExpo(prog(lt,.25+i*.12,1.15+i*.12)),{size:L.ts,ls:-1.5}));
+  const ps=oCub(prog(lt,.8,1.5));txt(sub,L.tx,L.ty+lines.length*L.ts*1.08+18-10*(1-ps),{size:28,weight:400,color:C.muted,alpha:ps});
+  X.restore()}
+// ---------- scene 1: hook (0-4) ----------
+function sHook(t){const s=1+t*.012;X.save();X.translate(W/2,H/2);X.scale(s,s);X.translate(-W/2,-H/2);
+  const size=LAND?150:132,x=LAND?150:90,y0=H/2-size*.95;
+  const words=[['Your brand',.15,C.white],['deserves',.9,C.white],['attention.',1.65,C.red]];
+  words.forEach(([w,a,col],i)=>rise(w,x,y0+i*size*1.02,oExpo(prog(t,a,a+.8)),{size,ls:-3,color:col}));
+  const pl=ioCub(prog(t,2.3,3.1));X.fillStyle=C.red;X.fillRect(x,y0+2*size*1.02+44,pl*(LAND?560:420),5);
+  txt('Design · Video · AI · Marketing',x,y0+2*size*1.02+110,{size:30,weight:400,color:C.muted,ls:2,alpha:oCub(prog(t,2.6,3.2))});
+  X.restore()}
+// ---------- scene 2: Novary reveal (4-8) ----------
+function novaryLogo(cx,cy,sc,t,a0){ // t = local time, a0 = start of reveal
+  const ps=oBack(prog(t,a0,a0+.8),1.4),rot=(1-oExpo(prog(t,a0,a0+1.1)))*-Math.PI*.75;
+  const word='NOVARY',size=120*sc,ls=22*sc,ww=tw(word,size,600,ls);
+  const R=58*sc,gap=44*sc,total=LAND?R*2+gap+ww:ww;
+  const sx=LAND?cx-total/2+R:cx, sy=LAND?cy-size*.36:cy-size*1.25;
+  // pulse ring
+  const pr=prog(t,a0+.35,a0+1.3);if(pr>0&&pr<1){X.strokeStyle=`rgba(219,52,69,${(1-pr)*.8})`;X.lineWidth=3*sc;X.beginPath();X.arc(sx,sy,R*(.6+pr*2.4),0,7);X.stroke()}
+  X.save();X.translate(sx,sy);X.rotate(rot);X.scale(ps,ps);X.fillStyle=C.red;star(0,0,R);X.fill();X.restore();
+  const wx=LAND?sx+R+gap:cx-ww/2, wy=LAND?cy+size*.0:cy+size*.18; let x=wx;
+  [...word].forEach((ch,i)=>{const p=oExpo(prog(t,a0+.35+i*.06,a0+1.2+i*.06));rise(ch,x,wy,p,{size,weight:600});x+=tw(ch,size,600,0)+ls});
+  return {left:LAND?sx-R:wx,right:wx+ww-ls,bottom:wy}}
+function sNovary(t){const lt=t-4;const out=prog(t,7.4,7.9);
+  X.save();X.globalAlpha=1;const sc=LAND?1:1;
+  const b=novaryLogo(W/2,H/2-(LAND?30:40),sc,lt,.0);
+  const pl=ioCub(prog(lt,1.2,2.0)),mid=W/2,half=(b.right-b.left)/2;
+  X.fillStyle=C.line;X.fillRect(mid-half*pl,b.bottom+50,half*2*pl,2);
+  txt('CREATIVE STUDIO',W/2,b.bottom+108,{size:26,weight:500,color:C.muted,ls:10,align:'center',alpha:oCub(prog(lt,1.5,2.1))});
+  const pc=oExpo(prog(lt,2.1,2.9)),cy=b.bottom+(LAND?190:250);
+  const lab='in collaboration with',nm='Mourad Ghalbi',ls1=tw(lab,26,400),ls2=tw(nm,34,600),bw=150*.42,tot=ls1+24+bw+14+ls2;
+  X.save();X.globalAlpha=pc;X.translate(0,(1-pc)*20);let x=W/2-tot/2;
+  if(!LAND){x=W/2-(bw+14+ls2)/2;txt(lab,W/2,cy-58,{size:26,weight:400,color:C.muted,align:'center'})}
+  else{txt(lab,x,cy,{size:26,weight:400,color:C.muted});x+=ls1+24}
+  X.fillStyle=C.red;bolt(x,cy-26,.42);X.fill();txt(nm,x+bw+14,cy,{size:34,weight:600});X.restore();
+  X.restore()}
+// ---------- scene 3: graphic design (8-14) ----------
+function vGraphic(lt){const f=Math.sin(lt*1.3)*4;
+  const pc=oCub(prog(lt,.1,.7));X.save();X.globalAlpha=pc;X.translate(0,(1-pc)*30+f*.3);
+  X.fillStyle=C.card;rrect(-340,-240,680,480,22);X.fill();X.strokeStyle=C.line;X.lineWidth=2;X.stroke();
+  // layout grid draws in
+  X.strokeStyle='rgba(155,160,200,.18)';X.lineWidth=1.5;X.setLineDash([6,8]);
+  [-113,113].forEach((gx,i)=>{const p=ioCub(prog(lt,.4+i*.1,1.1+i*.1));X.beginPath();X.moveTo(gx,-240);X.lineTo(gx,-240+480*p);X.stroke()});
+  [-80,80].forEach((gy,i)=>{const p=ioCub(prog(lt,.5+i*.1,1.2+i*.1));X.beginPath();X.moveTo(-340,gy);X.lineTo(-340+680*p,gy);X.stroke()});
+  X.setLineDash([]);
+  // shapes snap to the grid
+  const p1=oBack(prog(lt,.8,1.5),1.6);X.fillStyle=C.red;X.beginPath();X.arc(-200,-110+(1-p1)*-260,86*Math.min(1,p1+.001)+Math.sin(lt*2)*2,0,7);X.globalAlpha=pc*clamp(p1*3);X.fill();X.globalAlpha=pc;
+  const p2=oExpo(prog(lt,1.0,1.8));X.save();X.translate(10,-95);X.rotate((1-p2)*Math.PI/2);X.scale(p2,p2);X.strokeStyle=C.white;X.lineWidth=8;X.strokeRect(-66,-66,132,132);X.restore();
+  const p3=oBack(prog(lt,1.2,1.9),1.8);X.save();X.translate(225,-95);X.scale(p3,p3);X.fillStyle=C.lilac;X.beginPath();X.moveTo(0,-72);X.lineTo(70,52);X.lineTo(-70,52);X.closePath();X.fill();X.restore();
+  // pen tool draws a bezier with handles
+  const pp=ioCub(prog(lt,1.8,3.2));if(pp>0){const P0=[-290,190],P1=[-120,30],P2=[90,250],P3=[290,120];
+    const bz=(s)=>{const m=1-s;return[0,1].map(k=>m*m*m*P0[k]+3*m*m*s*P1[k]+3*m*s*s*P2[k]+s*s*s*P3[k])};
+    X.strokeStyle=C.white;X.lineWidth=5;X.lineCap='round';X.beginPath();for(let i=0;i<=60*pp;i++){const [x,y]=bz(i/60);i?X.lineTo(x,y):X.moveTo(x,y)}X.stroke();
+    const ha=oCub(prog(lt,1.8,2.2))*(1-oCub(prog(lt,3.4,3.9)));X.globalAlpha=pc*ha;X.strokeStyle=C.red;X.lineWidth=2;
+    X.beginPath();X.moveTo(...P0);X.lineTo(...P1);X.moveTo(...P3);X.lineTo(...P2);X.stroke();
+    for(const q of [P0,P3]){X.fillStyle=C.white;X.fillRect(q[0]-8,q[1]-8,16,16)}for(const q of [P1,P2]){X.fillStyle=C.red;X.beginPath();X.arc(q[0],q[1],7,0,7);X.fill()}
+    X.globalAlpha=pc;const [ex,ey]=bz(pp);if(pp<1){X.fillStyle=C.white;X.beginPath();X.moveTo(ex,ey);X.lineTo(ex+14,ey+30);X.lineTo(ex+30,ey+14);X.closePath();X.fill()}}
+  // swatches
+  [C.navy,C.red,C.white,C.lilac].forEach((col,i)=>{const p=oBack(prog(lt,2.6+i*.1,3.1+i*.1),2);if(p<=0)return;X.save();X.translate(385,-150+i*58);X.scale(p,p);
+    X.fillStyle=col;X.beginPath();X.arc(0,0,20,0,7);X.fill();X.strokeStyle='rgba(255,255,255,.35)';X.lineWidth=2;X.stroke();X.restore()});
+  X.restore()}
+// ---------- scene 4: video editing (14-20) ----------
+const CLIPS=[[0,-330,170,C.red],[0,-150,230,C.lilac],[0,90,240,C.red],[1,-280,200,'#3A4290'],[1,-60,150,'#3A4290'],[1,110,220,'#3A4290'],[2,-330,660,'#232A66']];
+function vVideo(lt){const pc=oCub(prog(lt,.1,.7));X.save();X.globalAlpha=pc;X.translate(0,(1-pc)*30);
+  const ph=lerp(-330,330,ioCub(prog(lt,1.3,5.6)));
+  // preview monitor: shows the shot under the playhead
+  X.fillStyle=C.card;rrect(-250,-250,500,282,18);X.fill();X.strokeStyle=C.line;X.lineWidth=2;X.stroke();
+  X.save();rrect(-250,-250,500,282,18);X.clip();
+  const shot=ph<-160?0:ph<80?1:2, cut=[-160,80].map(c=>Math.abs(ph-c)<14?1-Math.abs(ph-c)/14:0).reduce((a,b)=>Math.max(a,b),0);
+  if(lt>1.3){const k=(lt-1.3);
+    if(shot==0){X.fillStyle=C.red;X.beginPath();X.arc(-40+k*12,-90,70,0,7);X.fill();X.fillStyle=C.navy;X.fillRect(-250,-60,500,100)}
+    if(shot==1){for(let i=0;i<5;i++){X.fillStyle=i%2?C.lilac:C.white;X.fillRect(-200+i*85,-200+Math.sin(k*3+i)*20,50,190)}}
+    if(shot==2){X.fillStyle=C.red;X.save();X.translate(0,-109);X.rotate(k*.6);star(0,0,95);X.fill();X.restore()}
+    if(cut>0){X.fillStyle=`rgba(255,255,255,${cut*.5})`;X.fillRect(-250,-250,500,282)}}
+  X.restore();
+  const pa=1-oCub(prog(lt,1.0,1.4));if(pa>0){X.globalAlpha=pc*pa;X.fillStyle=C.white;X.beginPath();X.arc(0,-109,44,0,7);X.fill();X.fillStyle=C.navy;X.beginPath();X.moveTo(-12,-130);X.lineTo(22,-109);X.lineTo(-12,-88);X.closePath();X.fill();X.globalAlpha=pc}
+  // timeline
+  X.fillStyle=C.card;rrect(-340,62,680,200,16);X.fill();X.strokeStyle=C.line;X.stroke();
+  for(let i=0;i<=20;i++){const x=-330+i*33;X.fillStyle='rgba(155,160,200,.35)';X.fillRect(x,76,2,i%5?8:16)}
+  CLIPS.forEach(([tr,x,w,col],i)=>{const p=oExpo(prog(lt,.35+i*.08,1.1+i*.08));X.globalAlpha=pc*clamp(p*2);X.fillStyle=col;rrect(x+(1-p)*400,110+tr*50,w-6,38,8);X.fill()});
+  X.globalAlpha=pc;
+  if(lt>1.2){X.fillStyle=C.red;X.fillRect(ph-1.5,70,3,186);X.beginPath();X.moveTo(ph-10,64);X.lineTo(ph+10,64);X.lineTo(ph,78);X.closePath();X.fill()}
+  // timecode
+  const tc=Math.floor(clamp((lt-1.3)/4.3)*30*24);txt(`00:00:${String(Math.floor(tc/24)).padStart(2,'0')}:${String(tc%24).padStart(2,'0')}`,250,-268,{size:20,weight:500,color:C.muted,align:'right',ls:1});
+  X.fillStyle=C.red;X.beginPath();X.arc(-238,-275,6,0,7);X.globalAlpha=pc*(Math.sin(lt*6)>0?1:.3);X.fill();X.globalAlpha=pc;txt('REC',-224,-268,{size:18,weight:600,color:C.muted,ls:2});
+  X.restore()}
+// ---------- scene 5: AI generative (20-26) ----------
+const tiles=[];function makeTiles(){const draws=[
+  g=>{let gr=g.createLinearGradient(0,0,0,190);gr.addColorStop(0,'#0B1040');gr.addColorStop(1,'#2A2F7A');g.fillStyle=gr;g.fillRect(0,0,320,190);
+      const r=rng(3);g.fillStyle='#fff';for(let i=0;i<40;i++){g.globalAlpha=r()*.8;g.fillRect(r()*320,r()*190,2,2)}g.globalAlpha=1;
+      g.fillStyle=C.red;g.save();g.translate(160,95);g.beginPath();const R=56,k=.22;for(let i=0;i<4;i++){const a=i*Math.PI/2-Math.PI/2,b=a+Math.PI/4,c=a+Math.PI/2;if(i==0)g.moveTo(Math.cos(a)*R,Math.sin(a)*R);g.quadraticCurveTo(Math.cos(b)*R*k,Math.sin(b)*R*k,Math.cos(c)*R,Math.sin(c)*R)}g.fill();g.restore()},
+  g=>{let gr=g.createLinearGradient(0,0,0,190);gr.addColorStop(0,'#F06A62');gr.addColorStop(1,'#FBD3B0');g.fillStyle=gr;g.fillRect(0,0,320,190);
+      g.fillStyle='#fff';g.beginPath();g.arc(200,90,36,0,7);g.fill();
+      [['#3A4290',120],['#1D2363',145],['#090D32',170]].forEach(([c,y],i)=>{g.fillStyle=c;g.beginPath();g.moveTo(0,190);for(let x=0;x<=320;x+=20)g.lineTo(x,y-Math.abs(Math.sin(x*.02+i*2))*40);g.lineTo(320,190);g.fill()})},
+  g=>{g.fillStyle='#10154A';g.fillRect(0,0,320,190);for(let i=6;i>0;i--){g.fillStyle=i%2?C.red:'#F4F5F9';g.beginPath();g.arc(160,95,i*16,0,7);g.fill()}},
+  g=>{g.fillStyle='#8A8FB8';g.fillRect(0,0,320,190);g.save();g.rotate(-.5);for(let i=-6;i<12;i++){g.fillStyle=i%2?'#B9BDE0':'#7277A6';g.fillRect(i*34,-200,17,600)}g.restore();
+      g.fillStyle=C.red;g.beginPath();g.arc(110,100,48,0,7);g.fill();g.fillStyle=C.navy;g.fillRect(170,40,90,110)}];
+  draws.forEach(d=>{const c=document.createElement('canvas');c.width=320;c.height=190;d(c.getContext('2d'));
+    const n=document.createElement('canvas');n.width=32;n.height=19;const ng=n.getContext('2d'),r=rng(tiles.length+9);
+    for(let y=0;y<19;y++)for(let x=0;x<32;x++){const v=r();ng.fillStyle=v<.5?'#1A2060':v<.75?'#3A4290':v<.9?'#8A8FB8':C.red;ng.fillRect(x,y,1,1)}
+    tiles.push({c,n})});}
+const tmp=document.createElement('canvas'),tg=tmp.getContext('2d');
+function vAI(lt){const pc=oCub(prog(lt,.1,.7));X.save();X.globalAlpha=pc;X.translate(0,(1-pc)*30);
+  // prompt bar
+  X.fillStyle=C.card;rrect(-340,-262,680,72,36);X.fill();X.strokeStyle=C.line;X.lineWidth=2;X.stroke();
+  X.save();X.translate(-300,-226);X.rotate(lt*1.5);X.fillStyle=C.red;star(0,0,15,.3);X.fill();X.restore();
+  const prompt='a red star over a calm navy sky',n=Math.floor(prompt.length*prog(lt,.5,1.9));
+  font(24,400);txt(prompt.slice(0,n),-272,-218,{size:24,weight:400,color:C.white});
+  if(lt<2.3&&Math.floor(lt*3)%2==0){const cx=-272+tw(prompt.slice(0,n),24,400);X.fillStyle=C.white;X.fillRect(cx+3,-240,2,30)}
+  const gb=prog(lt,2.0,2.3),press=1-.08*Math.sin(Math.PI*gb);X.save();X.translate(268,-226);X.scale(press,press);X.fillStyle=gb>0?C.red:'#232A66';rrect(-62,-24,124,48,24);X.fill();
+  txt('Generate',0,8,{size:20,weight:600,align:'center'});X.restore();
+  // tiles resolve from noise
+  tiles.forEach((tl,i)=>{const x=i%2?10:-330,y=i<2?-160:50;const pa=oBack(prog(lt,2.2+i*.08,2.7+i*.08),1.3);if(pa<=0)return;
+    const p=ioCub(prog(lt,2.5+i*.25,4.3+i*.25)),b=Math.max(1,Math.round(lerp(40,1,p)));
+    X.save();X.translate(x+160,y+95);X.scale(pa,pa);rrect(-160,-95,320,190,14);X.clip();X.imageSmoothingEnabled=false;
+    tmp.width=Math.ceil(320/b);tmp.height=Math.ceil(190/b);tg.imageSmoothingEnabled=true;tg.drawImage(tl.c,0,0,tmp.width,tmp.height);
+    X.drawImage(tmp,-160,-95,tmp.width*b,tmp.height*b);X.globalAlpha=pc*(1-p);X.drawImage(tl.n,-160,-95,320,190);X.imageSmoothingEnabled=true;X.restore();
+    const sp=prog(lt,4.2+i*.25,4.9+i*.25);if(sp>0&&sp<1){X.save();X.globalAlpha=pc*Math.sin(Math.PI*sp);X.fillStyle=C.white;X.translate(x+300,y+20);X.scale(.6+sp*.6,.6+sp*.6);star(0,0,14,.25);X.fill();X.restore()}});
+  X.restore()}
+// ---------- scene 6: digital marketing (26-32) ----------
+function vMarketing(lt){const pc=oCub(prog(lt,.1,.7));X.save();X.globalAlpha=pc;X.translate(0,(1-pc)*30);
+  X.fillStyle=C.card;rrect(-340,-200,620,440,22);X.fill();X.strokeStyle=C.line;X.lineWidth=2;X.stroke();
+  txt('Audience growth',-300,-140,{size:24,weight:600});txt('Last 30 days',-300,-108,{size:18,weight:400,color:C.muted});
+  X.strokeStyle='rgba(155,160,200,.15)';X.lineWidth=1.5;for(let i=0;i<4;i++){X.beginPath();X.moveTo(-300,-60+i*80);X.lineTo(240,-60+i*80);X.stroke()}
+  const pts=[];const r=rng(5);for(let i=0;i<=24;i++){const s=i/24;pts.push([-300+s*540,180-Math.pow(s,1.7)*220-(r()-.5)*30*(1-s*.5)])}
+  const pp=ioCub(prog(lt,.6,2.6)),n=pp*24;
+  const path=()=>{X.beginPath();for(let i=0;i<=Math.floor(n);i++)i?X.lineTo(...pts[i]):X.moveTo(...pts[i]);const f=n-Math.floor(n),a=pts[Math.floor(n)],b=pts[Math.min(24,Math.floor(n)+1)];const e=[lerp(a[0],b[0],f),lerp(a[1],b[1],f)];X.lineTo(...e);return e};
+  if(pp>0){const e=path();X.lineTo(e[0],200);X.lineTo(-300,200);X.closePath();const g=X.createLinearGradient(0,-60,0,200);g.addColorStop(0,'rgba(219,52,69,.35)');g.addColorStop(1,'rgba(219,52,69,0)');X.fillStyle=g;X.fill();
+    path();X.strokeStyle=C.red;X.lineWidth=5;X.lineJoin='round';X.stroke();
+    X.fillStyle=C.white;X.beginPath();X.arc(e[0],e[1],9,0,7);X.fill();const pr=(lt*1.2)%1;X.strokeStyle=`rgba(255,255,255,${(1-pr)*.6})`;X.lineWidth=2;X.beginPath();X.arc(e[0],e[1],9+pr*22,0,7);X.stroke()}
+  // notification pills pop in
+  [['New follower','person'],['New message','chat'],['Campaign live','spark']].forEach(([s,ic],i)=>{const p=oBack(prog(lt,2.3+i*.35,2.9+i*.35),1.6);if(p<=0)return;
+    const y=-250+i*84,x=130;X.save();X.translate(x+130,y);X.scale(p,p);X.globalAlpha=pc*clamp(p);
+    X.shadowColor='rgba(0,0,0,.35)';X.shadowBlur=24;X.shadowOffsetY=8;X.fillStyle=C.white;rrect(-130,-30,260,60,30);X.fill();X.shadowColor='transparent';
+    X.fillStyle=C.red;X.beginPath();X.arc(-98,0,20,0,7);X.fill();X.fillStyle=C.white;
+    if(ic=='person'){X.beginPath();X.arc(-98,-5,6,0,7);X.fill();X.beginPath();X.arc(-98,10,10,Math.PI,0);X.fill()}
+    if(ic=='chat'){rrect(-109,-9,22,15,4);X.fill();X.beginPath();X.moveTo(-104,6);X.lineTo(-104,12);X.lineTo(-98,6);X.fill()}
+    if(ic=='spark'){star(-98,0,11,.25);X.fill()}
+    txt(s,-66,8,{size:22,weight:600,color:C.navy});X.restore()});
+  X.restore()}
+// ---------- scene 7: recap (32-36) ----------
+function sRecap(t){const lt=t-32;const words=[['Design.',0],['Edit.',.75],['Generate.',1.5],['Grow.',2.25]];
+  let cur=-1;words.forEach((w,i)=>{if(lt>=w[1])cur=i});
+  if(lt<3.0&&cur>=0){const [w,a]=words[cur],p=oExpo(prog(lt,a,a+.45)),s=lerp(1.18,1,p);const size=LAND?200:170;
+    X.save();X.translate(W/2,H/2+size*.32);X.scale(s,s);rise(w,0,0,p,{size,align:'center',ls:-4,color:cur%2?C.red:C.white});X.restore();
+    words.forEach((_,i)=>{X.fillStyle=i<=cur?C.red:C.line;X.fillRect(W/2-74+i*40,H/2+size*.32+70,28,4)})}
+  if(lt>=3.0){const p1=oExpo(prog(lt,3.0,3.6)),p2=oExpo(prog(lt,3.12,3.72)),size=LAND?96:92;
+    rise('All in one',W/2,H/2-8,p1,{size,align:'center',ls:-2});rise('creative studio.',W/2,H/2+size,p2,{size:LAND?96:84,align:'center',ls:-2,color:C.red})}}
+// ---------- scene 8: end card (36-40) ----------
+function sEnd(t){const lt=t-36;const b=novaryLogo(W/2,H/2-(LAND?90:140),LAND?1.05:1.1,lt,.25);
+  const pc=oExpo(prog(lt,1.1,1.8)),cy=b.bottom+(LAND?90:110);
+  const nm='Mourad Ghalbi',bw=150*.36,tot=tw('×',30,400)+18+bw+12+tw(nm,30,600);
+  X.save();X.globalAlpha=pc;X.translate(0,(1-pc)*16);let x=W/2-tot/2;txt('×',x,cy,{size:30,weight:400,color:C.muted});x+=tw('×',30,400)+18;
+  X.fillStyle=C.red;bolt(x,cy-23,.36);X.fill();txt(nm,x+bw+12,cy,{size:30,weight:600});X.restore();
+  const pb=oBack(prog(lt,1.6,2.3),1.5),by=cy+(LAND?110:150);if(pb>0){const lab="Let's create together",w=tw(lab,32,600)+150;
+    X.save();X.translate(W/2,by);X.scale(pb,pb);X.fillStyle=C.red;rrect(-w/2,-42,w,84,42);X.fill();
+    const sh=prog(lt,2.6,3.3);if(sh>0&&sh<1){X.save();rrect(-w/2,-42,w,84,42);X.clip();const g=X.createLinearGradient(-w/2+sh*w*1.6-80,0,-w/2+sh*w*1.6+80,0);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,0)');X.fillStyle=g;X.fillRect(-w/2,-42,w,84);X.restore()}
+    txt(lab,-w/2+46,11,{size:32,weight:600});const ax=w/2-62+Math.sin(lt*4)*3;X.strokeStyle=C.white;X.lineWidth=4;X.lineCap='round';X.lineJoin='round';
+    X.beginPath();X.moveTo(ax-14,0);X.lineTo(ax+14,0);X.moveTo(ax+3,-11);X.lineTo(ax+14,0);X.lineTo(ax+3,11);X.stroke();X.restore()}
+  txt('Message us to start your project',W/2,by+(LAND?92:110),{size:24,weight:400,color:C.muted,align:'center',alpha:oCub(prog(lt,2.1,2.7))})}
+// ---------- HUD during services ----------
+function hud(t){const a=prog(t,8.4,9)*(1-prog(t,31.4,31.8));if(a<=0)return;X.save();X.globalAlpha=a;const m=LAND?72:80,top=LAND?84:150;
+  X.fillStyle=C.red;star(m+12,top-9,12);X.fill();txt('NOVARY',m+34,top,{size:20,weight:600,ls:5});
+  const idx=Math.min(4,Math.floor((t-8)/6)+1);txt(`0${idx} / 04`,W-m,top,{size:20,weight:500,color:C.muted,align:'right',ls:2});
+  const yb=H-(LAND?60:170);X.fillStyle=C.line;X.fillRect(m,yb,W-2*m,2);X.fillStyle=C.red;X.fillRect(m,yb,(W-2*m)*clamp((t-8)/24),2);X.restore()}
+// ---------- timeline ----------
+const SERV=[[8,1,['Graphic','Design'],'Logos · Brand identity · Social visuals',vGraphic],
+            [14,2,['Video','Editing'],'Reels · YouTube · Ads',vVideo],
+            [20,3,['AI Generative','Content'],'Images · Video · Concepts',vAI],
+            [26,4,['Digital','Marketing'],'Strategy · Ads · Growth',vMarketing]];
+window.render=function(t){X.setTransform(1,0,0,1,0,0);X.globalAlpha=1;bg(t);
+  if(t<4)sHook(t); else if(t<8)sNovary(t); else if(t<32){const s=SERV[Math.floor((t-8)/6)],lt=t-s[0],out=prog(lt,5.5,6);
+    serviceTitle(s[1],s[2],s[3],lt,out);vis(s[4],lt,out)} else if(t<36)sRecap(t); else sEnd(t);
+  hud(t);
+  panelWipe(t,4,1);iris(t,8,W/2,H/2);panelWipe(t,14,-1);panelWipe(t,20,1);panelWipe(t,26,-1);
+  const fl=prog(t,32,32.25);if(fl>0&&fl<1){X.fillStyle=`rgba(255,255,255,${(1-fl)*.25})`;X.fillRect(0,0,W,H)}
+  iris(t,36,W/2,H/2);
+  const fi=1-oCub(prog(t,0,.3)),fo=ioCub(prog(t,39.4,40));const f=Math.max(fi,fo);if(f>0){X.fillStyle=`rgba(0,0,0,${f})`;X.fillRect(0,0,W,H)}};
+window.ready=Promise.all([400,500,600].map(w=>new FontFace('Poppins',`url(fonts/Poppins-${w}.ttf)`,{weight:String(w)}).load().then(f=>document.fonts.add(f))))
+  .then(()=>{makeTiles();render(0);return true});
+</script></body></html>

@@ -33,3 +33,8 @@ Poppins SemiBold (600) for headlines, Poppins Regular (400) for body.
 - Source: `promo.html` (animation), `music.py` (soundtrack), `render.js` (frame renderer)
 - Re-render: `node promo/render.js <frames-dir> 1080 1920`, `python3 promo/music.py music.wav`, then encode with ffmpeg at 60 fps
 - The Novary star mark and wordmark are a placeholder until the official Novary logo is supplied
+
+## Claude skill
+The whole brand system is saved as a Claude skill:
+- `.claude/skills/mourad-ghalbi-brand/` loads automatically in Claude Code sessions on this repository.
+- `brand/mourad-ghalbi-brand-skill.zip` can be uploaded in Claude.ai (Settings → Capabilities → Skills) to use it in any chat.
