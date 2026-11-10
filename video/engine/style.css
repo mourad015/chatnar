@@ -11,7 +11,7 @@
 html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
 body { font-family: 'Cairo', sans-serif; font-weight: 700; direction: rtl; }
 #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--sea); }
-.layer { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; overflow: hidden; isolation: isolate; }
 
 /* ---------- MAP ---------- */
 #map { background: var(--sea); }
@@ -92,3 +92,6 @@ svg.ink { position: absolute; inset: 0; width: 100%; height: 100%; overflow: vis
 .cone { transform-origin: 0 50%; }
 .minis { position: absolute; display: flex; gap: 26px; direction: ltr; }
 .ic.c { transform: translate(-50%,-50%); }
+.stamp { position: absolute; color: #e23b3b; border: 8px solid #e23b3b; border-radius: 10px; padding: 0 30px 10px; font-size: 76px; font-weight: 900; white-space: nowrap; background: rgba(246,236,217,.06); text-shadow: 0 0 1px #e23b3b; box-shadow: 0 0 24px rgba(226,59,59,.35); }
+.pos { position: absolute; }
+.bar { position: absolute; bottom: 0; width: 220px; transform-origin: bottom center; border: 4px solid #fff; border-bottom: none; }
