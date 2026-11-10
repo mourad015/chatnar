@@ -9,7 +9,7 @@ Everything made for Mourad Ghalbi or Novary follows this system. The user's own 
 
 ## Core identity
 - **Owner:** Mourad Ghalbi (personal brand, ™). Logo: red bolt + stacked white wordmark "Mourad / Ghalbi".
-- **Agency:** Novary Agency, owned by Mourad Ghalbi. Tagline: "AI PRODUCTION FOR ADVERTISING". Services: graphic design, video editing, AI generative content, digital marketing, personal branding.
+- **Agency:** Novary Agency, owned by Mourad Ghalbi. Tagline (as written in the logo): "OF PRODUCTION FOR ADVERTISING". Services: graphic design, video editing, AI generative content, digital marketing, personal branding.
 - **Two brands, two worlds:** Mourad's personal brand lives on navy with bolt red; Novary lives on black with crimson. In shared pieces, keep each logo in its own colors (e.g. Mourad logo on a navy plate inside a Novary frame) and use "Founded by Mourad Ghalbi" / "Mourad Ghalbi × Novary".
 
 ## Novary brand (official, from the agency logo)
@@ -21,8 +21,9 @@ Everything made for Mourad Ghalbi or Novary follows this system. The user's own 
 | Deep Red | `#880000` | Shadow end of gradients |
 | White | `#FFFFFF` | Wordmark, text |
 | Grey | `#9A9A9E` | Tagline, secondary text |
-- **Logo:** glossy red ribbon "N" monogram (bright→deep gradient), "NOVARY" in a classic wide serif (closest free font: Cinzel 500, tracking ~0.2 em) with the A drawn as a red "Λ" without crossbar, "AGENCY" small and widely tracked between two thin crimson lines, tagline below in grey.
-- Reference image: `assets/logo/novary/novary-logo-reference-lowres.png` (low resolution). The vector rebuild of the N and wordmark is `novaN()` / `novaryLogo()` in `assets/voice-promo/promo.html`. Ask the user for the original high-res/vector Novary file before print work.
+- **Logo (official file):** `assets/logo/novary/novary-logo-original.jpg` (2000×2000, on black). Glossy red ribbon "N", "NOVARY" in a classic serif with a red "Λ" for the A, "AGENCY" between two thin crimson lines, tagline in grey. Always use the real artwork, never redraw or retype it.
+- Transparent cut-outs for animation: `assets/logo/novary/n.png` (monogram), `agency.png`, `tag.png`, plus per-letter pieces and positions in `assets/voice-promo/assets/` (`l0…l5.png`, `logo.json`). They are cut from a black background, so dark shading is semi-transparent: use them on black/very dark backgrounds only. Animation recipe: `novaN()` (diagonal wipe + glint) and `novaryLogo()` in `assets/voice-promo/promo.html`.
+- When Mourad's logo appears inside a Novary (black) frame, use it reversed: all white (white bolt + white wordmark), no plate — e.g. "FOUNDED BY" + white logo on the end card.
 - Gradients and glows are part of Novary's look (unlike Mourad's flat logo). Keep backgrounds black with soft crimson light.
 - **Personality:** elegant, minimalist, professional, direct, energetic. Lots of navy space, one red spark per frame.
 
@@ -39,7 +40,7 @@ Supporting tints (UI surfaces in motion work only): navy-2 `#10154A`, card `#131
 - No gradients on the logo. Backgrounds may carry a very soft radial lift or edge vignette around navy.
 
 ## Typography
-Poppins for Latin (SemiBold 600 headlines, Medium 500 labels, Regular 400 body). Arabic / Tunisian Derja text: IBM Plex Sans Arabic (600 for headlines). Novary wordmark: Cinzel 500. Font files: `assets/templates/fonts/`.
+Poppins for Latin (SemiBold 600 headlines, Medium 500 labels, Regular 400 body). Arabic / Tunisian Derja text: Alexandria (700 headlines, 800 for accent words) — bold, modern, made for marketing. Novary wordmark: Cinzel 500. Font files: `assets/templates/fonts/`.
 Video type scale at 1080p: title 96–150, heading 64, subtitle 40, caption 28–32. Headlines tight (letter-spacing −1 to −3 px), small caps labels tracked wide (+4 to +10 px).
 
 ## Logo rules
@@ -69,8 +70,13 @@ Short, confident, direct. Examples in use: "Your brand deserves attention." · "
 | `promo.html` + `render-promo.js` + `music.py` | 40 s services promo engine (Canvas 2D): hook, logo reveal, 4 service scenes, recap, end card; 120 BPM soundtrack synthesizer. Still uses the old placeholder Novary star: swap in `novaryLogo()` from `assets/voice-promo/promo.html` |
 | `sheet.js` | Contact-sheet preview of chosen timestamps (check frames before rendering) |
 | `brand-sheet.html` | Full brand sheet page (logo, colors, type, do/don't, outro) |
-| `../voice-promo/promo.html` + `soundtrack.py` + `render.js` | Apple-style promo synced to a Tunisian voice-over (personal branding services): Arabic words blur in on the voice, iPhone profile mockup (before → after), service cards, 3-step process, iMessage CTA, Novary end card founded by Mourad. `soundtrack.py voice.wav mix.wav music.wav` scores and mixes any voice-over |
+| `../voice-promo/promo.html` + `soundtrack.py` + `render.js` | Apple-style promo synced to a Tunisian voice-over (personal branding services): Arabic words blur in on the voice, floating iPhone profile mockup (before → after), service cards, 3-step process, iMessage CTA, real Novary logo end card founded by Mourad. `soundtrack.py voice.wav mix.wav sfx.wav` mixes the voice with sound design only (no music — the user prefers voice + SFX) |
 Copy templates into a work folder before editing; keep `fonts/` next to the HTML.
+
+## Preferences learned
+- No background music under voice-overs; rich, polished sound effects instead.
+- Premium "high-quality ad" finish: real logos, bold Arabic type, glossy light, depth.
+- Encode: static (not per-frame) grain, `hqdn3d` + crf 18 keeps a 45 s 1080p60 file near 15 MB.
 
 ## Voice-over sync (Arabic / Derja)
 No speech-recognition model can be downloaded in cloud sessions (Hugging Face is blocked). Sync with pauses instead: `ffmpeg -i voice.wav -af silencedetect=n=-32dB:d=0.12 -f null -` splits the take into phrases; map them to the script lines, then spread word times inside each phrase by character count (see `hero()` in the voice-promo). Ask the user to record with clear pauses between lines.
