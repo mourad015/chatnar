@@ -1,6 +1,6 @@
 ---
 name: mourad-ghalbi-brand
-description: Brand system for Mourad Ghalbi and his agency Novary (navy #090D32, bolt red #DB3445, white, Poppins) with the official 5-second video outro and a motion-graphics engine. Use whenever making anything for Mourad Ghalbi, his personal brand, or Novary — videos, motion graphics, promos, reels, intros/outros, thumbnails, social posts, carousels, slides, web pages, brand sheets, ads — or when the user says "my brand", "my outro", "my logo", "my colors" or "brand style".
+description: Brand systems for Mourad Ghalbi (navy #090D32, bolt red #DB3445, white, Poppins) and his agency Novary (black, crimson #BF010C, white, Cinzel serif, ribbon "N" monogram), with the official 5-second outro, an Arabic voice-synced promo engine and motion-graphics templates. Use whenever making anything for Mourad Ghalbi, his personal brand, or Novary — videos, motion graphics, promos, reels, intros/outros, thumbnails, social posts, carousels, slides, web pages, brand sheets, ads — or when the user says "my brand", "my outro", "my logo", "my colors" or "brand style".
 ---
 
 # Mourad Ghalbi / Novary brand
@@ -9,8 +9,21 @@ Everything made for Mourad Ghalbi or Novary follows this system. The user's own 
 
 ## Core identity
 - **Owner:** Mourad Ghalbi (personal brand, ™). Logo: red bolt + stacked white wordmark "Mourad / Ghalbi".
-- **Agency:** Novary, a creative studio run in collaboration with Mourad Ghalbi. Services: graphic design, video editing, AI generative content, digital marketing.
-- **Novary logo status:** the red four-point "nova" star + spaced "NOVARY" wordmark is a placeholder Claude designed. If the user supplies an official Novary logo, use theirs and update this skill.
+- **Agency:** Novary Agency, owned by Mourad Ghalbi. Tagline: "AI PRODUCTION FOR ADVERTISING". Services: graphic design, video editing, AI generative content, digital marketing, personal branding.
+- **Two brands, two worlds:** Mourad's personal brand lives on navy with bolt red; Novary lives on black with crimson. In shared pieces, keep each logo in its own colors (e.g. Mourad logo on a navy plate inside a Novary frame) and use "Founded by Mourad Ghalbi" / "Mourad Ghalbi × Novary".
+
+## Novary brand (official, from the agency logo)
+| Token | HEX | Role |
+|---|---|---|
+| Novary Black | `#000000` | Backgrounds |
+| Crimson | `#BF010C` | Primary brand red, buttons, accents |
+| Bright Red | `#F40404` | Highlights, top of gradients, glows |
+| Deep Red | `#880000` | Shadow end of gradients |
+| White | `#FFFFFF` | Wordmark, text |
+| Grey | `#9A9A9E` | Tagline, secondary text |
+- **Logo:** glossy red ribbon "N" monogram (bright→deep gradient), "NOVARY" in a classic wide serif (closest free font: Cinzel 500, tracking ~0.2 em) with the A drawn as a red "Λ" without crossbar, "AGENCY" small and widely tracked between two thin crimson lines, tagline below in grey.
+- Reference image: `assets/logo/novary/novary-logo-reference-lowres.png` (low resolution). The vector rebuild of the N and wordmark is `novaN()` / `novaryLogo()` in `assets/voice-promo/promo.html`. Ask the user for the original high-res/vector Novary file before print work.
+- Gradients and glows are part of Novary's look (unlike Mourad's flat logo). Keep backgrounds black with soft crimson light.
 - **Personality:** elegant, minimalist, professional, direct, energetic. Lots of navy space, one red spark per frame.
 
 ## Colors (exact — never approximate)
@@ -26,7 +39,7 @@ Supporting tints (UI surfaces in motion work only): navy-2 `#10154A`, card `#131
 - No gradients on the logo. Backgrounds may carry a very soft radial lift or edge vignette around navy.
 
 ## Typography
-Poppins only. SemiBold 600 for headlines and the wordmark, Medium 500 for labels, Regular 400 for body. Font files: `assets/templates/fonts/`.
+Poppins for Latin (SemiBold 600 headlines, Medium 500 labels, Regular 400 body). Arabic / Tunisian Derja text: IBM Plex Sans Arabic (600 for headlines). Novary wordmark: Cinzel 500. Font files: `assets/templates/fonts/`.
 Video type scale at 1080p: title 96–150, heading 64, subtitle 40, caption 28–32. Headlines tight (letter-spacing −1 to −3 px), small caps labels tracked wide (+4 to +10 px).
 
 ## Logo rules
@@ -53,10 +66,14 @@ Short, confident, direct. Examples in use: "Your brand deserves attention." · "
 | File | What it is |
 |---|---|
 | `outro.html` + `render-outro.js` + `sound.py` | The official outro (SVG). `?w=&h=` for any size |
-| `promo.html` + `render-promo.js` + `music.py` | 40 s Novary promo engine (Canvas 2D): hook, logo reveal, 4 service scenes, recap, end card; 120 BPM soundtrack synthesizer |
+| `promo.html` + `render-promo.js` + `music.py` | 40 s services promo engine (Canvas 2D): hook, logo reveal, 4 service scenes, recap, end card; 120 BPM soundtrack synthesizer. Still uses the old placeholder Novary star: swap in `novaryLogo()` from `assets/voice-promo/promo.html` |
 | `sheet.js` | Contact-sheet preview of chosen timestamps (check frames before rendering) |
 | `brand-sheet.html` | Full brand sheet page (logo, colors, type, do/don't, outro) |
+| `../voice-promo/promo.html` + `soundtrack.py` + `render.js` | Apple-style promo synced to a Tunisian voice-over (personal branding services): Arabic words blur in on the voice, iPhone profile mockup (before → after), service cards, 3-step process, iMessage CTA, Novary end card founded by Mourad. `soundtrack.py voice.wav mix.wav music.wav` scores and mixes any voice-over |
 Copy templates into a work folder before editing; keep `fonts/` next to the HTML.
+
+## Voice-over sync (Arabic / Derja)
+No speech-recognition model can be downloaded in cloud sessions (Hugging Face is blocked). Sync with pauses instead: `ffmpeg -i voice.wav -af silencedetect=n=-32dB:d=0.12 -f null -` splits the take into phrases; map them to the script lines, then spread word times inside each phrase by character count (see `hero()` in the voice-promo). Ask the user to record with clear pauses between lines.
 
 ## Workflow for a new piece
 1. Confirm format(s): 9:16 and/or 16:9 (default: make both), duration, and any copy/contact info the user wants.
