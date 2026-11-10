@@ -7,7 +7,7 @@
 // render(t) draws video time t. Voice starts at OFF; all scene times below are voice (audio) times T.
 const Q=new URLSearchParams(location.search),W=+(Q.get('w')||1080),H=+(Q.get('h')||1920),LAND=W>H;
 const cv=document.getElementById('c');cv.width=W;cv.height=H;const X=cv.getContext('2d');
-const OFF=.5,DUR=43;
+const OFF=.5,DUR=44.5;
 // Brand colors: Mourad (navy/red/white) and Novary (black/crimson/white)
 const M={navy:'#090D32',red:'#DB3445',white:'#FFFFFF',muted:'#9BA0C8'};
 const N={black:'#000000',crimson:'#BF010C',bright:'#F40404',deep:'#880000',grey:'#9A9A9E',glass:'rgba(255,255,255,.06)',edge:'rgba(255,255,255,.14)'};
@@ -233,11 +233,11 @@ function sCTA(T){if(T<34.3||T>39.8)return;const out=ioCub(prog(T,39.3,39.75));X.
     const b2=spring(prog(T,37.5,38.1));if(b2>0){const s='أهلا! يلّا نبداو',w=tw(s,32,500,AR)+56;X.save();X.translate(cx+36+w/2,cy+290);X.scale(b2,b2);X.fillStyle='#2A2A30';rr(-w/2,-36,w,72,36);X.fill();T_(s,w/2-28,11,{size:32,weight:500,fam:AR,align:'right',dir:'rtl'});X.restore()}
     X.restore()}
   hero('وخلّينا نخلقو مع بعضنا حاجة تتفكّر.',36.85,39.0,W/2,LAND?880:1180,{T,size:LAND?60:80,maxW:LAND?1500:900});X.restore()}
-function sEnd(T){if(T<39.6)return;const mix=oCub(prog(T,40.9,42.0));
+function sEnd(T){if(T<39.6)return;const mix=oCub(prog(T,40.7,41.6));
   if(LAND)novaryLogo(W/2,H/2-60-mix*40,1.15,T,40.24);else novaryLogo(W/2,H/2-120-mix*60,1.35,T,40.24);
-  const pa=oExpo(prog(T,41.1,41.9));if(pa>0){const y=LAND?H/2+240:H/2+320;label('FOUNDED BY',W/2,y-20+(1-pa)*14,{size:LAND?18:22,ls:8,alpha:pa});
+  const pa=oExpo(prog(T,40.85,41.5));if(pa>0){const y=LAND?H/2+240:H/2+320;label('FOUNDED BY',W/2,y-20+(1-pa)*14,{size:LAND?18:22,ls:8,alpha:pa});
     X.save();X.globalAlpha=pa;X.fillStyle=M.navy;X.strokeStyle='rgba(255,255,255,.12)';const bw=LAND?400:540,bh=LAND?116:156;rr(W/2-bw/2,y+8,bw,bh,bh/2);X.fill();X.stroke();
-    mourad(W/2,y+8+bh/2,LAND?270:380,T,41.15);X.restore()}}
+    mourad(W/2,y+8+bh/2,LAND?270:380,T,40.9);X.restore()}}
 // ---------- main ----------
 const GR=[...Array(4)].map((_,k)=>{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d'),d=g.createImageData(256,256),r=rng(k+50);
   for(let i=0;i<d.data.length;i+=4){const v=r()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=9}g.putImageData(d,0,0);return c});

@@ -1,7 +1,7 @@
 # Mixes the voice-over with an original score + UI sound design. python3 soundtrack.py voice.wav out_mix.wav out_music.wav
 import numpy as np, wave, sys
 from scipy.signal import butter, sosfilt, fftconvolve, resample_poly
-sr=48000; DUR=43.0; OFF=.5; n=int(sr*DUR); t=np.arange(n)/sr; R=np.random.default_rng(3)
+sr=48000; DUR=44.5; OFF=.5; n=int(sr*DUR); t=np.arange(n)/sr; R=np.random.default_rng(3)
 lp=lambda x,f,o=2: sosfilt(butter(o,f,'low',fs=sr,output='sos'),x)
 hp=lambda x,f,o=2: sosfilt(butter(o,f,'high',fs=sr,output='sos'),x)
 bp=lambda x,a,b,o=2: sosfilt(butter(o,[a,b],'band',fs=sr,output='sos'),x)
